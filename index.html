@@ -47,7 +47,7 @@
 
           <nav class="nav" id="site-nav" aria-label="Primary">
             <a href="#dashboard">Dashboard</a>
-            <a href="#jobs">Jobs</a>
+            <a href="#jobs-list">Jobs</a>
             <a href="#new-job">New Job</a>
             <a href="#photos">Photos</a>
           </nav>
@@ -170,7 +170,7 @@
               </p>
             </article>
 
-            <article class="feature-card feature-card--fabrication" id="new-job">
+            <article class="feature-card feature-card--fabrication">
               <div class="feature-card__glow" aria-hidden="true"></div>
               <h3>Welding &amp; Fabrication</h3>
               <p>
@@ -185,9 +185,144 @@
             </article>
           </div>
         </section>
+
+        <section class="app-section app-section--split" id="new-job">
+          <div class="section-heading section-heading--compact">
+            <span class="eyebrow">Create Job</span>
+            <h2>Capture field and shop work without slowing technicians down</h2>
+            <p>
+              Enter core job details once, save them directly to IronSolidSystems,
+              and keep repair, diagnostic, and fabrication work visible to the team.
+            </p>
+          </div>
+
+          <div class="app-grid">
+            <section class="panel panel--form" aria-labelledby="create-job-heading">
+              <div class="panel__header">
+                <h3 id="create-job-heading">New Job Intake</h3>
+                <span class="panel__badge">Supabase Live</span>
+              </div>
+
+              <form class="job-form" id="job-form">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Title</span>
+                    <input type="text" name="title" required />
+                  </label>
+
+                  <label class="field">
+                    <span>Status</span>
+                    <input
+                      type="text"
+                      name="status"
+                      value="Open"
+                      placeholder="Open, In Progress, Completed"
+                      required
+                    />
+                  </label>
+
+                  <label class="field">
+                    <span>Work Order</span>
+                    <input type="text" name="work_order" />
+                  </label>
+
+                  <label class="field">
+                    <span>Customer</span>
+                    <input type="text" name="customer" />
+                  </label>
+
+                  <label class="field">
+                    <span>Machine</span>
+                    <input type="text" name="machine" />
+                  </label>
+
+                  <label class="field">
+                    <span>Serial</span>
+                    <input type="text" name="serial" />
+                  </label>
+
+                  <label class="field">
+                    <span>Industry</span>
+                    <input type="text" name="industry" />
+                  </label>
+
+                  <label class="field field--full">
+                    <span>Complaint</span>
+                    <textarea name="complaint" rows="4"></textarea>
+                  </label>
+
+                  <label class="field field--full">
+                    <span>Cause</span>
+                    <textarea name="cause" rows="4"></textarea>
+                  </label>
+
+                  <label class="field field--full">
+                    <span>Correction</span>
+                    <textarea name="correction" rows="4"></textarea>
+                  </label>
+                </div>
+
+                <div class="job-form__footer">
+                  <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+                  <button class="button button--primary" type="submit" id="job-submit">
+                    Save Job
+                  </button>
+                </div>
+              </form>
+            </section>
+
+            <aside class="panel panel--notes" aria-label="Workflow notes">
+              <div class="panel__header">
+                <h3>Workflow Focus</h3>
+              </div>
+              <div class="notes-list">
+                <article class="note-card">
+                  <strong>Repair Fabrication</strong>
+                  <p>Track custom metal work, field welding, and structural repair from intake to completion.</p>
+                </article>
+                <article class="note-card">
+                  <strong>Technician Friendly</strong>
+                  <p>Large fields, clear labels, and dark high-contrast visuals fit shop and mobile use.</p>
+                </article>
+                <article class="note-card">
+                  <strong>Ready To Expand</strong>
+                  <p>This layout can grow into a full dashboard with side panels, filters, and machine history.</p>
+                </article>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="app-section" id="jobs-list">
+          <div class="section-heading section-heading--compact">
+            <span class="eyebrow">Jobs List</span>
+            <h2>Newest jobs first</h2>
+            <p>
+              Review the latest submitted work orders, customers, machine details,
+              and current status at a glance.
+            </p>
+          </div>
+
+          <div class="panel">
+            <div class="panel__header">
+              <h3>Open Job Feed</h3>
+              <button class="button button--secondary button--small" type="button" id="refresh-jobs">
+                Refresh
+              </button>
+            </div>
+
+            <p class="list-message" id="jobs-message" role="status" aria-live="polite">
+              Loading jobs...
+            </p>
+
+            <div class="jobs-list" id="jobs-container" aria-live="polite"></div>
+          </div>
+        </section>
       </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
