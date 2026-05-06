@@ -312,16 +312,6 @@
                     </select>
                   </label>
 
-                  <label class="field">
-                    <span>Part Numbers</span>
-                    <input type="text" name="part_numbers" placeholder="" />
-                  </label>
-
-                  <label class="field">
-                    <span>Torque Values</span>
-                    <input type="text" name="torque_values" placeholder="" />
-                  </label>
-
                   <label class="field field--full">
                     <span>Complaint</span>
                     <textarea
@@ -348,6 +338,32 @@
                       placeholder=""
                     ></textarea>
                   </label>
+
+                  <div class="form-subsection field--full">
+                    <div class="form-subsection__header">
+                      <h4>Parts &amp; Torque Information</h4>
+                    </div>
+
+                    <div class="form-subsection__grid">
+                      <label class="field field--full">
+                        <span>Part Numbers</span>
+                        <textarea
+                          name="part_numbers"
+                          rows="5"
+                          placeholder="List part numbers used or referenced"
+                        ></textarea>
+                      </label>
+
+                      <label class="field field--full">
+                        <span>Torque Values</span>
+                        <textarea
+                          name="torque_values"
+                          rows="5"
+                          placeholder="List torque specs, bolt locations, and final torque values"
+                        ></textarea>
+                      </label>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="job-form__footer">

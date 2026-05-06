@@ -395,6 +395,29 @@ textarea,
   resize: vertical;
 }
 
+.form-subsection {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.form-subsection__header {
+  margin-bottom: 0.9rem;
+}
+
+.form-subsection__header h4 {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.form-subsection__grid {
+  display: grid;
+  gap: 1rem;
+}
+
 .field input::placeholder,
 .field textarea::placeholder {
   color: #838d87;

@@ -222,8 +222,6 @@ const JOB_PLACEHOLDERS = {
     customer: "",
     machine: "",
     serial: "",
-    part_numbers: "",
-    torque_values: "",
     complaint: "",
     cause: "",
     correction: ""
@@ -234,8 +232,6 @@ const JOB_PLACEHOLDERS = {
     customer: "River Rock Excavation",
     machine: "Komatsu WA380 Loader",
     serial: "KMTWA103CPF81247",
-    part_numbers: "PN 6754-11 fan belt",
-    torque_values: "Wheel lugs 450 ft-lb",
     complaint: "Machine overheating under load",
     cause: "Radiator packed with debris, low airflow",
     correction: "Cleaned cooling package, verified temps"
@@ -246,8 +242,6 @@ const JOB_PLACEHOLDERS = {
     customer: "Fleet Service LLC",
     machine: "Ford F-250 6.2L",
     serial: "1FT7W2B67NEA18455",
-    part_numbers: "Motorcraft KCV-112 hose",
-    torque_values: "Spark plugs 13 ft-lb",
     complaint: "Customer states truck has rough idle",
     cause: "Vacuum leak found at intake hose",
     correction: "Replaced hose and cleared codes"
@@ -258,8 +252,6 @@ const JOB_PLACEHOLDERS = {
     customer: "Midwest Packaging",
     machine: "South conveyor drive",
     serial: "CVR-PLT-2047",
-    part_numbers: "Turck BI10 sensor",
-    torque_values: "Motor mount bolts 55 ft-lb",
     complaint: "Conveyor intermittently stops",
     cause: "Failed proximity sensor",
     correction: "Replaced sensor and tested operation"
@@ -270,8 +262,6 @@ const JOB_PLACEHOLDERS = {
     customer: "Summit Earthworks",
     machine: "Grapple attachment",
     serial: "ATT-GRP-7784",
-    part_numbers: "7018 rod, 3/8 plate",
-    torque_values: "Bracket bolts 180 ft-lb",
     complaint: "Cracked bracket on attachment",
     cause: "Fatigue crack at weld toe",
     correction: "Ground crack, welded repair, painted area"
@@ -407,8 +397,6 @@ function updateJobPlaceholders() {
     [jobCustomerField, placeholders.customer],
     [jobMachineField, placeholders.machine],
     [jobSerialField, placeholders.serial],
-    [jobPartNumbersField, placeholders.part_numbers],
-    [jobTorqueValuesField, placeholders.torque_values],
     [jobComplaintField, placeholders.complaint],
     [jobCauseField, placeholders.cause],
     [jobCorrectionField, placeholders.correction]
