@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="IronSolidSystems is built for technicians managing equipment jobs, diagnostics, fabrication, and field repairs."
+      content="IronSolidSystems is a dark industrial job tracking app for technicians and repair workflows."
     />
     <title>IronSolidSystems</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,24 +17,32 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page-shell">
-      <aside class="sidebar-preview" aria-label="Future navigation panel">
-        <div class="sidebar-preview__inner">
-          <span class="sidebar-preview__eyebrow">Future Expansion</span>
-          <h2>Sidebar-ready workspace</h2>
-          <p>
-            Structured to support job queues, machine history, and shop-floor tools
-            as the platform grows.
-          </p>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <a class="brand" href="#dashboard" aria-label="IronSolidSystems home">
+          <span class="brand__mark" aria-hidden="true">IS</span>
+          <span class="brand__text">IronSolidSystems</span>
+        </a>
+
+        <nav class="sidebar-nav" id="site-nav">
+          <a href="#auth-panel">Login / Sign Up</a>
+          <a href="#dashboard">Dashboard</a>
+          <a href="#create-job">Create Job</a>
+          <a href="#jobs-list">Jobs List</a>
+        </nav>
+
+        <div class="sidebar-user">
+          <span class="sidebar-user__label">Current User</span>
+          <strong id="current-user-email">Not signed in</strong>
         </div>
       </aside>
 
       <main class="main-layout">
         <header class="topbar">
-          <a class="brand" href="#hero" aria-label="IronSolidSystems home">
-            <span class="brand__mark" aria-hidden="true">IS</span>
-            <span class="brand__text">IronSolidSystems</span>
-          </a>
+          <div>
+            <span class="eyebrow">Industrial Job Operations</span>
+            <h1>IronSolidSystems</h1>
+          </div>
 
           <button
             class="menu-toggle"
@@ -44,163 +52,100 @@
           >
             Menu
           </button>
-
-          <nav class="nav" id="site-nav" aria-label="Primary">
-            <a href="#dashboard">Dashboard</a>
-            <a href="#jobs-list">Jobs</a>
-            <a href="#new-job">New Job</a>
-            <a href="#photos">Photos</a>
-          </nav>
         </header>
 
-        <section class="hero" id="hero">
-          <div class="hero__copy">
-            <span class="eyebrow">Equipment Operations Platform</span>
-            <h1>IronSolidSystems</h1>
-            <p class="hero__subtitle">
-              Built for the people who keep equipment moving.
-            </p>
-            <p class="hero__text">
-              Track repair work, capture diagnostics, organize field photos, and
-              coordinate fabrication workflows in one rugged, technician-friendly
-              interface.
-            </p>
-
-            <div class="hero__actions">
-              <a class="button button--primary" href="#dashboard">Open Dashboard</a>
-              <a class="button button--secondary" href="#new-job">Create Job</a>
+        <section class="app-section" id="auth-panel">
+          <div class="panel panel--auth">
+            <div class="panel__header panel__header--stack">
+              <div>
+                <span class="eyebrow">Login / Sign Up</span>
+                <h2>Access your job workspace</h2>
+              </div>
+              <p class="panel__copy">
+                Sign in with your email and password to manage your own jobs.
+              </p>
             </div>
-          </div>
 
-          <div class="hero__panel" id="dashboard" aria-label="System overview">
-            <div class="status-card">
-              <div class="status-card__header">
-                <span>Live Shop Status</span>
-                <span class="status-pill">Online</span>
+            <form class="auth-form" id="auth-form">
+              <div class="form-grid form-grid--auth">
+                <label class="field">
+                  <span>Email</span>
+                  <input
+                    type="email"
+                    name="email"
+                    id="auth-email"
+                    autocomplete="email"
+                    required
+                  />
+                </label>
+
+                <label class="field">
+                  <span>Password</span>
+                  <input
+                    type="password"
+                    name="password"
+                    id="auth-password"
+                    autocomplete="current-password"
+                    required
+                  />
+                </label>
               </div>
-              <div class="status-grid">
-                <article>
-                  <strong>18</strong>
-                  <span>Active jobs</span>
-                </article>
-                <article>
-                  <strong>06</strong>
-                  <span>Diagnostics pending</span>
-                </article>
-                <article>
-                  <strong>42</strong>
-                  <span>Photos uploaded</span>
-                </article>
-                <article>
-                  <strong>09</strong>
-                  <span>Field weld repairs</span>
-                </article>
+
+              <div class="auth-actions">
+                <button class="button button--primary" type="button" id="sign-up-button">
+                  Sign Up
+                </button>
+                <button class="button button--secondary" type="button" id="sign-in-button">
+                  Sign In
+                </button>
+                <button class="button button--ghost" type="button" id="sign-out-button">
+                  Sign Out
+                </button>
               </div>
-              <div class="status-footer">
-                <div>
-                  <span class="label">Priority Queue</span>
-                  <strong>Hydraulic excavator rebuild</strong>
-                </div>
-                <div class="signal-bars" aria-hidden="true">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-            </div>
+
+              <p class="form-message" id="auth-message" role="status" aria-live="polite"></p>
+            </form>
           </div>
         </section>
 
-        <section class="features" id="jobs">
-          <div class="section-heading">
-            <span class="eyebrow">Core Workflows</span>
-            <h2>Built for high-visibility shop and field work</h2>
-            <p>
-              Clear layouts, large touch-friendly targets, and fast visual scanning
-              for busy technicians working in real environments.
-            </p>
-          </div>
-
-          <div class="card-grid">
-            <article class="feature-card">
-              <h3>Job Tracking</h3>
+        <div class="app-sections" id="app-sections" hidden>
+          <section class="app-section" id="dashboard">
+            <div class="section-heading section-heading--compact">
+              <span class="eyebrow">Dashboard</span>
+              <h2>Logged-in workspace</h2>
               <p>
-                Follow open work, prioritize machine downtime, and keep every repair
-                stage visible from intake to completion.
+                View your current session and manage jobs tied to your account.
               </p>
-            </article>
+            </div>
 
-            <article class="feature-card">
-              <h3>Diagnostic Reports</h3>
+            <div class="dashboard-grid">
+              <article class="panel metric-card">
+                <span class="metric-card__label">Signed In As</span>
+                <strong class="metric-card__value" id="dashboard-user-email">
+                  Not signed in
+                </strong>
+              </article>
+
+              <article class="panel metric-card">
+                <span class="metric-card__label">Your Jobs</span>
+                <strong class="metric-card__value" id="job-count">0</strong>
+              </article>
+            </div>
+          </section>
+
+          <section class="app-section" id="create-job">
+            <div class="section-heading section-heading--compact">
+              <span class="eyebrow">Create Job</span>
+              <h2>Save repair and service work</h2>
               <p>
-                Capture fault findings, test results, and service notes in a clean
-                format that is easy to review on the shop floor.
+                Capture job details and store them directly under your account.
               </p>
-            </article>
+            </div>
 
-            <article class="feature-card" id="photos">
-              <h3>Photo Management</h3>
-              <p>
-                Organize before-and-after images, damaged component references, and
-                documentation photos without losing the job context.
-              </p>
-            </article>
-
-            <article class="feature-card">
-              <h3>Heavy Equipment</h3>
-              <p>
-                Support excavators, loaders, dozers, and more with maintenance
-                workflows tailored for hard-working machines.
-              </p>
-            </article>
-
-            <article class="feature-card">
-              <h3>Automotive</h3>
-              <p>
-                Coordinate diagnostics, repair history, and parts-related details
-                across fleet vehicles and service units.
-              </p>
-            </article>
-
-            <article class="feature-card">
-              <h3>Industrial Maintenance</h3>
-              <p>
-                Keep plant, facility, and production support work visible with clear
-                tracking for inspections, repairs, and service intervals.
-              </p>
-            </article>
-
-            <article class="feature-card feature-card--fabrication">
-              <div class="feature-card__glow" aria-hidden="true"></div>
-              <h3>Welding &amp; Fabrication</h3>
-              <p>
-                Industrial repair fabrication workflows for custom metal work, field
-                welding, structural repair, and jobsite-ready fabrication tracking.
-              </p>
-              <ul class="feature-list" aria-label="Welding and fabrication highlights">
-                <li>Repair fabrication and custom metal work documentation</li>
-                <li>Field welding workflows with mobile-ready job visibility</li>
-                <li>Structural repair tracking with subtle spark-inspired visuals</li>
-              </ul>
-            </article>
-          </div>
-        </section>
-
-        <section class="app-section app-section--split" id="new-job">
-          <div class="section-heading section-heading--compact">
-            <span class="eyebrow">Create Job</span>
-            <h2>Capture field and shop work without slowing technicians down</h2>
-            <p>
-              Enter core job details once, save them directly to IronSolidSystems,
-              and keep repair, diagnostic, and fabrication work visible to the team.
-            </p>
-          </div>
-
-          <div class="app-grid">
             <section class="panel panel--form" aria-labelledby="create-job-heading">
               <div class="panel__header">
                 <h3 id="create-job-heading">New Job Intake</h3>
-                <span class="panel__badge">Supabase Live</span>
+                <span class="panel__badge">User Scoped</span>
               </div>
 
               <form class="job-form" id="job-form">
@@ -270,54 +215,37 @@
                 </div>
               </form>
             </section>
+          </section>
 
-            <aside class="panel panel--notes" aria-label="Workflow notes">
-              <div class="panel__header">
-                <h3>Workflow Focus</h3>
-              </div>
-              <div class="notes-list">
-                <article class="note-card">
-                  <strong>Repair Fabrication</strong>
-                  <p>Track custom metal work, field welding, and structural repair from intake to completion.</p>
-                </article>
-                <article class="note-card">
-                  <strong>Technician Friendly</strong>
-                  <p>Large fields, clear labels, and dark high-contrast visuals fit shop and mobile use.</p>
-                </article>
-                <article class="note-card">
-                  <strong>Ready To Expand</strong>
-                  <p>This layout can grow into a full dashboard with side panels, filters, and machine history.</p>
-                </article>
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        <section class="app-section" id="jobs-list">
-          <div class="section-heading section-heading--compact">
-            <span class="eyebrow">Jobs List</span>
-            <h2>Newest jobs first</h2>
-            <p>
-              Review the latest submitted work orders, customers, machine details,
-              and current status at a glance.
-            </p>
-          </div>
-
-          <div class="panel">
-            <div class="panel__header">
-              <h3>Open Job Feed</h3>
-              <button class="button button--secondary button--small" type="button" id="refresh-jobs">
-                Refresh
-              </button>
+          <section class="app-section" id="jobs-list">
+            <div class="section-heading section-heading--compact">
+              <span class="eyebrow">Jobs List</span>
+              <h2>Your newest jobs first</h2>
+              <p>
+                Review jobs saved under your account with quick status visibility.
+              </p>
             </div>
 
-            <p class="list-message" id="jobs-message" role="status" aria-live="polite">
-              Loading jobs...
-            </p>
+            <div class="panel">
+              <div class="panel__header">
+                <h3>Job Feed</h3>
+                <button
+                  class="button button--secondary button--small"
+                  type="button"
+                  id="refresh-jobs"
+                >
+                  Refresh
+                </button>
+              </div>
 
-            <div class="jobs-list" id="jobs-container" aria-live="polite"></div>
-          </div>
-        </section>
+              <p class="list-message" id="jobs-message" role="status" aria-live="polite">
+                Sign in to load jobs.
+              </p>
+
+              <div class="jobs-list" id="jobs-container" aria-live="polite"></div>
+            </div>
+          </section>
+        </div>
       </main>
     </div>
 
