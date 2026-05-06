@@ -49,9 +49,16 @@ const jobWorkOrderField = jobForm?.elements.namedItem("work_order");
 const jobCustomerField = jobForm?.elements.namedItem("customer");
 const jobMachineField = jobForm?.elements.namedItem("machine");
 const jobSerialField = jobForm?.elements.namedItem("serial");
+const jobPartNumbersField = jobForm?.elements.namedItem("part_numbers");
+const jobTorqueValuesField = jobForm?.elements.namedItem("torque_values");
 const jobComplaintField = jobForm?.elements.namedItem("complaint");
 const jobCauseField = jobForm?.elements.namedItem("cause");
 const jobCorrectionField = jobForm?.elements.namedItem("correction");
+const jobTitleLabel = document.getElementById("label-title");
+const jobWorkOrderLabel = document.getElementById("label-work-order");
+const jobCustomerLabel = document.getElementById("label-customer");
+const jobMachineLabel = document.getElementById("label-machine");
+const jobSerialLabel = document.getElementById("label-serial");
 
 let currentUser = null;
 let currentView = "main";
@@ -210,14 +217,16 @@ const TEXT_PRESETS = {
 
 const JOB_PLACEHOLDERS = {
   default: {
-    title: "Cooling system service",
-    work_order: "WO-24051",
-    customer: "Miller Aggregates",
-    machine: "CAT 320 Excavator",
-    serial: "CAT0320JHYD11842",
-    complaint: "Machine overheating under load",
-    cause: "Radiator packed with debris, low airflow",
-    correction: "Cleaned cooling package, verified temps"
+    title: "",
+    work_order: "",
+    customer: "",
+    machine: "",
+    serial: "",
+    part_numbers: "",
+    torque_values: "",
+    complaint: "",
+    cause: "",
+    correction: ""
   },
   "Heavy Equipment": {
     title: "Loader cooling issue",
@@ -225,6 +234,8 @@ const JOB_PLACEHOLDERS = {
     customer: "River Rock Excavation",
     machine: "Komatsu WA380 Loader",
     serial: "KMTWA103CPF81247",
+    part_numbers: "PN 6754-11 fan belt",
+    torque_values: "Wheel lugs 450 ft-lb",
     complaint: "Machine overheating under load",
     cause: "Radiator packed with debris, low airflow",
     correction: "Cleaned cooling package, verified temps"
@@ -235,6 +246,8 @@ const JOB_PLACEHOLDERS = {
     customer: "Fleet Service LLC",
     machine: "Ford F-250 6.2L",
     serial: "1FT7W2B67NEA18455",
+    part_numbers: "Motorcraft KCV-112 hose",
+    torque_values: "Spark plugs 13 ft-lb",
     complaint: "Customer states truck has rough idle",
     cause: "Vacuum leak found at intake hose",
     correction: "Replaced hose and cleared codes"
@@ -245,6 +258,8 @@ const JOB_PLACEHOLDERS = {
     customer: "Midwest Packaging",
     machine: "South conveyor drive",
     serial: "CVR-PLT-2047",
+    part_numbers: "Turck BI10 sensor",
+    torque_values: "Motor mount bolts 55 ft-lb",
     complaint: "Conveyor intermittently stops",
     cause: "Failed proximity sensor",
     correction: "Replaced sensor and tested operation"
@@ -255,9 +270,49 @@ const JOB_PLACEHOLDERS = {
     customer: "Summit Earthworks",
     machine: "Grapple attachment",
     serial: "ATT-GRP-7784",
+    part_numbers: "7018 rod, 3/8 plate",
+    torque_values: "Bracket bolts 180 ft-lb",
     complaint: "Cracked bracket on attachment",
     cause: "Fatigue crack at weld toe",
     correction: "Ground crack, welded repair, painted area"
+  }
+};
+
+const JOB_LABELS = {
+  default: {
+    title: "Job Name / Log Name",
+    workOrder: "Work Order",
+    customer: "Customer",
+    machine: "Machine",
+    serial: "Serial Number"
+  },
+  "Heavy Equipment": {
+    title: "Job Name / Log Name",
+    workOrder: "Work Order",
+    customer: "Customer",
+    machine: "Machine",
+    serial: "Serial Number"
+  },
+  Automotive: {
+    title: "Job Name / Log Name",
+    workOrder: "Work Order",
+    customer: "Customer",
+    machine: "Vehicle",
+    serial: "VIN"
+  },
+  "Industrial Maintenance": {
+    title: "Job Name / Log Name",
+    workOrder: "Work Order",
+    customer: "Customer / Facility",
+    machine: "Equipment / Line",
+    serial: "Asset ID / Identification Number"
+  },
+  "Welding & Fabrication": {
+    title: "Job Name / Log Name",
+    workOrder: "Work Order",
+    customer: "Customer",
+    machine: "Part / Vehicle / Attachment",
+    serial: "Serial / ID Number"
   }
 };
 
@@ -324,6 +379,27 @@ function updateJobPlaceholders() {
     jobIndustrySelect instanceof HTMLSelectElement ? jobIndustrySelect.value : "";
   const placeholders =
     JOB_PLACEHOLDERS[industry] || JOB_PLACEHOLDERS.default;
+  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
+
+  if (jobTitleLabel) {
+    jobTitleLabel.textContent = labels.title;
+  }
+
+  if (jobWorkOrderLabel) {
+    jobWorkOrderLabel.textContent = labels.workOrder;
+  }
+
+  if (jobCustomerLabel) {
+    jobCustomerLabel.textContent = labels.customer;
+  }
+
+  if (jobMachineLabel) {
+    jobMachineLabel.textContent = labels.machine;
+  }
+
+  if (jobSerialLabel) {
+    jobSerialLabel.textContent = labels.serial;
+  }
 
   const fieldMap = [
     [jobTitleField, placeholders.title],
@@ -331,6 +407,8 @@ function updateJobPlaceholders() {
     [jobCustomerField, placeholders.customer],
     [jobMachineField, placeholders.machine],
     [jobSerialField, placeholders.serial],
+    [jobPartNumbersField, placeholders.part_numbers],
+    [jobTorqueValuesField, placeholders.torque_values],
     [jobComplaintField, placeholders.complaint],
     [jobCauseField, placeholders.cause],
     [jobCorrectionField, placeholders.correction]
@@ -732,6 +810,8 @@ async function handleJobSubmit(event) {
     machine: formData.get("machine")?.toString().trim() || "",
     serial: formData.get("serial")?.toString().trim() || "",
     industry: formData.get("industry")?.toString().trim() || "",
+    part_numbers: formData.get("part_numbers")?.toString().trim() || "",
+    torque_values: formData.get("torque_values")?.toString().trim() || "",
     complaint: formData.get("complaint")?.toString().trim() || "",
     cause: formData.get("cause")?.toString().trim() || "",
     correction: formData.get("correction")?.toString().trim() || ""

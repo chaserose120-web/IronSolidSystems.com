@@ -248,26 +248,25 @@
           <section class="app-section" id="create-job">
             <div class="section-heading section-heading--compact">
               <span class="eyebrow">Create Job</span>
-              <h2>Save repair and service work</h2>
+              <h2>Create and track service work</h2>
               <p>
-                Capture job details and store them directly under your account.
+                Record technician job details and keep your work organized.
               </p>
             </div>
 
             <section class="panel panel--form" aria-labelledby="create-job-heading">
               <div class="panel__header">
-                <h3 id="create-job-heading">New Job Intake</h3>
-                <span class="panel__badge">User Scoped</span>
+                <h3 id="create-job-heading">New Job</h3>
               </div>
 
               <form class="job-form" id="job-form">
                 <div class="form-grid">
                   <label class="field">
-                    <span>Title</span>
+                    <span id="label-title">Job Name / Log Name</span>
                     <input
                       type="text"
                       name="title"
-                      placeholder="Cooling system service"
+                      placeholder=""
                       required
                     />
                   </label>
@@ -283,29 +282,29 @@
                   </label>
 
                   <label class="field">
-                    <span>Work Order</span>
-                    <input type="text" name="work_order" placeholder="WO-24051" />
+                    <span id="label-work-order">Work Order</span>
+                    <input type="text" name="work_order" placeholder="" />
                   </label>
 
                   <label class="field">
-                    <span>Customer</span>
-                    <input type="text" name="customer" placeholder="Miller Aggregates" />
+                    <span id="label-customer">Customer</span>
+                    <input type="text" name="customer" placeholder="" />
                   </label>
 
                   <label class="field">
-                    <span>Machine</span>
-                    <input type="text" name="machine" placeholder="CAT 320 Excavator" />
+                    <span id="label-machine">Machine</span>
+                    <input type="text" name="machine" placeholder="" />
                   </label>
 
                   <label class="field">
-                    <span>Serial</span>
-                    <input type="text" name="serial" placeholder="CAT0320JHYD11842" />
+                    <span id="label-serial">Serial Number</span>
+                    <input type="text" name="serial" placeholder="" />
                   </label>
 
                   <label class="field">
                     <span>Industry</span>
                     <select name="industry">
-                      <option value="">Select industry</option>
+                      <option value="" selected>Select Industry</option>
                       <option value="Heavy Equipment">Heavy Equipment</option>
                       <option value="Automotive">Automotive</option>
                       <option value="Industrial Maintenance">Industrial Maintenance</option>
@@ -313,12 +312,22 @@
                     </select>
                   </label>
 
+                  <label class="field">
+                    <span>Part Numbers</span>
+                    <input type="text" name="part_numbers" placeholder="" />
+                  </label>
+
+                  <label class="field">
+                    <span>Torque Values</span>
+                    <input type="text" name="torque_values" placeholder="" />
+                  </label>
+
                   <label class="field field--full">
                     <span>Complaint</span>
                     <textarea
                       name="complaint"
                       rows="6"
-                      placeholder="Machine overheating under load"
+                      placeholder=""
                     ></textarea>
                   </label>
 
@@ -327,7 +336,7 @@
                     <textarea
                       name="cause"
                       rows="6"
-                      placeholder="Radiator packed with debris, low airflow"
+                      placeholder=""
                     ></textarea>
                   </label>
 
@@ -336,7 +345,7 @@
                     <textarea
                       name="correction"
                       rows="6"
-                      placeholder="Cleaned cooling package, verified temps"
+                      placeholder=""
                     ></textarea>
                   </label>
                 </div>
