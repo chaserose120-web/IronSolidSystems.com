@@ -9,9 +9,18 @@ const currentUserEmail = document.getElementById("current-user-email");
 const topbarUser = document.getElementById("topbar-user");
 const topbarUserName = document.getElementById("topbar-user-name");
 const topbarUserEmail = document.getElementById("topbar-user-email");
+const openSettingsButton = document.getElementById("open-settings-button");
 const dashboardGreeting = document.getElementById("dashboard-greeting");
 const dashboardUserEmail = document.getElementById("dashboard-user-email");
 const jobCount = document.getElementById("job-count");
+const dashboardSection = document.getElementById("dashboard");
+const createJobSection = document.getElementById("create-job");
+const jobsListSection = document.getElementById("jobs-list");
+const settingsPanel = document.getElementById("settings-panel");
+const openSettingsNavButton = document.getElementById("open-settings-nav");
+const closeSettingsButton = document.getElementById("close-settings-button");
+const themeColorSelect = document.getElementById("theme-color-select");
+const textColorSelect = document.getElementById("text-color-select");
 
 const signUpForm = document.getElementById("sign-up-form");
 const signUpFullNameInput = document.getElementById("sign-up-full-name");
@@ -36,18 +45,169 @@ const jobsMessage = document.getElementById("jobs-message");
 const refreshJobsButton = document.getElementById("refresh-jobs");
 
 let currentUser = null;
+let currentView = "main";
+
+const THEME_STORAGE_KEY = "ironsolidsystems-theme-settings";
+const DEFAULT_THEME_SETTINGS = {
+  themeColor: "cat-yellow",
+  textColor: "white"
+};
+
+const THEME_PRESETS = {
+  red: {
+    bg: "#140808",
+    bgAlt: "#1b0d0d",
+    panel: "rgba(34, 18, 18, 0.92)",
+    panelStrong: "#261414",
+    panelSoft: "rgba(255, 255, 255, 0.03)",
+    border: "rgba(255, 255, 255, 0.08)",
+    borderStrong: "rgba(212, 74, 74, 0.28)",
+    accent: "#d44a4a",
+    accentStrong: "#f06e6e",
+    accentShadow: "rgba(212, 74, 74, 0.22)",
+    bodyGlow: "rgba(212, 74, 74, 0.16)",
+    bodyGlowAlt: "rgba(120, 22, 22, 0.14)",
+    bodyStart: "#090505",
+    bodyEnd: "#130909"
+  },
+  blue: {
+    bg: "#071019",
+    bgAlt: "#0b1622",
+    panel: "rgba(15, 24, 34, 0.92)",
+    panelStrong: "#172637",
+    panelSoft: "rgba(255, 255, 255, 0.03)",
+    border: "rgba(255, 255, 255, 0.08)",
+    borderStrong: "rgba(76, 135, 214, 0.26)",
+    accent: "#4c87d6",
+    accentStrong: "#70a8f0",
+    accentShadow: "rgba(76, 135, 214, 0.22)",
+    bodyGlow: "rgba(76, 135, 214, 0.14)",
+    bodyGlowAlt: "rgba(30, 77, 130, 0.12)",
+    bodyStart: "#050a0f",
+    bodyEnd: "#09131d"
+  },
+  black: {
+    bg: "#060606",
+    bgAlt: "#101010",
+    panel: "rgba(18, 18, 18, 0.92)",
+    panelStrong: "#181818",
+    panelSoft: "rgba(255, 255, 255, 0.025)",
+    border: "rgba(255, 255, 255, 0.08)",
+    borderStrong: "rgba(160, 160, 160, 0.2)",
+    accent: "#9d9d9d",
+    accentStrong: "#cbcbcb",
+    accentShadow: "rgba(160, 160, 160, 0.16)",
+    bodyGlow: "rgba(180, 180, 180, 0.08)",
+    bodyGlowAlt: "rgba(80, 80, 80, 0.08)",
+    bodyStart: "#050505",
+    bodyEnd: "#0d0d0d"
+  },
+  white: {
+    bg: "#e8ecef",
+    bgAlt: "#d8dde0",
+    panel: "rgba(255, 255, 255, 0.88)",
+    panelStrong: "#ffffff",
+    panelSoft: "rgba(0, 0, 0, 0.035)",
+    border: "rgba(0, 0, 0, 0.08)",
+    borderStrong: "rgba(90, 90, 90, 0.22)",
+    accent: "#636363",
+    accentStrong: "#2e2e2e",
+    accentShadow: "rgba(80, 80, 80, 0.14)",
+    bodyGlow: "rgba(255, 255, 255, 0.3)",
+    bodyGlowAlt: "rgba(170, 170, 170, 0.16)",
+    bodyStart: "#eef2f4",
+    bodyEnd: "#d7dde0"
+  },
+  tan: {
+    bg: "#17120d",
+    bgAlt: "#211911",
+    panel: "rgba(35, 28, 20, 0.92)",
+    panelStrong: "#2e2419",
+    panelSoft: "rgba(255, 255, 255, 0.03)",
+    border: "rgba(255, 255, 255, 0.08)",
+    borderStrong: "rgba(193, 151, 93, 0.24)",
+    accent: "#c1975d",
+    accentStrong: "#dfba82",
+    accentShadow: "rgba(193, 151, 93, 0.2)",
+    bodyGlow: "rgba(193, 151, 93, 0.14)",
+    bodyGlowAlt: "rgba(110, 72, 30, 0.1)",
+    bodyStart: "#0d0a08",
+    bodyEnd: "#18120d"
+  },
+  "cat-yellow": {
+    bg: "#0b0b08",
+    bgAlt: "#15140d",
+    panel: "rgba(24, 23, 16, 0.92)",
+    panelStrong: "#1b1a12",
+    panelSoft: "rgba(255, 255, 255, 0.03)",
+    border: "rgba(255, 255, 255, 0.08)",
+    borderStrong: "rgba(242, 194, 48, 0.26)",
+    accent: "#f2c230",
+    accentStrong: "#ffcf40",
+    accentShadow: "rgba(242, 194, 48, 0.22)",
+    bodyGlow: "rgba(242, 194, 48, 0.16)",
+    bodyGlowAlt: "rgba(184, 133, 10, 0.12)",
+    bodyStart: "#060707",
+    bodyEnd: "#111008"
+  },
+  "john-deere-green": {
+    bg: "#071109",
+    bgAlt: "#0d1a10",
+    panel: "rgba(15, 28, 18, 0.92)",
+    panelStrong: "#18321d",
+    panelSoft: "rgba(255, 255, 255, 0.03)",
+    border: "rgba(255, 255, 255, 0.08)",
+    borderStrong: "rgba(54, 143, 64, 0.28)",
+    accent: "#368f40",
+    accentStrong: "#57ba5f",
+    accentShadow: "rgba(54, 143, 64, 0.22)",
+    bodyGlow: "rgba(54, 143, 64, 0.16)",
+    bodyGlowAlt: "rgba(248, 210, 48, 0.08)",
+    bodyStart: "#050805",
+    bodyEnd: "#0a140c"
+  },
+  "usa-theme": {
+    bg: "#08111c",
+    bgAlt: "#0f1930",
+    panel: "rgba(16, 24, 43, 0.92)",
+    panelStrong: "#172746",
+    panelSoft: "rgba(255, 255, 255, 0.03)",
+    border: "rgba(255, 255, 255, 0.08)",
+    borderStrong: "rgba(220, 74, 74, 0.22)",
+    accent: "#d44343",
+    accentStrong: "#f2f2f2",
+    accentShadow: "rgba(212, 67, 67, 0.18)",
+    bodyGlow: "rgba(62, 111, 190, 0.14)",
+    bodyGlowAlt: "rgba(212, 67, 67, 0.12)",
+    bodyStart: "#06101c",
+    bodyEnd: "#0a1630"
+  }
+};
+
+const TEXT_PRESETS = {
+  white: {
+    text: "#f2f2ec",
+    textSoft: "#afb5af"
+  },
+  black: {
+    text: "#141414",
+    textSoft: "#353535"
+  },
+  yellow: {
+    text: "#f2c230",
+    textSoft: "#d0b25d"
+  }
+};
 
 if (menuToggle && pageShell) {
-  const nav = document.getElementById("site-nav");
-
   menuToggle.addEventListener("click", () => {
     const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
 
     menuToggle.setAttribute("aria-expanded", String(!isOpen));
     pageShell.classList.toggle("menu-open", !isOpen);
 
-    if (!isOpen && nav) {
-      nav.querySelector("a")?.focus();
+    if (!isOpen) {
+      siteNav?.querySelector("a, button")?.focus();
     }
   });
 }
@@ -102,6 +262,79 @@ function getDisplayName(user) {
   return fullName || "Technician";
 }
 
+function setMainView(view) {
+  currentView = view;
+
+  const showSettings = view === "settings";
+  dashboardSection.hidden = showSettings;
+  createJobSection.hidden = showSettings;
+  jobsListSection.hidden = showSettings;
+  settingsPanel.hidden = !showSettings;
+}
+
+function applyThemeSettings(settings) {
+  const root = document.documentElement;
+  const theme = THEME_PRESETS[settings.themeColor] || THEME_PRESETS["cat-yellow"];
+  const text = TEXT_PRESETS[settings.textColor] || TEXT_PRESETS.white;
+
+  root.style.setProperty("--bg", theme.bg);
+  root.style.setProperty("--bg-alt", theme.bgAlt);
+  root.style.setProperty("--panel", theme.panel);
+  root.style.setProperty("--panel-strong", theme.panelStrong);
+  root.style.setProperty("--panel-soft", theme.panelSoft);
+  root.style.setProperty("--border", theme.border);
+  root.style.setProperty("--border-strong", theme.borderStrong);
+  root.style.setProperty("--accent", theme.accent);
+  root.style.setProperty("--accent-strong", theme.accentStrong);
+  root.style.setProperty("--accent-shadow", theme.accentShadow);
+  root.style.setProperty("--body-glow", theme.bodyGlow);
+  root.style.setProperty("--body-glow-alt", theme.bodyGlowAlt);
+  root.style.setProperty("--body-start", theme.bodyStart);
+  root.style.setProperty("--body-end", theme.bodyEnd);
+  root.style.setProperty("--text", text.text);
+  root.style.setProperty("--text-soft", text.textSoft);
+}
+
+function saveThemeSettings(settings) {
+  localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(settings));
+}
+
+function getSavedThemeSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || "");
+    return {
+      themeColor: saved.themeColor || DEFAULT_THEME_SETTINGS.themeColor,
+      textColor: saved.textColor || DEFAULT_THEME_SETTINGS.textColor
+    };
+  } catch {
+    return { ...DEFAULT_THEME_SETTINGS };
+  }
+}
+
+function updateThemeFromInputs() {
+  const settings = {
+    themeColor: themeColorSelect?.value || DEFAULT_THEME_SETTINGS.themeColor,
+    textColor: textColorSelect?.value || DEFAULT_THEME_SETTINGS.textColor
+  };
+
+  applyThemeSettings(settings);
+  saveThemeSettings(settings);
+}
+
+function loadThemeSettings() {
+  const saved = getSavedThemeSettings();
+
+  if (themeColorSelect) {
+    themeColorSelect.value = saved.themeColor;
+  }
+
+  if (textColorSelect) {
+    textColorSelect.value = saved.textColor;
+  }
+
+  applyThemeSettings(saved);
+}
+
 function updateAuthUI(user) {
   const email = user?.email || "Not signed in";
   const isLoggedIn = Boolean(user);
@@ -112,6 +345,7 @@ function updateAuthUI(user) {
   menuToggle.hidden = !isLoggedIn;
   sidebarUser.hidden = !isLoggedIn;
   topbarUser.hidden = !isLoggedIn;
+  openSettingsButton.hidden = !isLoggedIn;
   currentUserName.textContent = displayName;
   currentUserEmail.textContent = email;
   topbarUserName.textContent = displayName;
@@ -122,6 +356,7 @@ function updateAuthUI(user) {
   logOutButton.disabled = !isLoggedIn;
 
   if (!isLoggedIn) {
+    setMainView("main");
     jobsContainer.innerHTML = "";
     jobCount.textContent = "0";
     setMessage(jobsMessage, "Sign in to load jobs.");
@@ -198,10 +433,6 @@ function createJobCard(job) {
 }
 
 async function loadJobs() {
-  if (!jobsContainer || !jobsMessage) {
-    return;
-  }
-
   if (!currentUser) {
     jobsContainer.innerHTML = "";
     jobCount.textContent = "0";
@@ -231,7 +462,11 @@ async function loadJobs() {
   }
 
   jobCount.textContent = String(data.length);
-  setMessage(jobsMessage, `Showing ${data.length} job${data.length === 1 ? "" : "s"}.`, "success");
+  setMessage(
+    jobsMessage,
+    `Showing ${data.length} job${data.length === 1 ? "" : "s"}.`,
+    "success"
+  );
 
   const fragment = document.createDocumentFragment();
   data.forEach((job) => {
@@ -309,6 +544,7 @@ async function signInUser() {
 
   currentUser = data.user || null;
   updateAuthUI(currentUser);
+  setMainView("main");
   setMessage(signInMessage, "Signed in successfully.", "success");
   await loadJobs();
 }
@@ -358,7 +594,7 @@ async function copyAccountInfo() {
   try {
     await navigator.clipboard.writeText(accountInfo);
     setMessage(signUpMessage, "Account info copied. Save it somewhere safe.", "success");
-  } catch (error) {
+  } catch {
     setMessage(signUpMessage, "Unable to copy account info to the clipboard.", "error");
   }
 }
@@ -377,6 +613,7 @@ async function checkCurrentUser() {
   updateAuthUI(currentUser);
 
   if (currentUser) {
+    setMainView("main");
     setMessage(signInMessage, "Session restored.", "success");
     await loadJobs();
   } else {
@@ -386,10 +623,6 @@ async function checkCurrentUser() {
 
 async function handleJobSubmit(event) {
   event.preventDefault();
-
-  if (!jobForm || !submitButton) {
-    return;
-  }
 
   if (!currentUser) {
     setMessage(formMessage, "You must be signed in to save a job.", "error");
@@ -426,21 +659,19 @@ async function handleJobSubmit(event) {
   }
 
   jobForm.reset();
+
   const statusField = jobForm.elements.namedItem("status");
-  if (statusField instanceof HTMLInputElement) {
+  if (statusField instanceof HTMLSelectElement) {
     statusField.value = "Open";
+  }
+
+  const industryField = jobForm.elements.namedItem("industry");
+  if (industryField instanceof HTMLSelectElement) {
+    industryField.value = "";
   }
 
   setMessage(formMessage, "Job saved successfully.", "success");
   await loadJobs();
-}
-
-if (jobForm) {
-  jobForm.addEventListener("submit", handleJobSubmit);
-}
-
-if (refreshJobsButton) {
-  refreshJobsButton.addEventListener("click", loadJobs);
 }
 
 if (signUpForm) {
@@ -453,6 +684,14 @@ if (signInForm) {
   signInForm.addEventListener("submit", (event) => {
     event.preventDefault();
   });
+}
+
+if (jobForm) {
+  jobForm.addEventListener("submit", handleJobSubmit);
+}
+
+if (refreshJobsButton) {
+  refreshJobsButton.addEventListener("click", loadJobs);
 }
 
 if (signUpButton) {
@@ -471,14 +710,46 @@ if (logOutButton) {
   logOutButton.addEventListener("click", signOutUser);
 }
 
+if (openSettingsNavButton) {
+  openSettingsNavButton.addEventListener("click", () => {
+    setMainView("settings");
+    settingsPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+if (openSettingsButton) {
+  openSettingsButton.addEventListener("click", () => {
+    setMainView("settings");
+    settingsPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+if (closeSettingsButton) {
+  closeSettingsButton.addEventListener("click", () => {
+    setMainView("main");
+    dashboardSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+if (themeColorSelect) {
+  themeColorSelect.addEventListener("change", updateThemeFromInputs);
+}
+
+if (textColorSelect) {
+  textColorSelect.addEventListener("change", updateThemeFromInputs);
+}
+
 supabaseClient.auth.onAuthStateChange((_event, session) => {
   currentUser = session?.user || null;
   updateAuthUI(currentUser);
 
   if (currentUser) {
+    setMainView(currentView);
     loadJobs();
   }
 });
 
+loadThemeSettings();
 updateAuthUI(null);
+setMainView("main");
 checkCurrentUser();

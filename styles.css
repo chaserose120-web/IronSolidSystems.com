@@ -18,6 +18,10 @@
   --radius-sm: 14px;
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
   --container: 1320px;
+  --body-glow: rgba(242, 194, 48, 0.12);
+  --body-glow-alt: rgba(255, 145, 77, 0.06);
+  --body-start: #060707;
+  --body-end: #0a0c0c;
 }
 
 *,
@@ -36,9 +40,9 @@ body {
   font-family: "Barlow", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top right, rgba(242, 194, 48, 0.12), transparent 24%),
-    radial-gradient(circle at left bottom, rgba(255, 145, 77, 0.06), transparent 22%),
-    linear-gradient(180deg, #060707 0%, #0a0c0c 100%);
+    radial-gradient(circle at top right, var(--body-glow), transparent 24%),
+    radial-gradient(circle at left bottom, var(--body-glow-alt), transparent 22%),
+    linear-gradient(180deg, var(--body-start) 0%, var(--body-end) 100%);
 }
 
 body:not(.is-ready) .panel,
@@ -55,6 +59,7 @@ a {
 
 button,
 input,
+select,
 textarea,
 .button {
   font: inherit;
@@ -127,12 +132,18 @@ textarea,
   align-content: start;
 }
 
-.sidebar-nav a {
+.sidebar-nav a,
+.sidebar-nav__button {
+  display: block;
   padding: 0.9rem 1rem;
+  border: 0;
   border-radius: 14px;
+  background: transparent;
   color: var(--text-soft);
   font-size: 1rem;
   font-weight: 600;
+  text-align: left;
+  cursor: pointer;
   transition:
     background-color 180ms ease,
     color 180ms ease,
@@ -140,7 +151,9 @@ textarea,
 }
 
 .sidebar-nav a:hover,
-.sidebar-nav a:focus-visible {
+.sidebar-nav a:focus-visible,
+.sidebar-nav__button:hover,
+.sidebar-nav__button:focus-visible {
   color: var(--text);
   background: rgba(255, 255, 255, 0.05);
   transform: translateX(3px);
@@ -327,7 +340,8 @@ textarea,
 }
 
 .auth-form,
-.job-form {
+.job-form,
+.settings-form {
   display: grid;
   gap: 1rem;
 }
@@ -336,10 +350,6 @@ textarea,
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
-}
-
-.form-grid--auth {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .form-grid--stacked {
@@ -361,6 +371,7 @@ textarea,
 }
 
 .field input,
+.field select,
 .field textarea {
   width: 100%;
   padding: 0.95rem 1rem;
@@ -375,6 +386,10 @@ textarea,
     background-color 180ms ease;
 }
 
+.field select {
+  appearance: none;
+}
+
 .field textarea {
   min-height: 8rem;
   resize: vertical;
@@ -386,6 +401,7 @@ textarea,
 }
 
 .field input:focus,
+.field select:focus,
 .field textarea:focus {
   outline: none;
   border-color: rgba(242, 194, 48, 0.42);
@@ -393,9 +409,9 @@ textarea,
   background: rgba(255, 255, 255, 0.05);
 }
 
-  .auth-actions,
-  .job-form__footer {
-    display: flex;
+.auth-actions,
+.job-form__footer {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.9rem;
@@ -584,7 +600,6 @@ textarea,
   }
 
   .form-grid,
-  .form-grid--auth,
   .auth-grid,
   .dashboard-grid,
   .job-item__meta {

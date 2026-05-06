@@ -24,18 +24,24 @@
           <span class="brand__text">IronSolidSystems</span>
         </a>
 
-        <nav class="sidebar-nav" id="site-nav">
-          <a href="#auth-panel" id="auth-nav-link">Login / Sign Up</a>
+        <nav class="sidebar-nav" id="site-nav" hidden>
           <a href="#dashboard">Dashboard</a>
           <a href="#create-job">Create Job</a>
           <a href="#jobs-list">Jobs List</a>
+          <button class="sidebar-nav__button" type="button" id="open-settings-nav">
+            Settings
+          </button>
         </nav>
 
         <div class="sidebar-user" id="sidebar-user" hidden>
           <span class="sidebar-user__label">Current User</span>
           <strong id="current-user-name">Technician</strong>
           <span class="sidebar-user__email" id="current-user-email">Not signed in</span>
-          <button class="button button--ghost sidebar-user__button" type="button" id="log-out-button">
+          <button
+            class="button button--ghost sidebar-user__button"
+            type="button"
+            id="log-out-button"
+          >
             Log Out
           </button>
         </div>
@@ -54,10 +60,19 @@
               <span id="topbar-user-email">Not signed in</span>
             </div>
             <button
+              class="button button--secondary button--small"
+              type="button"
+              id="open-settings-button"
+              hidden
+            >
+              Settings
+            </button>
+            <button
               class="menu-toggle"
               type="button"
               aria-expanded="false"
               aria-controls="site-nav"
+              hidden
             >
               Menu
             </button>
@@ -137,7 +152,11 @@
                   <button class="button button--primary" type="button" id="sign-up-button">
                     Sign Up
                   </button>
-                  <button class="button button--secondary" type="button" id="copy-account-button">
+                  <button
+                    class="button button--secondary"
+                    type="button"
+                    id="copy-account-button"
+                  >
                     Copy Account Info
                   </button>
                 </div>
@@ -250,13 +269,12 @@
 
                   <label class="field">
                     <span>Status</span>
-                    <input
-                      type="text"
-                      name="status"
-                      value="Open"
-                      placeholder="Open, In Progress, Completed"
-                      required
-                    />
+                    <select name="status" required>
+                      <option value="Open" selected>Open</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Waiting on Parts">Waiting on Parts</option>
+                      <option value="Completed">Completed</option>
+                    </select>
                   </label>
 
                   <label class="field">
@@ -281,7 +299,13 @@
 
                   <label class="field">
                     <span>Industry</span>
-                    <input type="text" name="industry" />
+                    <select name="industry">
+                      <option value="">Select industry</option>
+                      <option value="Heavy Equipment">Heavy Equipment</option>
+                      <option value="Automotive">Automotive</option>
+                      <option value="Industrial Maintenance">Industrial Maintenance</option>
+                      <option value="Welding &amp; Fabrication">Welding &amp; Fabrication</option>
+                    </select>
                   </label>
 
                   <label class="field field--full">
@@ -337,6 +361,56 @@
 
               <div class="jobs-list" id="jobs-container" aria-live="polite"></div>
             </div>
+          </section>
+
+          <section class="app-section" id="settings-panel" hidden>
+            <div class="section-heading section-heading--compact">
+              <span class="eyebrow">Settings</span>
+              <h2>Appearance controls</h2>
+              <p>
+                Adjust the app colors for your environment and keep your preferences saved.
+              </p>
+            </div>
+
+            <section class="panel" aria-labelledby="settings-heading">
+              <div class="panel__header">
+                <h3 id="settings-heading">Theme Settings</h3>
+                <button
+                  class="button button--ghost button--small"
+                  type="button"
+                  id="close-settings-button"
+                >
+                  Back to Dashboard
+                </button>
+              </div>
+
+              <form class="settings-form" id="settings-form">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Theme Color</span>
+                    <select id="theme-color-select" name="theme_color">
+                      <option value="red">Red</option>
+                      <option value="blue">Blue</option>
+                      <option value="black">Black</option>
+                      <option value="white">White</option>
+                      <option value="tan">Tan</option>
+                      <option value="cat-yellow">Cat Yellow</option>
+                      <option value="john-deere-green">John Deere Green</option>
+                      <option value="usa-theme">USA Theme</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span>Text Color</span>
+                    <select id="text-color-select" name="text_color">
+                      <option value="white">White letters</option>
+                      <option value="black">Black letters</option>
+                      <option value="yellow">Yellow letters</option>
+                    </select>
+                  </label>
+                </div>
+              </form>
+            </section>
           </section>
         </div>
       </main>
