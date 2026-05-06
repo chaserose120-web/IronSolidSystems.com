@@ -215,6 +215,12 @@ textarea,
   gap: 1.25rem;
 }
 
+.auth-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
 .app-section {
   display: grid;
   gap: 1rem;
@@ -300,6 +306,10 @@ textarea,
 
 .form-grid--auth {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-grid--stacked {
+  grid-template-columns: 1fr;
 }
 
 .field {
@@ -520,6 +530,7 @@ textarea,
   }
 
   .dashboard-grid,
+  .auth-grid,
   .job-item__meta {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -540,6 +551,7 @@ textarea,
 
   .form-grid,
   .form-grid--auth,
+  .auth-grid,
   .dashboard-grid,
   .job-item__meta {
     grid-template-columns: 1fr;

@@ -55,56 +55,135 @@
         </header>
 
         <section class="app-section" id="auth-panel">
-          <div class="panel panel--auth">
-            <div class="panel__header panel__header--stack">
-              <div>
-                <span class="eyebrow">Login / Sign Up</span>
-                <h2>Access your job workspace</h2>
-              </div>
-              <p class="panel__copy">
-                Sign in with your email and password to manage your own jobs.
-              </p>
-            </div>
+          <div class="section-heading section-heading--compact">
+            <span class="eyebrow">Access</span>
+            <h2>Secure account access</h2>
+            <p>
+              Create an account with your full name or sign in to reach your
+              job workspace.
+            </p>
+          </div>
 
-            <form class="auth-form" id="auth-form">
-              <div class="form-grid form-grid--auth">
-                <label class="field">
-                  <span>Email</span>
-                  <input
-                    type="email"
-                    name="email"
-                    id="auth-email"
-                    autocomplete="email"
-                    required
-                  />
-                </label>
-
-                <label class="field">
-                  <span>Password</span>
-                  <input
-                    type="password"
-                    name="password"
-                    id="auth-password"
-                    autocomplete="current-password"
-                    required
-                  />
-                </label>
+          <div class="auth-grid">
+            <section class="panel panel--auth" aria-labelledby="sign-up-heading">
+              <div class="panel__header panel__header--stack">
+                <div>
+                  <span class="eyebrow">Create Account</span>
+                  <h3 id="sign-up-heading">Sign Up</h3>
+                </div>
+                <p class="panel__copy">
+                  Use your technician account details and keep a copy before you submit.
+                </p>
               </div>
 
-              <div class="auth-actions">
-                <button class="button button--primary" type="button" id="sign-up-button">
-                  Sign Up
-                </button>
-                <button class="button button--secondary" type="button" id="sign-in-button">
-                  Sign In
-                </button>
-                <button class="button button--ghost" type="button" id="sign-out-button">
-                  Sign Out
-                </button>
+              <form class="auth-form" id="sign-up-form">
+                <div class="form-grid form-grid--stacked">
+                  <label class="field">
+                    <span>Full Name</span>
+                    <input
+                      type="text"
+                      name="full_name"
+                      id="sign-up-full-name"
+                      autocomplete="name"
+                      required
+                    />
+                  </label>
+
+                  <label class="field">
+                    <span>Email</span>
+                    <input
+                      type="email"
+                      name="email"
+                      id="sign-up-email"
+                      autocomplete="email"
+                      required
+                    />
+                  </label>
+
+                  <label class="field">
+                    <span>Password</span>
+                    <input
+                      type="password"
+                      name="password"
+                      id="sign-up-password"
+                      autocomplete="new-password"
+                      required
+                    />
+                  </label>
+
+                  <label class="field">
+                    <span>Confirm Password</span>
+                    <input
+                      type="password"
+                      name="confirm_password"
+                      id="sign-up-confirm-password"
+                      autocomplete="new-password"
+                      required
+                    />
+                  </label>
+                </div>
+
+                <div class="auth-actions">
+                  <button class="button button--primary" type="button" id="sign-up-button">
+                    Sign Up
+                  </button>
+                  <button class="button button--secondary" type="button" id="copy-account-button">
+                    Copy Account Info
+                  </button>
+                </div>
+
+                <p class="form-message" id="sign-up-message" role="status" aria-live="polite"></p>
+              </form>
+            </section>
+
+            <section class="panel" aria-labelledby="sign-in-heading">
+              <div class="panel__header panel__header--stack">
+                <div>
+                  <span class="eyebrow">Login</span>
+                  <h3 id="sign-in-heading">Sign In</h3>
+                </div>
+                <p class="panel__copy">
+                  Access your existing account to create and review your jobs.
+                </p>
               </div>
 
-              <p class="form-message" id="auth-message" role="status" aria-live="polite"></p>
-            </form>
+              <form class="auth-form" id="sign-in-form">
+                <div class="form-grid form-grid--stacked">
+                  <label class="field">
+                    <span>Email</span>
+                    <input
+                      type="email"
+                      name="email"
+                      id="sign-in-email"
+                      autocomplete="email"
+                      required
+                    />
+                  </label>
+
+                  <label class="field">
+                    <span>Password</span>
+                    <input
+                      type="password"
+                      name="password"
+                      id="sign-in-password"
+                      autocomplete="current-password"
+                      required
+                    />
+                  </label>
+                </div>
+
+                <div class="auth-actions">
+                  <button class="button button--primary" type="button" id="sign-in-button">
+                    Sign In
+                  </button>
+                  <button class="button button--ghost" type="button" id="sign-out-button">
+                    Sign Out
+                  </button>
+                </div>
+
+                <p class="form-message" id="sign-in-message" role="status" aria-live="polite"></p>
+              </form>
+            </section>
           </div>
         </section>
 
@@ -119,6 +198,13 @@
             </div>
 
             <div class="dashboard-grid">
+              <article class="panel metric-card">
+                <span class="metric-card__label">Greeting</span>
+                <strong class="metric-card__value" id="dashboard-greeting">
+                  Hello, Technician
+                </strong>
+              </article>
+
               <article class="panel metric-card">
                 <span class="metric-card__label">Signed In As</span>
                 <strong class="metric-card__value" id="dashboard-user-email">

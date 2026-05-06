@@ -2,14 +2,22 @@ const pageShell = document.querySelector(".app-shell");
 const menuToggle = document.querySelector(".menu-toggle");
 const appSections = document.getElementById("app-sections");
 const currentUserEmail = document.getElementById("current-user-email");
+const dashboardGreeting = document.getElementById("dashboard-greeting");
 const dashboardUserEmail = document.getElementById("dashboard-user-email");
 const jobCount = document.getElementById("job-count");
 
-const authForm = document.getElementById("auth-form");
-const authEmailInput = document.getElementById("auth-email");
-const authPasswordInput = document.getElementById("auth-password");
-const authMessage = document.getElementById("auth-message");
+const signUpForm = document.getElementById("sign-up-form");
+const signUpFullNameInput = document.getElementById("sign-up-full-name");
+const signUpEmailInput = document.getElementById("sign-up-email");
+const signUpPasswordInput = document.getElementById("sign-up-password");
+const signUpConfirmPasswordInput = document.getElementById("sign-up-confirm-password");
+const signUpMessage = document.getElementById("sign-up-message");
 const signUpButton = document.getElementById("sign-up-button");
+const copyAccountButton = document.getElementById("copy-account-button");
+const signInForm = document.getElementById("sign-in-form");
+const signInEmailInput = document.getElementById("sign-in-email");
+const signInPasswordInput = document.getElementById("sign-in-password");
+const signInMessage = document.getElementById("sign-in-message");
 const signInButton = document.getElementById("sign-in-button");
 const signOutButton = document.getElementById("sign-out-button");
 
@@ -58,26 +66,42 @@ function setMessage(element, message, type = "") {
   }
 }
 
-function getAuthCredentials() {
+function getSignUpFields() {
   return {
-    email: authEmailInput?.value.trim() || "",
-    password: authPasswordInput?.value || ""
+    fullName: signUpFullNameInput?.value.trim() || "",
+    email: signUpEmailInput?.value.trim() || "",
+    password: signUpPasswordInput?.value || "",
+    confirmPassword: signUpConfirmPasswordInput?.value || ""
   };
 }
 
-function setAuthButtonsDisabled(isDisabled) {
-  [signUpButton, signInButton, signOutButton].forEach((button) => {
+function getSignInFields() {
+  return {
+    email: signInEmailInput?.value.trim() || "",
+    password: signInPasswordInput?.value || ""
+  };
+}
+
+function setButtonsDisabled(buttons, isDisabled) {
+  buttons.forEach((button) => {
     if (button) {
       button.disabled = isDisabled;
     }
   });
 }
 
+function getDisplayName(user) {
+  const fullName = user?.user_metadata?.full_name?.trim();
+  return fullName || "Technician";
+}
+
 function updateAuthUI(user) {
   const email = user?.email || "Not signed in";
   const isLoggedIn = Boolean(user);
+  const displayName = getDisplayName(user);
 
   currentUserEmail.textContent = email;
+  dashboardGreeting.textContent = `Hello, ${displayName}`;
   dashboardUserEmail.textContent = email;
   appSections.hidden = !isLoggedIn;
   signOutButton.disabled = !isLoggedIn;
@@ -87,6 +111,7 @@ function updateAuthUI(user) {
     jobCount.textContent = "0";
     setMessage(jobsMessage, "Sign in to load jobs.");
     setMessage(formMessage, "");
+    setMessage(signInMessage, "Sign in to access your app workspace.");
   }
 }
 
@@ -201,77 +226,126 @@ async function loadJobs() {
 }
 
 async function signUpUser() {
-  const { email, password } = getAuthCredentials();
+  const { fullName, email, password, confirmPassword } = getSignUpFields();
 
-  if (!email || !password) {
-    setMessage(authMessage, "Enter an email and password to sign up.", "error");
+  if (!fullName || !email || !password || !confirmPassword) {
+    setMessage(
+      signUpMessage,
+      "Full name, email, password, and confirm password are required.",
+      "error"
+    );
     return;
   }
 
-  setAuthButtonsDisabled(true);
-  setMessage(authMessage, "Creating account...");
+  if (password !== confirmPassword) {
+    setMessage(signUpMessage, "Password and Confirm Password must match.", "error");
+    return;
+  }
 
-  const { error } = await supabaseClient.auth.signUp({ email, password });
+  setButtonsDisabled([signUpButton, copyAccountButton], true);
+  setMessage(signUpMessage, "Creating account...");
 
-  setAuthButtonsDisabled(false);
+  const { error } = await supabaseClient.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName
+      }
+    }
+  });
+
+  setButtonsDisabled([signUpButton, copyAccountButton], false);
 
   if (error) {
-    setMessage(authMessage, `Sign up failed: ${error.message}`, "error");
+    setMessage(signUpMessage, `Sign up failed: ${error.message}`, "error");
     return;
   }
 
   setMessage(
-    authMessage,
+    signUpMessage,
     "Sign up successful. Check your email if confirmation is enabled, then sign in.",
     "success"
   );
 }
 
 async function signInUser() {
-  const { email, password } = getAuthCredentials();
+  const { email, password } = getSignInFields();
 
   if (!email || !password) {
-    setMessage(authMessage, "Enter an email and password to sign in.", "error");
+    setMessage(signInMessage, "Enter an email and password to sign in.", "error");
     return;
   }
 
-  setAuthButtonsDisabled(true);
-  setMessage(authMessage, "Signing in...");
+  setButtonsDisabled([signInButton, signOutButton], true);
+  setMessage(signInMessage, "Signing in...");
 
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email,
     password
   });
 
-  setAuthButtonsDisabled(false);
+  setButtonsDisabled([signInButton, signOutButton], false);
 
   if (error) {
-    setMessage(authMessage, `Sign in failed: ${error.message}`, "error");
+    setMessage(signInMessage, `Sign in failed: ${error.message}`, "error");
     return;
   }
 
   currentUser = data.user || null;
   updateAuthUI(currentUser);
-  setMessage(authMessage, "Signed in successfully.", "success");
+  setMessage(signInMessage, "Signed in successfully.", "success");
   await loadJobs();
 }
 
 async function signOutUser() {
-  setAuthButtonsDisabled(true);
-  setMessage(authMessage, "Signing out...");
+  setButtonsDisabled([signInButton, signOutButton], true);
+  setMessage(signInMessage, "Signing out...");
 
   const { error } = await supabaseClient.auth.signOut();
 
-  setAuthButtonsDisabled(false);
+  setButtonsDisabled([signInButton, signOutButton], false);
 
   if (error) {
-    setMessage(authMessage, `Sign out failed: ${error.message}`, "error");
+    setMessage(signInMessage, `Sign out failed: ${error.message}`, "error");
     return;
   }
 
   currentUser = null;
   updateAuthUI(currentUser);
-  setMessage(authMessage, "Signed out.", "success");
+  setMessage(signInMessage, "Signed out.", "success");
+}
+
+async function copyAccountInfo() {
+  const { fullName, email, password, confirmPassword } = getSignUpFields();
+
+  if (!fullName || !email || !password || !confirmPassword) {
+    setMessage(
+      signUpMessage,
+      "Fill out full name, email, password, and confirm password before copying.",
+      "error"
+    );
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setMessage(signUpMessage, "Password and Confirm Password must match.", "error");
+    return;
+  }
+
+  const accountInfo = [
+    "IronSolidSystems Account",
+    `Name: ${fullName}`,
+    `Email: ${email}`,
+    `Password: ${password}`
+  ].join("\n");
+
+  try {
+    await navigator.clipboard.writeText(accountInfo);
+    setMessage(signUpMessage, "Account info copied. Save it somewhere safe.", "success");
+  } catch (error) {
+    setMessage(signUpMessage, "Unable to copy account info to the clipboard.", "error");
+  }
 }
 
 async function checkCurrentUser() {
@@ -280,7 +354,7 @@ async function checkCurrentUser() {
   if (error) {
     currentUser = null;
     updateAuthUI(currentUser);
-    setMessage(authMessage, `Session check failed: ${error.message}`, "error");
+    setMessage(signInMessage, `Session check failed: ${error.message}`, "error");
     return;
   }
 
@@ -288,10 +362,10 @@ async function checkCurrentUser() {
   updateAuthUI(currentUser);
 
   if (currentUser) {
-    setMessage(authMessage, "Session restored.", "success");
+    setMessage(signInMessage, "Session restored.", "success");
     await loadJobs();
   } else {
-    setMessage(authMessage, "Sign in to access your app workspace.");
+    setMessage(signInMessage, "Sign in to access your app workspace.");
   }
 }
 
@@ -354,8 +428,24 @@ if (refreshJobsButton) {
   refreshJobsButton.addEventListener("click", loadJobs);
 }
 
+if (signUpForm) {
+  signUpForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+  });
+}
+
+if (signInForm) {
+  signInForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+  });
+}
+
 if (signUpButton) {
   signUpButton.addEventListener("click", signUpUser);
+}
+
+if (copyAccountButton) {
+  copyAccountButton.addEventListener("click", copyAccountInfo);
 }
 
 if (signInButton) {
