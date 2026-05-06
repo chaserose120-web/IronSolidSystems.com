@@ -264,7 +264,12 @@
                 <div class="form-grid">
                   <label class="field">
                     <span>Title</span>
-                    <input type="text" name="title" required />
+                    <input
+                      type="text"
+                      name="title"
+                      placeholder="Cooling system service"
+                      required
+                    />
                   </label>
 
                   <label class="field">
@@ -279,22 +284,22 @@
 
                   <label class="field">
                     <span>Work Order</span>
-                    <input type="text" name="work_order" />
+                    <input type="text" name="work_order" placeholder="WO-24051" />
                   </label>
 
                   <label class="field">
                     <span>Customer</span>
-                    <input type="text" name="customer" />
+                    <input type="text" name="customer" placeholder="Miller Aggregates" />
                   </label>
 
                   <label class="field">
                     <span>Machine</span>
-                    <input type="text" name="machine" />
+                    <input type="text" name="machine" placeholder="CAT 320 Excavator" />
                   </label>
 
                   <label class="field">
                     <span>Serial</span>
-                    <input type="text" name="serial" />
+                    <input type="text" name="serial" placeholder="CAT0320JHYD11842" />
                   </label>
 
                   <label class="field">
@@ -310,17 +315,29 @@
 
                   <label class="field field--full">
                     <span>Complaint</span>
-                    <textarea name="complaint" rows="4"></textarea>
+                    <textarea
+                      name="complaint"
+                      rows="6"
+                      placeholder="Machine overheating under load"
+                    ></textarea>
                   </label>
 
                   <label class="field field--full">
                     <span>Cause</span>
-                    <textarea name="cause" rows="4"></textarea>
+                    <textarea
+                      name="cause"
+                      rows="6"
+                      placeholder="Radiator packed with debris, low airflow"
+                    ></textarea>
                   </label>
 
                   <label class="field field--full">
                     <span>Correction</span>
-                    <textarea name="correction" rows="4"></textarea>
+                    <textarea
+                      name="correction"
+                      rows="6"
+                      placeholder="Cleaned cooling package, verified temps"
+                    ></textarea>
                   </label>
                 </div>
 

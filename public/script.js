@@ -43,6 +43,15 @@ const submitButton = document.getElementById("job-submit");
 const jobsContainer = document.getElementById("jobs-container");
 const jobsMessage = document.getElementById("jobs-message");
 const refreshJobsButton = document.getElementById("refresh-jobs");
+const jobIndustrySelect = jobForm?.elements.namedItem("industry");
+const jobTitleField = jobForm?.elements.namedItem("title");
+const jobWorkOrderField = jobForm?.elements.namedItem("work_order");
+const jobCustomerField = jobForm?.elements.namedItem("customer");
+const jobMachineField = jobForm?.elements.namedItem("machine");
+const jobSerialField = jobForm?.elements.namedItem("serial");
+const jobComplaintField = jobForm?.elements.namedItem("complaint");
+const jobCauseField = jobForm?.elements.namedItem("cause");
+const jobCorrectionField = jobForm?.elements.namedItem("correction");
 
 let currentUser = null;
 let currentView = "main";
@@ -199,6 +208,59 @@ const TEXT_PRESETS = {
   }
 };
 
+const JOB_PLACEHOLDERS = {
+  default: {
+    title: "Cooling system service",
+    work_order: "WO-24051",
+    customer: "Miller Aggregates",
+    machine: "CAT 320 Excavator",
+    serial: "CAT0320JHYD11842",
+    complaint: "Machine overheating under load",
+    cause: "Radiator packed with debris, low airflow",
+    correction: "Cleaned cooling package, verified temps"
+  },
+  "Heavy Equipment": {
+    title: "Loader cooling issue",
+    work_order: "HE-10428",
+    customer: "River Rock Excavation",
+    machine: "Komatsu WA380 Loader",
+    serial: "KMTWA103CPF81247",
+    complaint: "Machine overheating under load",
+    cause: "Radiator packed with debris, low airflow",
+    correction: "Cleaned cooling package, verified temps"
+  },
+  Automotive: {
+    title: "Truck rough idle diagnosis",
+    work_order: "AUTO-8821",
+    customer: "Fleet Service LLC",
+    machine: "Ford F-250 6.2L",
+    serial: "1FT7W2B67NEA18455",
+    complaint: "Customer states truck has rough idle",
+    cause: "Vacuum leak found at intake hose",
+    correction: "Replaced hose and cleared codes"
+  },
+  "Industrial Maintenance": {
+    title: "Conveyor line stop issue",
+    work_order: "IM-5579",
+    customer: "Midwest Packaging",
+    machine: "South conveyor drive",
+    serial: "CVR-PLT-2047",
+    complaint: "Conveyor intermittently stops",
+    cause: "Failed proximity sensor",
+    correction: "Replaced sensor and tested operation"
+  },
+  "Welding & Fabrication": {
+    title: "Attachment bracket repair",
+    work_order: "WF-3316",
+    customer: "Summit Earthworks",
+    machine: "Grapple attachment",
+    serial: "ATT-GRP-7784",
+    complaint: "Cracked bracket on attachment",
+    cause: "Fatigue crack at weld toe",
+    correction: "Ground crack, welded repair, painted area"
+  }
+};
+
 if (menuToggle && pageShell) {
   menuToggle.addEventListener("click", () => {
     const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
@@ -253,6 +315,33 @@ function setButtonsDisabled(buttons, isDisabled) {
   buttons.forEach((button) => {
     if (button) {
       button.disabled = isDisabled;
+    }
+  });
+}
+
+function updateJobPlaceholders() {
+  const industry =
+    jobIndustrySelect instanceof HTMLSelectElement ? jobIndustrySelect.value : "";
+  const placeholders =
+    JOB_PLACEHOLDERS[industry] || JOB_PLACEHOLDERS.default;
+
+  const fieldMap = [
+    [jobTitleField, placeholders.title],
+    [jobWorkOrderField, placeholders.work_order],
+    [jobCustomerField, placeholders.customer],
+    [jobMachineField, placeholders.machine],
+    [jobSerialField, placeholders.serial],
+    [jobComplaintField, placeholders.complaint],
+    [jobCauseField, placeholders.cause],
+    [jobCorrectionField, placeholders.correction]
+  ];
+
+  fieldMap.forEach(([field, placeholder]) => {
+    if (
+      field instanceof HTMLInputElement ||
+      field instanceof HTMLTextAreaElement
+    ) {
+      field.placeholder = placeholder;
     }
   });
 }
@@ -690,6 +779,10 @@ if (jobForm) {
   jobForm.addEventListener("submit", handleJobSubmit);
 }
 
+if (jobIndustrySelect instanceof HTMLSelectElement) {
+  jobIndustrySelect.addEventListener("change", updateJobPlaceholders);
+}
+
 if (refreshJobsButton) {
   refreshJobsButton.addEventListener("click", loadJobs);
 }
@@ -752,4 +845,5 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
 loadThemeSettings();
 updateAuthUI(null);
 setMainView("main");
+updateJobPlaceholders();
 checkCurrentUser();
