@@ -1,0 +1,10 @@
+{
+  "name": "ironsolidsystems",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static IronSolidSystems website optimized for Vercel deployment.",
+  "scripts": {
+    "build": "echo 'Static site ready for Vercel deployment.'",
+    "start": "python3 -m http.server 3000"
+  }
+}
