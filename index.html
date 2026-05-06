@@ -25,15 +25,19 @@
         </a>
 
         <nav class="sidebar-nav" id="site-nav">
-          <a href="#auth-panel">Login / Sign Up</a>
+          <a href="#auth-panel" id="auth-nav-link">Login / Sign Up</a>
           <a href="#dashboard">Dashboard</a>
           <a href="#create-job">Create Job</a>
           <a href="#jobs-list">Jobs List</a>
         </nav>
 
-        <div class="sidebar-user">
+        <div class="sidebar-user" id="sidebar-user" hidden>
           <span class="sidebar-user__label">Current User</span>
-          <strong id="current-user-email">Not signed in</strong>
+          <strong id="current-user-name">Technician</strong>
+          <span class="sidebar-user__email" id="current-user-email">Not signed in</span>
+          <button class="button button--ghost sidebar-user__button" type="button" id="log-out-button">
+            Log Out
+          </button>
         </div>
       </aside>
 
@@ -44,14 +48,20 @@
             <h1>IronSolidSystems</h1>
           </div>
 
-          <button
-            class="menu-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="site-nav"
-          >
-            Menu
-          </button>
+          <div class="topbar__actions">
+            <div class="topbar-user" id="topbar-user" hidden>
+              <strong id="topbar-user-name">Technician</strong>
+              <span id="topbar-user-email">Not signed in</span>
+            </div>
+            <button
+              class="menu-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="site-nav"
+            >
+              Menu
+            </button>
+          </div>
         </header>
 
         <section class="app-section" id="auth-panel">
@@ -175,9 +185,6 @@
                 <div class="auth-actions">
                   <button class="button button--primary" type="button" id="sign-in-button">
                     Sign In
-                  </button>
-                  <button class="button button--ghost" type="button" id="sign-out-button">
-                    Sign Out
                   </button>
                 </div>
 

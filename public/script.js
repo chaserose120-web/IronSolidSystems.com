@@ -1,7 +1,14 @@
 const pageShell = document.querySelector(".app-shell");
+const siteNav = document.getElementById("site-nav");
 const menuToggle = document.querySelector(".menu-toggle");
+const authSection = document.getElementById("auth-panel");
 const appSections = document.getElementById("app-sections");
+const sidebarUser = document.getElementById("sidebar-user");
+const currentUserName = document.getElementById("current-user-name");
 const currentUserEmail = document.getElementById("current-user-email");
+const topbarUser = document.getElementById("topbar-user");
+const topbarUserName = document.getElementById("topbar-user-name");
+const topbarUserEmail = document.getElementById("topbar-user-email");
 const dashboardGreeting = document.getElementById("dashboard-greeting");
 const dashboardUserEmail = document.getElementById("dashboard-user-email");
 const jobCount = document.getElementById("job-count");
@@ -19,7 +26,7 @@ const signInEmailInput = document.getElementById("sign-in-email");
 const signInPasswordInput = document.getElementById("sign-in-password");
 const signInMessage = document.getElementById("sign-in-message");
 const signInButton = document.getElementById("sign-in-button");
-const signOutButton = document.getElementById("sign-out-button");
+const logOutButton = document.getElementById("log-out-button");
 
 const jobForm = document.getElementById("job-form");
 const formMessage = document.getElementById("form-message");
@@ -100,11 +107,19 @@ function updateAuthUI(user) {
   const isLoggedIn = Boolean(user);
   const displayName = getDisplayName(user);
 
+  authSection.hidden = isLoggedIn;
+  siteNav.hidden = !isLoggedIn;
+  menuToggle.hidden = !isLoggedIn;
+  sidebarUser.hidden = !isLoggedIn;
+  topbarUser.hidden = !isLoggedIn;
+  currentUserName.textContent = displayName;
   currentUserEmail.textContent = email;
+  topbarUserName.textContent = displayName;
+  topbarUserEmail.textContent = email;
   dashboardGreeting.textContent = `Hello, ${displayName}`;
   dashboardUserEmail.textContent = email;
   appSections.hidden = !isLoggedIn;
-  signOutButton.disabled = !isLoggedIn;
+  logOutButton.disabled = !isLoggedIn;
 
   if (!isLoggedIn) {
     jobsContainer.innerHTML = "";
@@ -277,7 +292,7 @@ async function signInUser() {
     return;
   }
 
-  setButtonsDisabled([signInButton, signOutButton], true);
+  setButtonsDisabled([signInButton], true);
   setMessage(signInMessage, "Signing in...");
 
   const { data, error } = await supabaseClient.auth.signInWithPassword({
@@ -285,7 +300,7 @@ async function signInUser() {
     password
   });
 
-  setButtonsDisabled([signInButton, signOutButton], false);
+  setButtonsDisabled([signInButton], false);
 
   if (error) {
     setMessage(signInMessage, `Sign in failed: ${error.message}`, "error");
@@ -299,12 +314,12 @@ async function signInUser() {
 }
 
 async function signOutUser() {
-  setButtonsDisabled([signInButton, signOutButton], true);
+  setButtonsDisabled([signInButton, logOutButton], true);
   setMessage(signInMessage, "Signing out...");
 
   const { error } = await supabaseClient.auth.signOut();
 
-  setButtonsDisabled([signInButton, signOutButton], false);
+  setButtonsDisabled([signInButton, logOutButton], false);
 
   if (error) {
     setMessage(signInMessage, `Sign out failed: ${error.message}`, "error");
@@ -452,8 +467,8 @@ if (signInButton) {
   signInButton.addEventListener("click", signInUser);
 }
 
-if (signOutButton) {
-  signOutButton.addEventListener("click", signOutUser);
+if (logOutButton) {
+  logOutButton.addEventListener("click", signOutUser);
 }
 
 supabaseClient.auth.onAuthStateChange((_event, session) => {
