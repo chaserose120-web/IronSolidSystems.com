@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="IronSolidSystems is built for technicians managing equipment jobs, diagnostics, fabrication, and field repairs."
+    />
+    <title>IronSolidSystems</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <aside class="sidebar-preview" aria-label="Future navigation panel">
+        <div class="sidebar-preview__inner">
+          <span class="sidebar-preview__eyebrow">Future Expansion</span>
+          <h2>Sidebar-ready workspace</h2>
+          <p>
+            Structured to support job queues, machine history, and shop-floor tools
+            as the platform grows.
+          </p>
+        </div>
+      </aside>
+
+      <main class="main-layout">
+        <header class="topbar">
+          <a class="brand" href="#hero" aria-label="IronSolidSystems home">
+            <span class="brand__mark" aria-hidden="true">IS</span>
+            <span class="brand__text">IronSolidSystems</span>
+          </a>
+
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-nav"
+          >
+            Menu
+          </button>
+
+          <nav class="nav" id="site-nav" aria-label="Primary">
+            <a href="#dashboard">Dashboard</a>
+            <a href="#jobs">Jobs</a>
+            <a href="#new-job">New Job</a>
+            <a href="#photos">Photos</a>
+          </nav>
+        </header>
+
+        <section class="hero" id="hero">
+          <div class="hero__copy">
+            <span class="eyebrow">Equipment Operations Platform</span>
+            <h1>IronSolidSystems</h1>
+            <p class="hero__subtitle">
+              Built for the people who keep equipment moving.
+            </p>
+            <p class="hero__text">
+              Track repair work, capture diagnostics, organize field photos, and
+              coordinate fabrication workflows in one rugged, technician-friendly
+              interface.
+            </p>
+
+            <div class="hero__actions">
+              <a class="button button--primary" href="#dashboard">Open Dashboard</a>
+              <a class="button button--secondary" href="#new-job">Create Job</a>
+            </div>
+          </div>
+
+          <div class="hero__panel" id="dashboard" aria-label="System overview">
+            <div class="status-card">
+              <div class="status-card__header">
+                <span>Live Shop Status</span>
+                <span class="status-pill">Online</span>
+              </div>
+              <div class="status-grid">
+                <article>
+                  <strong>18</strong>
+                  <span>Active jobs</span>
+                </article>
+                <article>
+                  <strong>06</strong>
+                  <span>Diagnostics pending</span>
+                </article>
+                <article>
+                  <strong>42</strong>
+                  <span>Photos uploaded</span>
+                </article>
+                <article>
+                  <strong>09</strong>
+                  <span>Field weld repairs</span>
+                </article>
+              </div>
+              <div class="status-footer">
+                <div>
+                  <span class="label">Priority Queue</span>
+                  <strong>Hydraulic excavator rebuild</strong>
+                </div>
+                <div class="signal-bars" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="features" id="jobs">
+          <div class="section-heading">
+            <span class="eyebrow">Core Workflows</span>
+            <h2>Built for high-visibility shop and field work</h2>
+            <p>
+              Clear layouts, large touch-friendly targets, and fast visual scanning
+              for busy technicians working in real environments.
+            </p>
+          </div>
+
+          <div class="card-grid">
+            <article class="feature-card">
+              <h3>Job Tracking</h3>
+              <p>
+                Follow open work, prioritize machine downtime, and keep every repair
+                stage visible from intake to completion.
+              </p>
+            </article>
+
+            <article class="feature-card">
+              <h3>Diagnostic Reports</h3>
+              <p>
+                Capture fault findings, test results, and service notes in a clean
+                format that is easy to review on the shop floor.
+              </p>
+            </article>
+
+            <article class="feature-card" id="photos">
+              <h3>Photo Management</h3>
+              <p>
+                Organize before-and-after images, damaged component references, and
+                documentation photos without losing the job context.
+              </p>
+            </article>
+
+            <article class="feature-card">
+              <h3>Heavy Equipment</h3>
+              <p>
+                Support excavators, loaders, dozers, and more with maintenance
+                workflows tailored for hard-working machines.
+              </p>
+            </article>
+
+            <article class="feature-card">
+              <h3>Automotive</h3>
+              <p>
+                Coordinate diagnostics, repair history, and parts-related details
+                across fleet vehicles and service units.
+              </p>
+            </article>
+
+            <article class="feature-card">
+              <h3>Industrial Maintenance</h3>
+              <p>
+                Keep plant, facility, and production support work visible with clear
+                tracking for inspections, repairs, and service intervals.
+              </p>
+            </article>
+
+            <article class="feature-card feature-card--fabrication" id="new-job">
+              <div class="feature-card__glow" aria-hidden="true"></div>
+              <h3>Welding &amp; Fabrication</h3>
+              <p>
+                Industrial repair fabrication workflows for custom metal work, field
+                welding, structural repair, and jobsite-ready fabrication tracking.
+              </p>
+              <ul class="feature-list" aria-label="Welding and fabrication highlights">
+                <li>Repair fabrication and custom metal work documentation</li>
+                <li>Field welding workflows with mobile-ready job visibility</li>
+                <li>Structural repair tracking with subtle spark-inspired visuals</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
