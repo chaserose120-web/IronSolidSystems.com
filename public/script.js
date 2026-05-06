@@ -43,6 +43,10 @@ const submitButton = document.getElementById("job-submit");
 const jobsContainer = document.getElementById("jobs-container");
 const jobsMessage = document.getElementById("jobs-message");
 const refreshJobsButton = document.getElementById("refresh-jobs");
+const reportPreview = document.getElementById("report-preview");
+const reportPreviewTitle = document.getElementById("report-preview-title");
+const reportPreviewContent = document.getElementById("report-preview-content");
+const closeReportPreviewButton = document.getElementById("close-report-preview");
 const jobIndustrySelect = jobForm?.elements.namedItem("industry");
 const jobTitleField = jobForm?.elements.namedItem("title");
 const jobWorkOrderField = jobForm?.elements.namedItem("work_order");
@@ -513,6 +517,7 @@ function updateAuthUI(user) {
   if (!isLoggedIn) {
     setMainView("main");
     jobsContainer.innerHTML = "";
+    reportPreview.hidden = true;
     jobCount.textContent = "0";
     setMessage(jobsMessage, "Sign in to load jobs.");
     setMessage(formMessage, "");
@@ -552,6 +557,63 @@ function createMetaItem(labelText, valueText) {
   return wrapper;
 }
 
+function getJobFieldLabels(industry) {
+  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
+
+  return {
+    jobName: labels.title,
+    machine: labels.machine,
+    serial: labels.serial
+  };
+}
+
+function formatReportValue(value) {
+  const normalized = value?.toString().trim();
+  return normalized ? normalized : "Not provided";
+}
+
+function buildJobReport(job) {
+  const labels = getJobFieldLabels(job.industry);
+
+  return [
+    "IronSolidSystems",
+    "",
+    `${labels.jobName}: ${formatReportValue(job.title)}`,
+    `Status: ${formatReportValue(job.status)}`,
+    `Work Order: ${formatReportValue(job.work_order)}`,
+    `Customer: ${formatReportValue(job.customer)}`,
+    `Industry: ${formatReportValue(job.industry)}`,
+    `${labels.machine}: ${formatReportValue(job.machine)}`,
+    `${labels.serial}: ${formatReportValue(job.serial)}`,
+    `Complaint: ${formatReportValue(job.complaint)}`,
+    `Cause: ${formatReportValue(job.cause)}`,
+    `Correction: ${formatReportValue(job.correction)}`,
+    `Part Numbers: ${formatReportValue(job.part_numbers)}`,
+    `Torque Values: ${formatReportValue(job.torque_values)}`,
+    `Created Date: ${formatCreatedAt(job.created_at)}`
+  ].join("\n");
+}
+
+function showReportPreview(job) {
+  const reportText = buildJobReport(job);
+
+  reportPreviewTitle.textContent = `Copy Ready Report: ${job.title || "Untitled job"}`;
+  reportPreviewContent.textContent = reportText;
+  reportPreview.hidden = false;
+  reportPreview.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function copyReport(job) {
+  const reportText = buildJobReport(job);
+
+  try {
+    await navigator.clipboard.writeText(reportText);
+    setMessage(jobsMessage, "Copied to clipboard.", "success");
+  } catch {
+    setMessage(jobsMessage, "Unable to copy report to clipboard.", "error");
+  }
+}
+
 function createJobCard(job) {
   const article = document.createElement("article");
   article.className = "job-item";
@@ -583,13 +645,34 @@ function createJobCard(job) {
     createMetaItem("Created", formatCreatedAt(job.created_at))
   );
 
-  article.append(top, meta);
+  const actions = document.createElement("div");
+  actions.className = "job-item__actions";
+
+  const viewButton = document.createElement("button");
+  viewButton.className = "button button--secondary button--small";
+  viewButton.type = "button";
+  viewButton.textContent = "View Copy Ready Report";
+  viewButton.addEventListener("click", () => {
+    showReportPreview(job);
+  });
+
+  const copyButton = document.createElement("button");
+  copyButton.className = "button button--ghost button--small";
+  copyButton.type = "button";
+  copyButton.textContent = "Copy Report";
+  copyButton.addEventListener("click", () => {
+    copyReport(job);
+  });
+
+  actions.append(viewButton, copyButton);
+  article.append(top, meta, actions);
   return article;
 }
 
 async function loadJobs() {
   if (!currentUser) {
     jobsContainer.innerHTML = "";
+    reportPreview.hidden = true;
     jobCount.textContent = "0";
     setMessage(jobsMessage, "Sign in to load jobs.");
     return;
@@ -597,10 +680,13 @@ async function loadJobs() {
 
   setMessage(jobsMessage, "Loading jobs...");
   jobsContainer.innerHTML = "";
+  reportPreview.hidden = true;
 
   const { data, error } = await supabaseClient
     .from("jobs")
-    .select("title, customer, machine, industry, status, created_at, work_order")
+    .select(
+      "title, customer, machine, industry, status, created_at, work_order, serial, complaint, cause, correction, part_numbers, torque_values"
+    )
     .eq("user_id", currentUser.id)
     .order("created_at", { ascending: false });
 
@@ -853,6 +939,12 @@ if (jobIndustrySelect instanceof HTMLSelectElement) {
 
 if (refreshJobsButton) {
   refreshJobsButton.addEventListener("click", loadJobs);
+}
+
+if (closeReportPreviewButton) {
+  closeReportPreviewButton.addEventListener("click", () => {
+    reportPreview.hidden = true;
+  });
 }
 
 if (signUpButton) {
