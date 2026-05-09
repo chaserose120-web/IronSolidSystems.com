@@ -565,6 +565,99 @@ textarea,
   margin-top: 1rem;
 }
 
+.crew-section,
+.job-editor,
+.delete-confirmation {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.crew-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.crew-section__header h4 {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.05rem;
+}
+
+.crew-section__note,
+.delete-confirmation p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.crew-details {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.crew-details summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.crew-code-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 0.95rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.crew-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.crew-member {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.crew-member .job-meta {
+  min-width: 10rem;
+}
+
+.job-editor__form {
+  display: grid;
+  gap: 1rem;
+}
+
+.job-editor__footer,
+.delete-confirmation__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.job-editor__buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .job-meta {
   padding: 0.8rem;
   border-radius: 14px;
@@ -661,7 +754,10 @@ textarea,
   .auth-actions,
   .job-form__footer,
   .panel__header,
-  .job-item__top {
+  .job-item__top,
+  .crew-section__header,
+  .job-editor__footer,
+  .delete-confirmation__actions {
     flex-direction: column;
     align-items: stretch;
   }
@@ -678,5 +774,12 @@ textarea,
   .topbar-user {
     justify-items: start;
     text-align: left;
+  }
+
+  .job-editor__buttons,
+  .crew-code-box,
+  .crew-member {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

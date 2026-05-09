@@ -47,6 +47,12 @@ const reportPreview = document.getElementById("report-preview");
 const reportPreviewTitle = document.getElementById("report-preview-title");
 const reportPreviewContent = document.getElementById("report-preview-content");
 const closeReportPreviewButton = document.getElementById("close-report-preview");
+const joinCrewForm = document.getElementById("join-crew-form");
+const joinCrewCodeInput = document.getElementById("join-crew-code");
+const joinCrewRoleSelect = document.getElementById("join-crew-role");
+const joinCrewMessage = document.getElementById("join-crew-message");
+const joinCrewButton = document.getElementById("join-crew-button");
+
 const jobIndustrySelect = jobForm?.elements.namedItem("industry");
 const jobTitleField = jobForm?.elements.namedItem("title");
 const jobWorkOrderField = jobForm?.elements.namedItem("work_order");
@@ -66,12 +72,33 @@ const jobSerialLabel = document.getElementById("label-serial");
 
 let currentUser = null;
 let currentView = "main";
+let visibleJobs = [];
 
 const THEME_STORAGE_KEY = "ironsolidsystems-theme-settings";
 const DEFAULT_THEME_SETTINGS = {
   themeColor: "cat-yellow",
   textColor: "white"
 };
+
+const JOB_FIELDS_SELECT = [
+  "id",
+  "user_id",
+  "title",
+  "status",
+  "work_order",
+  "customer",
+  "machine",
+  "serial",
+  "industry",
+  "complaint",
+  "cause",
+  "correction",
+  "part_numbers",
+  "torque_values",
+  "created_at",
+  "crew_code",
+  "crew_enabled"
+].join(", ");
 
 const THEME_PRESETS = {
   red: {
@@ -226,6 +253,8 @@ const JOB_PLACEHOLDERS = {
     customer: "",
     machine: "",
     serial: "",
+    part_numbers: "",
+    torque_values: "",
     complaint: "",
     cause: "",
     correction: ""
@@ -236,6 +265,8 @@ const JOB_PLACEHOLDERS = {
     customer: "River Rock Excavation",
     machine: "Komatsu WA380 Loader",
     serial: "KMTWA103CPF81247",
+    part_numbers: "",
+    torque_values: "",
     complaint: "Machine overheating under load",
     cause: "Radiator packed with debris, low airflow",
     correction: "Cleaned cooling package, verified temps"
@@ -246,6 +277,8 @@ const JOB_PLACEHOLDERS = {
     customer: "Fleet Service LLC",
     machine: "Ford F-250 6.2L",
     serial: "1FT7W2B67NEA18455",
+    part_numbers: "",
+    torque_values: "",
     complaint: "Customer states truck has rough idle",
     cause: "Vacuum leak found at intake hose",
     correction: "Replaced hose and cleared codes"
@@ -256,6 +289,8 @@ const JOB_PLACEHOLDERS = {
     customer: "Midwest Packaging",
     machine: "South conveyor drive",
     serial: "CVR-PLT-2047",
+    part_numbers: "",
+    torque_values: "",
     complaint: "Conveyor intermittently stops",
     cause: "Failed proximity sensor",
     correction: "Replaced sensor and tested operation"
@@ -266,6 +301,8 @@ const JOB_PLACEHOLDERS = {
     customer: "Summit Earthworks",
     machine: "Grapple attachment",
     serial: "ATT-GRP-7784",
+    part_numbers: "",
+    torque_values: "",
     complaint: "Cracked bracket on attachment",
     cause: "Fatigue crack at weld toe",
     correction: "Ground crack, welded repair, painted area"
@@ -313,7 +350,6 @@ const JOB_LABELS = {
 if (menuToggle && pageShell) {
   menuToggle.addEventListener("click", () => {
     const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
-
     menuToggle.setAttribute("aria-expanded", String(!isOpen));
     pageShell.classList.toggle("menu-open", !isOpen);
 
@@ -368,57 +404,58 @@ function setButtonsDisabled(buttons, isDisabled) {
   });
 }
 
-function updateJobPlaceholders() {
-  const industry =
-    jobIndustrySelect instanceof HTMLSelectElement ? jobIndustrySelect.value : "";
-  const placeholders =
-    JOB_PLACEHOLDERS[industry] || JOB_PLACEHOLDERS.default;
-  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
-
-  if (jobTitleLabel) {
-    jobTitleLabel.textContent = labels.title;
-  }
-
-  if (jobWorkOrderLabel) {
-    jobWorkOrderLabel.textContent = labels.workOrder;
-  }
-
-  if (jobCustomerLabel) {
-    jobCustomerLabel.textContent = labels.customer;
-  }
-
-  if (jobMachineLabel) {
-    jobMachineLabel.textContent = labels.machine;
-  }
-
-  if (jobSerialLabel) {
-    jobSerialLabel.textContent = labels.serial;
-  }
-
-  const fieldMap = [
-    [jobTitleField, placeholders.title],
-    [jobWorkOrderField, placeholders.work_order],
-    [jobCustomerField, placeholders.customer],
-    [jobMachineField, placeholders.machine],
-    [jobSerialField, placeholders.serial],
-    [jobComplaintField, placeholders.complaint],
-    [jobCauseField, placeholders.cause],
-    [jobCorrectionField, placeholders.correction]
-  ];
-
-  fieldMap.forEach(([field, placeholder]) => {
-    if (
-      field instanceof HTMLInputElement ||
-      field instanceof HTMLTextAreaElement
-    ) {
-      field.placeholder = placeholder;
-    }
-  });
-}
-
 function getDisplayName(user) {
   const fullName = user?.user_metadata?.full_name?.trim();
   return fullName || "Technician";
+}
+
+function shortUserId(userId) {
+  if (!userId) {
+    return "Unknown";
+  }
+
+  return `${userId.slice(0, 6)}...${userId.slice(-4)}`;
+}
+
+function generateCrewCode() {
+  return String(Math.floor(10000000 + Math.random() * 90000000));
+}
+
+async function getUniqueCrewCode() {
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    const candidate = generateCrewCode();
+    const { data, error } = await supabaseClient
+      .from("jobs")
+      .select("id")
+      .eq("crew_code", candidate)
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      return candidate;
+    }
+  }
+
+  throw new Error("Unable to generate a unique crew code. Please try again.");
+}
+
+function isJobLead(job) {
+  return Boolean(job?.isOwner || job?.accessRole === "Job Lead");
+}
+
+function canEditJob(job) {
+  return Boolean(isJobLead(job) || job?.accessRole === "Job Worker");
+}
+
+function canDeleteJob(job) {
+  return Boolean(job?.isOwner);
+}
+
+function canManageCrew(job) {
+  return Boolean(isJobLead(job));
 }
 
 function setMainView(view) {
@@ -518,10 +555,12 @@ function updateAuthUI(user) {
     setMainView("main");
     jobsContainer.innerHTML = "";
     reportPreview.hidden = true;
+    visibleJobs = [];
     jobCount.textContent = "0";
     setMessage(jobsMessage, "Sign in to load jobs.");
     setMessage(formMessage, "");
     setMessage(signInMessage, "Sign in to access your app workspace.");
+    setMessage(joinCrewMessage, "");
   }
 }
 
@@ -542,6 +581,65 @@ function formatCreatedAt(value) {
   }).format(date);
 }
 
+function getJobFieldLabels(industry) {
+  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
+
+  return {
+    jobName: labels.title,
+    machine: labels.machine,
+    serial: labels.serial
+  };
+}
+
+function updateJobPlaceholders() {
+  const industry =
+    jobIndustrySelect instanceof HTMLSelectElement ? jobIndustrySelect.value : "";
+  const placeholders = JOB_PLACEHOLDERS[industry] || JOB_PLACEHOLDERS.default;
+  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
+
+  if (jobTitleLabel) {
+    jobTitleLabel.textContent = labels.title;
+  }
+
+  if (jobWorkOrderLabel) {
+    jobWorkOrderLabel.textContent = labels.workOrder;
+  }
+
+  if (jobCustomerLabel) {
+    jobCustomerLabel.textContent = labels.customer;
+  }
+
+  if (jobMachineLabel) {
+    jobMachineLabel.textContent = labels.machine;
+  }
+
+  if (jobSerialLabel) {
+    jobSerialLabel.textContent = labels.serial;
+  }
+
+  const fieldMap = [
+    [jobTitleField, placeholders.title],
+    [jobWorkOrderField, placeholders.work_order],
+    [jobCustomerField, placeholders.customer],
+    [jobMachineField, placeholders.machine],
+    [jobSerialField, placeholders.serial],
+    [jobPartNumbersField, placeholders.part_numbers],
+    [jobTorqueValuesField, placeholders.torque_values],
+    [jobComplaintField, placeholders.complaint],
+    [jobCauseField, placeholders.cause],
+    [jobCorrectionField, placeholders.correction]
+  ];
+
+  fieldMap.forEach(([field, placeholder]) => {
+    if (
+      field instanceof HTMLInputElement ||
+      field instanceof HTMLTextAreaElement
+    ) {
+      field.placeholder = placeholder;
+    }
+  });
+}
+
 function createMetaItem(labelText, valueText) {
   const wrapper = document.createElement("div");
   wrapper.className = "job-meta";
@@ -557,19 +655,13 @@ function createMetaItem(labelText, valueText) {
   return wrapper;
 }
 
-function getJobFieldLabels(industry) {
-  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
-
-  return {
-    jobName: labels.title,
-    machine: labels.machine,
-    serial: labels.serial
-  };
-}
-
 function formatReportValue(value) {
   const normalized = value?.toString().trim();
   return normalized ? normalized : "Not provided";
+}
+
+function getJobSummaryMachineLabel(job) {
+  return getJobFieldLabels(job.industry).machine;
 }
 
 function buildJobReport(job) {
@@ -596,7 +688,6 @@ function buildJobReport(job) {
 
 function showReportPreview(job) {
   const reportText = buildJobReport(job);
-
   reportPreviewTitle.textContent = `Copy Ready Report: ${job.title || "Untitled job"}`;
   reportPreviewContent.textContent = reportText;
   reportPreview.hidden = false;
@@ -612,6 +703,394 @@ async function copyReport(job) {
   } catch {
     setMessage(jobsMessage, "Unable to copy report to clipboard.", "error");
   }
+}
+
+async function copyCrewCode(crewCode) {
+  try {
+    await navigator.clipboard.writeText(crewCode);
+    setMessage(jobsMessage, "Crew code copied to clipboard.", "success");
+  } catch {
+    setMessage(jobsMessage, "Unable to copy crew code.", "error");
+  }
+}
+
+async function enableCrewAccess(job) {
+  let crewCode = job.crew_code || "";
+
+  if (!crewCode) {
+    try {
+      crewCode = await getUniqueCrewCode();
+    } catch (error) {
+      setMessage(
+        jobsMessage,
+        error instanceof Error ? error.message : "Unable to generate crew code.",
+        "error"
+      );
+      return;
+    }
+  }
+
+  const { error } = await supabaseClient
+    .from("jobs")
+    .update({
+      crew_enabled: true,
+      crew_code: crewCode
+    })
+    .eq("id", job.id)
+    .eq("user_id", currentUser.id);
+
+  if (error) {
+    setMessage(jobsMessage, `Unable to enable crew access: ${error.message}`, "error");
+    return;
+  }
+
+  setMessage(jobsMessage, "Crew access enabled.", "success");
+  await loadJobs();
+}
+
+async function removeCrewMember(job, member) {
+  const { error } = await supabaseClient
+    .from("job_crew")
+    .delete()
+    .eq("job_id", job.id)
+    .eq("user_id", member.user_id);
+
+  if (error) {
+    setMessage(jobsMessage, `Unable to remove crew member: ${error.message}`, "error");
+    return;
+  }
+
+  setMessage(jobsMessage, "Crew member removed.", "success");
+  await loadJobs();
+}
+
+function createInputField(labelText, name, value = "") {
+  const label = document.createElement("label");
+  label.className = "field";
+
+  const span = document.createElement("span");
+  span.textContent = labelText;
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.name = name;
+  input.value = value;
+
+  label.append(span, input);
+  return label;
+}
+
+function createSelectField(labelText, name, value, options) {
+  const label = document.createElement("label");
+  label.className = "field";
+
+  const span = document.createElement("span");
+  span.textContent = labelText;
+
+  const select = document.createElement("select");
+  select.name = name;
+
+  options.forEach((optionValue) => {
+    const option = document.createElement("option");
+    option.value = optionValue;
+    option.textContent = optionValue;
+    if (optionValue === value) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  });
+
+  label.append(span, select);
+  return label;
+}
+
+function createTextareaField(labelText, name, value = "", rows = 5) {
+  const label = document.createElement("label");
+  label.className = "field field--full";
+
+  const span = document.createElement("span");
+  span.textContent = labelText;
+
+  const textarea = document.createElement("textarea");
+  textarea.name = name;
+  textarea.rows = rows;
+  textarea.value = value;
+
+  label.append(span, textarea);
+  return label;
+}
+
+async function saveJobEdits(job, form, saveButton, statusMessage) {
+  const formData = new FormData(form);
+  const payload = {
+    title: formData.get("title")?.toString().trim() || "",
+    status: formData.get("status")?.toString().trim() || "",
+    work_order: formData.get("work_order")?.toString().trim() || "",
+    customer: formData.get("customer")?.toString().trim() || "",
+    machine: formData.get("machine")?.toString().trim() || "",
+    serial: formData.get("serial")?.toString().trim() || "",
+    industry: formData.get("industry")?.toString().trim() || "",
+    complaint: formData.get("complaint")?.toString().trim() || "",
+    cause: formData.get("cause")?.toString().trim() || "",
+    correction: formData.get("correction")?.toString().trim() || "",
+    part_numbers: formData.get("part_numbers")?.toString().trim() || "",
+    torque_values: formData.get("torque_values")?.toString().trim() || ""
+  };
+
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving...";
+  setMessage(statusMessage, "Saving changes...");
+
+  const { error } = await supabaseClient.from("jobs").update(payload).eq("id", job.id);
+
+  saveButton.disabled = false;
+  saveButton.textContent = "Save Changes";
+
+  if (error) {
+    setMessage(statusMessage, `Unable to save changes: ${error.message}`, "error");
+    return;
+  }
+
+  setMessage(statusMessage, "Job updated successfully.", "success");
+  await loadJobs();
+}
+
+async function deleteJobForever(job, confirmationBox) {
+  const { error } = await supabaseClient
+    .from("jobs")
+    .delete()
+    .eq("id", job.id)
+    .eq("user_id", currentUser.id);
+
+  if (error) {
+    setMessage(jobsMessage, `Unable to delete job: ${error.message}`, "error");
+    return;
+  }
+
+  confirmationBox.hidden = true;
+  reportPreview.hidden = true;
+  setMessage(jobsMessage, "Job deleted permanently.", "success");
+  await loadJobs();
+}
+
+function createCrewMembersList(job) {
+  const list = document.createElement("div");
+  list.className = "crew-list";
+
+  const ownerRow = document.createElement("div");
+  ownerRow.className = "crew-member";
+  ownerRow.append(
+    createMetaItem("Job Lead", job.isOwner ? "You" : shortUserId(job.user_id)),
+    createMetaItem("Role", "Job Lead")
+  );
+  list.appendChild(ownerRow);
+
+  (job.crewMembers || []).forEach((member) => {
+    if (member.user_id === job.user_id) {
+      return;
+    }
+
+    const row = document.createElement("div");
+    row.className = "crew-member";
+    row.append(
+      createMetaItem(
+        "Crew Member",
+        member.user_id === currentUser.id ? "You" : shortUserId(member.user_id)
+      ),
+      createMetaItem("Role", member.role || "Crew")
+    );
+
+    if (canManageCrew(job)) {
+      const removeButton = document.createElement("button");
+      removeButton.className = "button button--ghost button--small";
+      removeButton.type = "button";
+      removeButton.textContent = "Remove";
+      removeButton.addEventListener("click", () => {
+        removeCrewMember(job, member);
+      });
+      row.appendChild(removeButton);
+    }
+
+    list.appendChild(row);
+  });
+
+  return list;
+}
+
+function createCrewSection(job) {
+  const section = document.createElement("section");
+  section.className = "crew-section";
+
+  const header = document.createElement("div");
+  header.className = "crew-section__header";
+
+  const title = document.createElement("h4");
+  title.textContent = "Crew Access";
+
+  const badge = document.createElement("span");
+  badge.className = "panel__badge";
+  badge.textContent = job.accessRole || "Supervisor";
+
+  header.append(title, badge);
+  section.appendChild(header);
+
+  if (canManageCrew(job) && !job.crew_enabled) {
+    const enableButton = document.createElement("button");
+    enableButton.className = "button button--secondary button--small";
+    enableButton.type = "button";
+    enableButton.textContent = "Enable Crew Access";
+    enableButton.addEventListener("click", () => {
+      enableCrewAccess(job);
+    });
+    section.appendChild(enableButton);
+  }
+
+  if (job.crew_enabled) {
+    const details = document.createElement("details");
+    details.className = "crew-details";
+
+    const summary = document.createElement("summary");
+    summary.textContent = "Show Crew Access Details";
+
+    const codeBox = document.createElement("div");
+    codeBox.className = "crew-code-box";
+
+    const codeText = document.createElement("strong");
+    codeText.textContent = `Crew Code: ${job.crew_code || "Not set"}`;
+
+    const copyButton = document.createElement("button");
+    copyButton.className = "button button--ghost button--small";
+    copyButton.type = "button";
+    copyButton.textContent = "Copy Crew Code";
+    copyButton.addEventListener("click", () => {
+      copyCrewCode(job.crew_code || "");
+    });
+
+    codeBox.append(codeText, copyButton);
+    details.append(summary, codeBox, createCrewMembersList(job));
+    section.appendChild(details);
+  } else if (!canManageCrew(job)) {
+    const note = document.createElement("p");
+    note.className = "crew-section__note";
+    note.textContent = "Crew access has not been enabled for this job.";
+    section.appendChild(note);
+  }
+
+  return section;
+}
+
+function createEditSection(job) {
+  if (!canEditJob(job)) {
+    return null;
+  }
+
+  const labels = getJobFieldLabels(job.industry);
+  const wrapper = document.createElement("section");
+  wrapper.className = "job-editor";
+  wrapper.hidden = true;
+
+  const form = document.createElement("form");
+  form.className = "job-editor__form";
+
+  const grid = document.createElement("div");
+  grid.className = "form-grid";
+
+  grid.append(
+    createInputField(labels.jobName, "title", job.title || ""),
+    createSelectField("Status", "status", job.status || "Open", [
+      "Open",
+      "In Progress",
+      "Waiting on Parts",
+      "Completed"
+    ]),
+    createInputField("Work Order", "work_order", job.work_order || ""),
+    createInputField("Customer", "customer", job.customer || ""),
+    createInputField(labels.machine, "machine", job.machine || ""),
+    createInputField(labels.serial, "serial", job.serial || ""),
+    createSelectField("Industry", "industry", job.industry || "", [
+      "",
+      "Heavy Equipment",
+      "Automotive",
+      "Industrial Maintenance",
+      "Welding & Fabrication"
+    ]),
+    createTextareaField("Complaint", "complaint", job.complaint || ""),
+    createTextareaField("Cause", "cause", job.cause || ""),
+    createTextareaField("Correction", "correction", job.correction || ""),
+    createTextareaField("Part Numbers", "part_numbers", job.part_numbers || "", 4),
+    createTextareaField("Torque Values", "torque_values", job.torque_values || "", 4)
+  );
+
+  const industryField = grid.querySelector('select[name="industry"]');
+  if (industryField instanceof HTMLSelectElement) {
+    industryField.options[0].textContent = "Select Industry";
+  }
+
+  const footer = document.createElement("div");
+  footer.className = "job-editor__footer";
+
+  const statusMessage = document.createElement("p");
+  statusMessage.className = "form-message";
+
+  const buttonRow = document.createElement("div");
+  buttonRow.className = "job-editor__buttons";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "button button--ghost button--small";
+  cancelButton.type = "button";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => {
+    wrapper.hidden = true;
+  });
+
+  const saveButton = document.createElement("button");
+  saveButton.className = "button button--primary button--small";
+  saveButton.type = "submit";
+  saveButton.textContent = "Save Changes";
+
+  buttonRow.append(cancelButton, saveButton);
+  footer.append(statusMessage, buttonRow);
+  form.append(grid, footer);
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await saveJobEdits(job, form, saveButton, statusMessage);
+  });
+
+  wrapper.appendChild(form);
+  return wrapper;
+}
+
+function createDeleteConfirmation(job) {
+  const box = document.createElement("div");
+  box.className = "delete-confirmation";
+  box.hidden = true;
+
+  const message = document.createElement("p");
+  message.textContent = "Are you sure? This will permanently delete the job.";
+
+  const actions = document.createElement("div");
+  actions.className = "delete-confirmation__actions";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.className = "button button--ghost button--small";
+  cancelButton.type = "button";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", () => {
+    box.hidden = true;
+  });
+
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "button button--primary button--small";
+  deleteButton.type = "button";
+  deleteButton.textContent = "Delete Forever";
+  deleteButton.addEventListener("click", () => {
+    deleteJobForever(job, box);
+  });
+
+  actions.append(cancelButton, deleteButton);
+  box.append(message, actions);
+  return box;
 }
 
 function createJobCard(job) {
@@ -639,10 +1118,11 @@ function createJobCard(job) {
   const meta = document.createElement("div");
   meta.className = "job-item__meta";
   meta.append(
-    createMetaItem("Machine", job.machine || "Not provided"),
+    createMetaItem(getJobSummaryMachineLabel(job), job.machine || "Not provided"),
     createMetaItem("Industry", job.industry || "Not provided"),
     createMetaItem("Work Order", job.work_order || "Not assigned"),
-    createMetaItem("Created", formatCreatedAt(job.created_at))
+    createMetaItem("Created", formatCreatedAt(job.created_at)),
+    createMetaItem("Your Role", job.accessRole || "Supervisor")
   );
 
   const actions = document.createElement("div");
@@ -665,7 +1145,41 @@ function createJobCard(job) {
   });
 
   actions.append(viewButton, copyButton);
-  article.append(top, meta, actions);
+
+  const editSection = createEditSection(job);
+  if (editSection) {
+    const editButton = document.createElement("button");
+    editButton.className = "button button--ghost button--small";
+    editButton.type = "button";
+    editButton.textContent = "Edit Job";
+    editButton.addEventListener("click", () => {
+      editSection.hidden = !editSection.hidden;
+    });
+    actions.appendChild(editButton);
+  }
+
+  const deleteConfirmation = createDeleteConfirmation(job);
+  if (canDeleteJob(job)) {
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "button button--ghost button--small";
+    deleteButton.type = "button";
+    deleteButton.textContent = "Delete Job";
+    deleteButton.addEventListener("click", () => {
+      deleteConfirmation.hidden = false;
+    });
+    actions.appendChild(deleteButton);
+  }
+
+  article.append(top, meta, actions, createCrewSection(job));
+
+  if (editSection) {
+    article.appendChild(editSection);
+  }
+
+  if (canDeleteJob(job)) {
+    article.appendChild(deleteConfirmation);
+  }
+
   return article;
 }
 
@@ -673,6 +1187,7 @@ async function loadJobs() {
   if (!currentUser) {
     jobsContainer.innerHTML = "";
     reportPreview.hidden = true;
+    visibleJobs = [];
     jobCount.textContent = "0";
     setMessage(jobsMessage, "Sign in to load jobs.");
     return;
@@ -681,36 +1196,116 @@ async function loadJobs() {
   setMessage(jobsMessage, "Loading jobs...");
   jobsContainer.innerHTML = "";
   reportPreview.hidden = true;
+  visibleJobs = [];
 
-  const { data, error } = await supabaseClient
+  const { data: ownedJobs, error: ownedError } = await supabaseClient
     .from("jobs")
-    .select(
-      "title, customer, machine, industry, status, created_at, work_order, serial, complaint, cause, correction, part_numbers, torque_values"
-    )
-    .eq("user_id", currentUser.id)
-    .order("created_at", { ascending: false });
+    .select(JOB_FIELDS_SELECT)
+    .eq("user_id", currentUser.id);
 
-  if (error) {
+  if (ownedError) {
     jobCount.textContent = "0";
-    setMessage(jobsMessage, `Unable to load jobs: ${error.message}`, "error");
+    setMessage(jobsMessage, `Unable to load jobs: ${ownedError.message}`, "error");
     return;
   }
 
-  if (!data || data.length === 0) {
+  const { data: membershipRows, error: membershipError } = await supabaseClient
+    .from("job_crew")
+    .select("job_id, user_id, role")
+    .eq("user_id", currentUser.id);
+
+  if (membershipError) {
     jobCount.textContent = "0";
-    setMessage(jobsMessage, "No jobs found yet. Create your first job.");
+    setMessage(jobsMessage, `Unable to load crew jobs: ${membershipError.message}`, "error");
     return;
   }
 
-  jobCount.textContent = String(data.length);
+  const jobsById = new Map();
+  const membershipByJobId = new Map();
+
+  (membershipRows || []).forEach((membership) => {
+    membershipByJobId.set(membership.job_id, membership);
+  });
+
+  (ownedJobs || []).forEach((job) => {
+    jobsById.set(job.id, {
+      ...job,
+      accessRole: "Job Lead",
+      isOwner: true
+    });
+  });
+
+  const crewJobIds = (membershipRows || [])
+    .map((membership) => membership.job_id)
+    .filter((jobId) => !jobsById.has(jobId));
+
+  if (crewJobIds.length > 0) {
+    const { data: crewJobs, error: crewJobsError } = await supabaseClient
+      .from("jobs")
+      .select(JOB_FIELDS_SELECT)
+      .in("id", crewJobIds);
+
+    if (crewJobsError) {
+      jobCount.textContent = "0";
+      setMessage(jobsMessage, `Unable to load crew jobs: ${crewJobsError.message}`, "error");
+      return;
+    }
+
+    (crewJobs || []).forEach((job) => {
+      const membership = membershipByJobId.get(job.id);
+      jobsById.set(job.id, {
+        ...job,
+        accessRole: membership?.role || "Job Worker",
+        isOwner: false
+      });
+    });
+  }
+
+  const jobs = Array.from(jobsById.values());
+
+  if (jobs.length === 0) {
+    jobCount.textContent = "0";
+    setMessage(jobsMessage, "No jobs found yet. Create your first job or join a crew.");
+    return;
+  }
+
+  const jobIds = jobs.map((job) => job.id);
+  const { data: crewRows, error: crewRowsError } = await supabaseClient
+    .from("job_crew")
+    .select("job_id, user_id, role")
+    .in("job_id", jobIds);
+
+  if (crewRowsError) {
+    jobCount.textContent = "0";
+    setMessage(jobsMessage, `Unable to load crew details: ${crewRowsError.message}`, "error");
+    return;
+  }
+
+  const crewMembersByJobId = new Map();
+  (crewRows || []).forEach((row) => {
+    const rows = crewMembersByJobId.get(row.job_id) || [];
+    rows.push(row);
+    crewMembersByJobId.set(row.job_id, rows);
+  });
+
+  jobs.forEach((job) => {
+    job.crewMembers = crewMembersByJobId.get(job.id) || [];
+  });
+
+  jobs.sort((left, right) => {
+    return new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
+  });
+
+  visibleJobs = jobs;
+  jobCount.textContent = String(jobs.length);
   setMessage(
     jobsMessage,
-    `Showing ${data.length} job${data.length === 1 ? "" : "s"}.`,
+    `Showing ${jobs.length} job${jobs.length === 1 ? "" : "s"}.`,
     "success"
   );
 
   const fragment = document.createDocumentFragment();
-  data.forEach((job) => {
+  jobs.forEach((job) => {
     fragment.appendChild(createJobCard(job));
   });
   jobsContainer.appendChild(fragment);
@@ -913,7 +1508,113 @@ async function handleJobSubmit(event) {
     industryField.value = "";
   }
 
+  updateJobPlaceholders();
   setMessage(formMessage, "Job saved successfully.", "success");
+  await loadJobs();
+}
+
+async function handleJoinCrew(event) {
+  event.preventDefault();
+
+  if (!currentUser || !joinCrewCodeInput || !joinCrewRoleSelect) {
+    return;
+  }
+
+  const crewCode = joinCrewCodeInput.value.trim();
+  const requestedRole = joinCrewRoleSelect.value;
+
+  if (!/^\d{8}$/.test(crewCode)) {
+    setMessage(joinCrewMessage, "Enter a valid 8-digit crew code.", "error");
+    return;
+  }
+
+  if (requestedRole === "Job Lead") {
+    setMessage(joinCrewMessage, "Job Lead access cannot be requested through crew join.", "error");
+    return;
+  }
+
+  joinCrewButton.disabled = true;
+  joinCrewButton.textContent = "Joining...";
+  setMessage(joinCrewMessage, "Joining crew...");
+
+  const { data: job, error: jobError } = await supabaseClient
+    .from("jobs")
+    .select("id, user_id, crew_code, crew_enabled")
+    .eq("crew_code", crewCode)
+    .eq("crew_enabled", true)
+    .maybeSingle();
+
+  if (jobError) {
+    joinCrewButton.disabled = false;
+    joinCrewButton.textContent = "Join Crew";
+    setMessage(joinCrewMessage, `Unable to join crew: ${jobError.message}`, "error");
+    return;
+  }
+
+  if (!job) {
+    joinCrewButton.disabled = false;
+    joinCrewButton.textContent = "Join Crew";
+    setMessage(joinCrewMessage, "No active crew was found for that code.", "error");
+    return;
+  }
+
+  if (job.user_id === currentUser.id) {
+    joinCrewButton.disabled = false;
+    joinCrewButton.textContent = "Join Crew";
+    setMessage(joinCrewMessage, "You already lead this job.", "error");
+    return;
+  }
+
+  const { data: existingMembership, error: existingError } = await supabaseClient
+    .from("job_crew")
+    .select("job_id, user_id, role")
+    .eq("job_id", job.id)
+    .eq("user_id", currentUser.id)
+    .maybeSingle();
+
+  if (existingError) {
+    joinCrewButton.disabled = false;
+    joinCrewButton.textContent = "Join Crew";
+    setMessage(joinCrewMessage, `Unable to join crew: ${existingError.message}`, "error");
+    return;
+  }
+
+  if (existingMembership) {
+    const { error: updateError } = await supabaseClient
+      .from("job_crew")
+      .update({ role: requestedRole })
+      .eq("job_id", job.id)
+      .eq("user_id", currentUser.id);
+
+    joinCrewButton.disabled = false;
+    joinCrewButton.textContent = "Join Crew";
+
+    if (updateError) {
+      setMessage(joinCrewMessage, `Unable to update crew role: ${updateError.message}`, "error");
+      return;
+    }
+
+    setMessage(joinCrewMessage, "Crew role updated successfully.", "success");
+    await loadJobs();
+    return;
+  }
+
+  const { error: insertError } = await supabaseClient.from("job_crew").insert({
+    job_id: job.id,
+    user_id: currentUser.id,
+    role: requestedRole
+  });
+
+  joinCrewButton.disabled = false;
+  joinCrewButton.textContent = "Join Crew";
+
+  if (insertError) {
+    setMessage(joinCrewMessage, `Unable to join crew: ${insertError.message}`, "error");
+    return;
+  }
+
+  joinCrewForm.reset();
+  setMessage(joinCrewMessage, "Crew joined successfully.", "success");
   await loadJobs();
 }
 
@@ -931,6 +1632,10 @@ if (signInForm) {
 
 if (jobForm) {
   jobForm.addEventListener("submit", handleJobSubmit);
+}
+
+if (joinCrewForm) {
+  joinCrewForm.addEventListener("submit", handleJoinCrew);
 }
 
 if (jobIndustrySelect instanceof HTMLSelectElement) {

@@ -385,6 +385,45 @@
               </p>
             </div>
 
+            <section class="panel" aria-labelledby="join-crew-heading">
+              <div class="panel__header">
+                <h3 id="join-crew-heading">Join a Crew</h3>
+              </div>
+
+              <form class="join-crew-form" id="join-crew-form">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Crew Code</span>
+                    <input
+                      type="text"
+                      name="crew_code"
+                      id="join-crew-code"
+                      inputmode="numeric"
+                      maxlength="8"
+                      pattern="[0-9]{8}"
+                      placeholder="Enter 8-digit crew code"
+                      required
+                    />
+                  </label>
+
+                  <label class="field">
+                    <span>Requested Role</span>
+                    <select name="crew_role" id="join-crew-role" required>
+                      <option value="Job Worker">Job Worker</option>
+                      <option value="Supervisor">Supervisor</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="job-form__footer">
+                  <p class="form-message" id="join-crew-message" role="status" aria-live="polite"></p>
+                  <button class="button button--primary" type="submit" id="join-crew-button">
+                    Join Crew
+                  </button>
+                </div>
+              </form>
+            </section>
+
             <div class="panel">
               <div class="panel__header">
                 <h3>Job Feed</h3>
