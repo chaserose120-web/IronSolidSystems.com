@@ -1043,6 +1043,12 @@ function createPhotoSection(job) {
             .upload(filePath, file);
 
           if (uploadError) {
+            console.error("Photo upload error", uploadError);
+            setMessage(
+              uploadMessage,
+              `Storage upload failed: ${uploadError.message}`,
+              "error"
+            );
             throw uploadError;
           }
 
@@ -1055,6 +1061,12 @@ function createPhotoSection(job) {
           });
 
           if (insertError) {
+            console.error("Photo upload error", insertError);
+            setMessage(
+              uploadMessage,
+              `Photo record failed: ${insertError.message}`,
+              "error"
+            );
             throw insertError;
           }
         }
@@ -1065,8 +1077,11 @@ function createPhotoSection(job) {
         const refreshedPhotos = await fetchJobPhotos(job.id);
         renderPhotoGallery(job, refreshedPhotos, galleryGridBody, searchInput.value);
       } catch (error) {
+        console.error("Photo upload error", error);
         const message = error instanceof Error ? error.message : "Photo upload failed.";
-        setMessage(uploadMessage, `Unable to upload photos: ${message}`, "error");
+        if (!uploadMessage.classList.contains("is-error")) {
+          setMessage(uploadMessage, `Unable to upload photos: ${message}`, "error");
+        }
       } finally {
         uploadButton.disabled = false;
         uploadButton.textContent = "Upload Photos";
