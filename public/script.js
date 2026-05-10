@@ -125,7 +125,7 @@ const THEME_PRESETS = {
     bgAlt: "#141012",
     panel: "rgba(22, 13, 15, 0.94)",
     panelStrong: "#221114",
-    panelSoft: "rgba(255, 255, 255, 0.03)",
+    panelSoft: "rgba(177, 15, 46, 0.14)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(255, 0, 0, 0.34)",
     accent: "#b10f2e",
@@ -143,7 +143,7 @@ const THEME_PRESETS = {
     bgAlt: "#0d1830",
     panel: "rgba(13, 24, 47, 0.94)",
     panelStrong: "#152447",
-    panelSoft: "rgba(255, 255, 255, 0.03)",
+    panelSoft: "rgba(0, 40, 255, 0.14)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(0, 40, 255, 0.3)",
     accent: "#0028FF",
@@ -161,7 +161,7 @@ const THEME_PRESETS = {
     bgAlt: "#101010",
     panel: "rgba(18, 18, 18, 0.92)",
     panelStrong: "#181818",
-    panelSoft: "rgba(255, 255, 255, 0.025)",
+    panelSoft: "rgba(156, 156, 156, 0.08)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(160, 160, 160, 0.2)",
     accent: "#9d9d9d",
@@ -179,7 +179,7 @@ const THEME_PRESETS = {
     bgAlt: "#14171a",
     panel: "rgba(25, 27, 29, 0.94)",
     panelStrong: "#202427",
-    panelSoft: "rgba(0, 0, 0, 0.035)",
+    panelSoft: "rgba(216, 219, 223, 0.12)",
     border: "rgba(0, 0, 0, 0.08)",
     borderStrong: "rgba(255, 255, 255, 0.24)",
     accent: "#d8dbdf",
@@ -197,7 +197,7 @@ const THEME_PRESETS = {
     bgAlt: "#17110d",
     panel: "rgba(33, 24, 18, 0.94)",
     panelStrong: "#2b2118",
-    panelSoft: "rgba(255, 255, 255, 0.03)",
+    panelSoft: "rgba(193, 151, 93, 0.14)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(193, 151, 93, 0.24)",
     accent: "#c1975d",
@@ -215,7 +215,7 @@ const THEME_PRESETS = {
     bgAlt: "#141414",
     panel: "rgba(21, 21, 21, 0.95)",
     panelStrong: "#1b1b1b",
-    panelSoft: "rgba(255, 255, 255, 0.03)",
+    panelSoft: "rgba(245, 190, 39, 0.14)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(245, 190, 39, 0.34)",
     accent: "#F5BE27",
@@ -233,7 +233,7 @@ const THEME_PRESETS = {
     bgAlt: "#111812",
     panel: "rgba(17, 28, 18, 0.95)",
     panelStrong: "#1b311d",
-    panelSoft: "rgba(255, 255, 255, 0.03)",
+    panelSoft: "rgba(49, 136, 34, 0.16)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(255, 237, 5, 0.28)",
     accent: "#318822",
@@ -251,7 +251,7 @@ const THEME_PRESETS = {
     bgAlt: "#0d1730",
     panel: "rgba(15, 23, 42, 0.94)",
     panelStrong: "#172746",
-    panelSoft: "rgba(255, 255, 255, 0.03)",
+    panelSoft: "rgba(135, 168, 217, 0.12)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(220, 74, 74, 0.22)",
     accent: "#c8505b",
@@ -562,7 +562,7 @@ function applyThemeSettings(settings) {
   const isYellowText = settings.textColor === "yellow";
 
   const surfaces = isBlackText
-    ? {
+      ? {
         panel: "rgba(244, 240, 231, 0.95)",
         panelStrong: "#efe9db",
         panelSoft: "rgba(255, 249, 235, 0.78)",
@@ -579,7 +579,8 @@ function applyThemeSettings(settings) {
         ghostBg: "rgba(255, 255, 255, 0.84)",
         ghostBorder: "rgba(0, 0, 0, 0.12)",
         placeholder: "#5b5b5b",
-        buttonText: "#111111"
+        buttonText: "#111111",
+        mutedText: "#4a4a4a"
       }
     : {
         panel: theme.panel,
@@ -587,18 +588,19 @@ function applyThemeSettings(settings) {
         panelSoft: theme.panelSoft,
         border: theme.border,
         borderStrong: theme.borderStrong,
-        fieldBg: isYellowText ? "rgba(8, 10, 12, 0.88)" : "rgba(255, 255, 255, 0.05)",
-        fieldBgFocus: isYellowText ? "rgba(12, 15, 18, 0.96)" : "rgba(255, 255, 255, 0.07)",
-        fieldBorder: isYellowText ? "rgba(242, 207, 91, 0.24)" : "rgba(255, 255, 255, 0.12)",
-        sectionBg: isYellowText ? "rgba(255, 255, 255, 0.035)" : "rgba(255, 255, 255, 0.025)",
-        noteBg: isYellowText ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 0.03)",
-        reportBg: isYellowText ? "rgba(4, 6, 8, 0.82)" : "rgba(0, 0, 0, 0.2)",
-        mutedBg: isYellowText ? "rgba(255, 255, 255, 0.06)" : "rgba(255, 255, 255, 0.04)",
-        hoverBg: isYellowText ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.05)",
-        ghostBg: isYellowText ? "rgba(255, 255, 255, 0.045)" : "rgba(255, 255, 255, 0.03)",
-        ghostBorder: isYellowText ? "rgba(242, 207, 91, 0.16)" : "rgba(255, 255, 255, 0.12)",
+        fieldBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
+        fieldBgFocus: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panel}`,
+        fieldBorder: isYellowText ? "rgba(242, 207, 91, 0.24)" : theme.borderStrong,
+        sectionBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panel}`,
+        noteBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
+        reportBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
+        mutedBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
+        hoverBg: theme.panelSoft,
+        ghostBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
+        ghostBorder: theme.borderStrong,
         placeholder: isYellowText ? "#c8b261" : "#8b938d",
-        buttonText: theme.buttonText || text.text
+        buttonText: theme.buttonText || text.text,
+        mutedText: text.textSoft
       };
 
   root.style.setProperty("--bg", theme.bg);
@@ -618,6 +620,7 @@ function applyThemeSettings(settings) {
   root.style.setProperty("--body-end", theme.bodyEnd);
   root.style.setProperty("--text", text.text);
   root.style.setProperty("--text-soft", text.textSoft);
+  root.style.setProperty("--muted-text", surfaces.mutedText);
   root.style.setProperty("--field-bg", surfaces.fieldBg);
   root.style.setProperty("--field-bg-focus", surfaces.fieldBgFocus);
   root.style.setProperty("--field-border", surfaces.fieldBorder);

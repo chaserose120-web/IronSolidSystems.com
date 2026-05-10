@@ -8,6 +8,7 @@
   --border-strong: rgba(242, 194, 48, 0.18);
   --text: #f2f2ec;
   --text-soft: #afb5af;
+  --muted-text: #afb5af;
   --accent: #f2c230;
   --accent-strong: #ffcf40;
   --accent-secondary: #b00000;
@@ -362,7 +363,7 @@ textarea,
 .landing-hero__description {
   margin: 0.75rem 0 0;
   max-width: 36rem;
-  color: var(--text-soft);
+  color: var(--muted-text);
   font-size: 1.08rem;
   line-height: 1.6;
 }
@@ -394,7 +395,7 @@ textarea,
 
 .landing-highlight p {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
   line-height: 1.55;
 }
 
@@ -416,7 +417,7 @@ textarea,
 .section-heading--compact p,
 .panel__copy {
   margin: 0.55rem 0 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
   line-height: 1.55;
 }
 
@@ -445,7 +446,7 @@ textarea,
 .panel--auth,
 .panel--form {
   background:
-    radial-gradient(circle at top right, rgba(242, 194, 48, 0.08), transparent 25%),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 10%, transparent), transparent 25%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
     var(--panel);
 }
@@ -469,7 +470,7 @@ textarea,
   padding: 0.45rem 0.75rem;
   border-radius: 999px;
   border: 1px solid var(--border-strong);
-  background: rgba(242, 194, 48, 0.08);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   color: var(--accent);
   font-size: 0.92rem;
   font-weight: 700;
@@ -621,7 +622,7 @@ textarea,
 }
 
 .button--ghost {
-  color: var(--text-soft);
+  color: var(--muted-text);
 }
 
 .button--small {
@@ -634,7 +635,7 @@ textarea,
 .list-message {
   margin: 0;
   min-height: 1.5rem;
-  color: var(--text-soft);
+  color: var(--muted-text);
 }
 
 .form-message.is-success,
@@ -685,7 +686,7 @@ textarea,
 
 .job-item p {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
 }
 
 .job-item__meta {
@@ -731,7 +732,7 @@ textarea,
 
 .job-summary-row__date,
 .job-summary-row__summary {
-  color: var(--text-soft);
+  color: var(--muted-text);
 }
 
 .job-summary-row__title strong {
@@ -740,7 +741,7 @@ textarea,
 }
 
 .job-summary-row__title span {
-  color: var(--text-soft);
+  color: var(--muted-text);
   font-size: 0.94rem;
 }
 
@@ -775,7 +776,7 @@ textarea,
 .crew-section__note,
 .delete-confirmation p {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
   line-height: 1.5;
 }
 
@@ -908,7 +909,7 @@ textarea,
 
 .job-detail-header p {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
 }
 
 .job-detail-grid {
@@ -948,7 +949,7 @@ textarea,
 
 .job-detail-note p {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
   white-space: pre-wrap;
 }
 
@@ -984,7 +985,7 @@ textarea,
 
 .photo-dropbox__helper p {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
   line-height: 1.55;
 }
 
@@ -1027,12 +1028,12 @@ textarea,
 
 .photo-card__description {
   margin: 0;
-  color: var(--text-soft);
+  color: var(--muted-text);
   line-height: 1.45;
 }
 
 .photo-card__date {
-  color: var(--text-soft);
+  color: var(--muted-text);
   font-size: 0.92rem;
 }
 
