@@ -76,8 +76,7 @@ const jobWorkOrderField = jobForm?.elements.namedItem("work_order");
 const jobCustomerField = jobForm?.elements.namedItem("customer");
 const jobMachineField = jobForm?.elements.namedItem("machine");
 const jobSerialField = jobForm?.elements.namedItem("serial");
-const jobPartNumbersField = jobForm?.elements.namedItem("part_numbers");
-const jobTorqueValuesField = jobForm?.elements.namedItem("torque_values");
+const jobQuickNotesField = jobForm?.elements.namedItem("quick_notes");
 const jobComplaintField = jobForm?.elements.namedItem("complaint");
 const jobCauseField = jobForm?.elements.namedItem("cause");
 const jobCorrectionField = jobForm?.elements.namedItem("correction");
@@ -112,8 +111,7 @@ const JOB_FIELDS_SELECT = [
   "complaint",
   "cause",
   "correction",
-  "part_numbers",
-  "torque_values",
+  "quick_notes",
   "created_at",
   "crew_code",
   "crew_enabled"
@@ -264,8 +262,7 @@ const JOB_PLACEHOLDERS = {
     customer: "",
     machine: "",
     serial: "",
-    part_numbers: "",
-    torque_values: "",
+    quick_notes: "",
     complaint: "",
     cause: "",
     correction: ""
@@ -276,8 +273,7 @@ const JOB_PLACEHOLDERS = {
     customer: "River Rock Excavation",
     machine: "Komatsu WA380 Loader",
     serial: "KMTWA103CPF81247",
-    part_numbers: "",
-    torque_values: "",
+    quick_notes: "",
     complaint: "Machine overheating under load",
     cause: "Radiator packed with debris, low airflow",
     correction: "Cleaned cooling package, verified temps"
@@ -288,8 +284,7 @@ const JOB_PLACEHOLDERS = {
     customer: "Fleet Service LLC",
     machine: "Ford F-250 6.2L",
     serial: "1FT7W2B67NEA18455",
-    part_numbers: "",
-    torque_values: "",
+    quick_notes: "",
     complaint: "Customer states truck has rough idle",
     cause: "Vacuum leak found at intake hose",
     correction: "Replaced hose and cleared codes"
@@ -300,8 +295,7 @@ const JOB_PLACEHOLDERS = {
     customer: "Midwest Packaging",
     machine: "South conveyor drive",
     serial: "CVR-PLT-2047",
-    part_numbers: "",
-    torque_values: "",
+    quick_notes: "",
     complaint: "Conveyor intermittently stops",
     cause: "Failed proximity sensor",
     correction: "Replaced sensor and tested operation"
@@ -312,8 +306,7 @@ const JOB_PLACEHOLDERS = {
     customer: "Summit Earthworks",
     machine: "Grapple attachment",
     serial: "ATT-GRP-7784",
-    part_numbers: "",
-    torque_values: "",
+    quick_notes: "",
     complaint: "Cracked bracket on attachment",
     cause: "Fatigue crack at weld toe",
     correction: "Ground crack, welded repair, painted area"
@@ -836,8 +829,7 @@ function updateJobPlaceholders() {
     [jobCustomerField, placeholders.customer],
     [jobMachineField, placeholders.machine],
     [jobSerialField, placeholders.serial],
-    [jobPartNumbersField, placeholders.part_numbers],
-    [jobTorqueValuesField, placeholders.torque_values],
+    [jobQuickNotesField, placeholders.quick_notes],
     [jobComplaintField, placeholders.complaint],
     [jobCauseField, placeholders.cause],
     [jobCorrectionField, placeholders.correction]
@@ -893,8 +885,7 @@ function buildJobReport(job) {
     `Complaint: ${formatReportValue(job.complaint)}`,
     `Cause: ${formatReportValue(job.cause)}`,
     `Correction: ${formatReportValue(job.correction)}`,
-    `Part Numbers: ${formatReportValue(job.part_numbers)}`,
-    `Torque Values: ${formatReportValue(job.torque_values)}`,
+    `Quick Notes (Torque Values, Parts, etc.): ${formatReportValue(job.quick_notes)}`,
     `Created Date: ${formatCreatedAt(job.created_at)}`
   ].join("\n");
 }
@@ -1367,8 +1358,7 @@ async function saveJobEdits(job, form, saveButton, statusMessage) {
     complaint: formData.get("complaint")?.toString().trim() || "",
     cause: formData.get("cause")?.toString().trim() || "",
     correction: formData.get("correction")?.toString().trim() || "",
-    part_numbers: formData.get("part_numbers")?.toString().trim() || "",
-    torque_values: formData.get("torque_values")?.toString().trim() || ""
+    quick_notes: formData.get("quick_notes")?.toString().trim() || ""
   };
 
   saveButton.disabled = true;
@@ -1551,8 +1541,12 @@ function createEditSection(job) {
     createTextareaField("Complaint", "complaint", job.complaint || ""),
     createTextareaField("Cause", "cause", job.cause || ""),
     createTextareaField("Correction", "correction", job.correction || ""),
-    createTextareaField("Part Numbers", "part_numbers", job.part_numbers || "", 4),
-    createTextareaField("Torque Values", "torque_values", job.torque_values || "", 4)
+    createTextareaField(
+      "Quick Notes (Torque Values, Parts, etc.)",
+      "quick_notes",
+      job.quick_notes || "",
+      6
+    )
   );
 
   const industryField = grid.querySelector('select[name="industry"]');
@@ -1669,8 +1663,7 @@ function createJobDetail(job) {
   detailsSection.append(
     detailsTitle,
     createMetaItem("Customer", job.customer || "Not provided"),
-    createMetaItem("Part Numbers", job.part_numbers || "Not provided"),
-    createMetaItem("Torque Values", job.torque_values || "Not provided")
+    createMetaItem("Quick Notes", job.quick_notes || "Not provided")
   );
 
   const threeCSection = document.createElement("section");
@@ -1695,28 +1688,21 @@ function createJobDetail(job) {
   });
   threeCSection.append(threeCTitle, threeCContent);
 
-  const partsSection = document.createElement("section");
-  partsSection.className = "job-detail-section";
-  const partsTitle = document.createElement("h6");
-  partsTitle.textContent = "Parts & Torque Information";
-  const partsContent = document.createElement("div");
-  partsContent.className = "job-detail-three-c";
-  [
-    ["Part Numbers", job.part_numbers],
-    ["Torque Values", job.torque_values]
-  ].forEach(([label, value]) => {
-    const note = document.createElement("div");
-    note.className = "job-detail-note";
-    const strong = document.createElement("strong");
-    strong.textContent = label;
-    const text = document.createElement("p");
-    text.textContent = formatReportValue(value);
-    note.append(strong, text);
-    partsContent.appendChild(note);
-  });
-  partsSection.append(partsTitle, partsContent);
+  const quickNotesSection = document.createElement("section");
+  quickNotesSection.className = "job-detail-section";
+  const quickNotesTitle = document.createElement("h6");
+  quickNotesTitle.textContent = "Quick Notes (Torque Values, Parts, etc.)";
+  const quickNotesContent = document.createElement("div");
+  quickNotesContent.className = "job-detail-three-c";
+  const quickNotesNote = document.createElement("div");
+  quickNotesNote.className = "job-detail-note";
+  const quickNotesText = document.createElement("p");
+  quickNotesText.textContent = formatReportValue(job.quick_notes);
+  quickNotesNote.appendChild(quickNotesText);
+  quickNotesContent.appendChild(quickNotesNote);
+  quickNotesSection.append(quickNotesTitle, quickNotesContent);
 
-  detailSections.append(detailsSection, threeCSection, partsSection);
+  detailSections.append(detailsSection, threeCSection, quickNotesSection);
 
   const actions = document.createElement("div");
   actions.className = "job-item__actions";
@@ -2116,8 +2102,7 @@ async function handleJobSubmit(event) {
     machine: formData.get("machine")?.toString().trim() || "",
     serial: formData.get("serial")?.toString().trim() || "",
     industry: formData.get("industry")?.toString().trim() || "",
-    part_numbers: formData.get("part_numbers")?.toString().trim() || "",
-    torque_values: formData.get("torque_values")?.toString().trim() || "",
+    quick_notes: formData.get("quick_notes")?.toString().trim() || "",
     complaint: formData.get("complaint")?.toString().trim() || "",
     cause: formData.get("cause")?.toString().trim() || "",
     correction: formData.get("correction")?.toString().trim() || ""
