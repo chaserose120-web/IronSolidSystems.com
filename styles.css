@@ -817,6 +817,113 @@ textarea,
   white-space: pre-wrap;
 }
 
+.photo-dropbox,
+.photo-gallery {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.photo-dropbox h6,
+.photo-gallery h6 {
+  margin: 0 0 0.85rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1rem;
+}
+
+.photo-dropbox__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.photo-gallery__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.photo-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.photo-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.photo-card__thumb {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.photo-card__description {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.45;
+}
+
+.photo-card__date {
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.photo-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.photo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.photo-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.photo-modal__dialog {
+  position: relative;
+  width: min(100%, 960px);
+  max-height: 90vh;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.photo-modal__image {
+  display: block;
+  width: 100%;
+  max-height: calc(90vh - 6rem);
+  object-fit: contain;
+  border-radius: var(--radius-md);
+}
+
 [hidden] {
   display: none !important;
 }
@@ -839,7 +946,8 @@ textarea,
   .dashboard-grid,
   .auth-grid,
   .job-item__meta,
-  .job-detail-grid {
+  .job-detail-grid,
+  .photo-gallery__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -862,7 +970,8 @@ textarea,
   .dashboard-grid,
   .job-item__meta,
   .job-detail-grid,
-  .job-summary-row {
+  .job-summary-row,
+  .photo-gallery__grid {
     grid-template-columns: 1fr;
   }
 
@@ -872,7 +981,9 @@ textarea,
   .job-item__top,
   .crew-section__header,
   .job-editor__footer,
-  .delete-confirmation__actions {
+  .delete-confirmation__actions,
+  .photo-dropbox__actions,
+  .photo-gallery__toolbar {
     flex-direction: column;
     align-items: stretch;
   }

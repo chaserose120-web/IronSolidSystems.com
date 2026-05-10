@@ -58,6 +58,10 @@ const joinCrewCodeInput = document.getElementById("join-crew-code");
 const joinCrewRoleSelect = document.getElementById("join-crew-role");
 const joinCrewMessage = document.getElementById("join-crew-message");
 const joinCrewButton = document.getElementById("join-crew-button");
+const photoModal = document.getElementById("photo-modal");
+const photoModalBackdrop = document.getElementById("photo-modal-backdrop");
+const photoModalImage = document.getElementById("photo-modal-image");
+const closePhotoModalButton = document.getElementById("close-photo-modal");
 
 const jobIndustrySelect = jobForm?.elements.namedItem("industry");
 const jobTitleField = jobForm?.elements.namedItem("title");
@@ -469,6 +473,14 @@ function canManageCrew(job) {
   return Boolean(isJobLead(job));
 }
 
+function canUploadPhotos(job) {
+  return Boolean(isJobLead(job) || job?.accessRole === "Job Worker");
+}
+
+function canDeletePhoto(job, photo) {
+  return Boolean(isJobLead(job) || (job?.accessRole === "Job Worker" && photo?.uploaded_by === currentUser?.id));
+}
+
 function truncateText(value, maxLength = 96) {
   const text = value?.toString().trim() || "";
 
@@ -500,6 +512,16 @@ function closeJobsBrowser() {
   jobDetailView.hidden = true;
   reportPreview.hidden = true;
   selectedJobId = null;
+}
+
+function openPhotoModal(url) {
+  photoModalImage.src = url;
+  photoModal.hidden = false;
+}
+
+function closePhotoModal() {
+  photoModal.hidden = true;
+  photoModalImage.removeAttribute("src");
 }
 
 function setMainView(view) {
@@ -810,6 +832,290 @@ async function removeCrewMember(job, member) {
 
   setMessage(jobsMessage, "Crew member removed.", "success");
   await loadJobs();
+}
+
+function sanitizeFileName(fileName) {
+  return fileName.replace(/[^a-zA-Z0-9._-]/g, "-");
+}
+
+async function createSignedPhotoUrls(photos) {
+  if (!photos.length) {
+    return [];
+  }
+
+  const { data, error } = await supabaseClient.storage
+    .from("job_photos")
+    .createSignedUrls(
+      photos.map((photo) => photo.file_path),
+      3600
+    );
+
+  if (error) {
+    throw error;
+  }
+
+  return photos.map((photo, index) => ({
+    ...photo,
+    signed_url: data[index]?.signedUrl || ""
+  }));
+}
+
+async function fetchJobPhotos(jobId) {
+  const { data, error } = await supabaseClient
+    .from("photos")
+    .select("id, job_id, image_url, file_path, description, uploaded_by, created_at")
+    .eq("job_id", jobId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return createSignedPhotoUrls(data || []);
+}
+
+function renderPhotoGallery(job, photos, galleryGrid, searchValue = "") {
+  galleryGrid.innerHTML = "";
+
+  const filteredPhotos = photos.filter((photo) => {
+    const text = photo.description?.toLowerCase() || "";
+    return text.includes(searchValue.toLowerCase());
+  });
+
+  if (filteredPhotos.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "list-message";
+    empty.textContent = searchValue
+      ? "No photos match that description search."
+      : "No photos uploaded for this job yet.";
+    galleryGrid.appendChild(empty);
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  filteredPhotos.forEach((photo) => {
+    const card = document.createElement("article");
+    card.className = "photo-card";
+
+    const thumb = document.createElement("img");
+    thumb.className = "photo-card__thumb";
+    thumb.src = photo.signed_url;
+    thumb.alt = photo.description || "Job photo";
+    thumb.addEventListener("click", () => {
+      openPhotoModal(photo.signed_url);
+    });
+
+    const description = document.createElement("p");
+    description.className = "photo-card__description";
+    description.textContent = photo.description || "No description provided.";
+
+    const uploadedDate = document.createElement("span");
+    uploadedDate.className = "photo-card__date";
+    uploadedDate.textContent = `Uploaded ${formatCreatedAt(photo.created_at)}`;
+
+    card.append(thumb, description, uploadedDate);
+
+    if (canDeletePhoto(job, photo)) {
+      const actions = document.createElement("div");
+      actions.className = "photo-card__actions";
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "button button--ghost button--small";
+      deleteButton.type = "button";
+      deleteButton.textContent = "Delete Photo";
+      deleteButton.addEventListener("click", async () => {
+        const confirmed = window.confirm("Are you sure? This will permanently delete the photo.");
+        if (!confirmed) {
+          return;
+        }
+
+        const { error: storageError } = await supabaseClient.storage
+          .from("job_photos")
+          .remove([photo.file_path]);
+
+        if (storageError) {
+          setMessage(jobsMessage, `Unable to delete photo file: ${storageError.message}`, "error");
+          return;
+        }
+
+        const { error: rowError } = await supabaseClient
+          .from("photos")
+          .delete()
+          .eq("id", photo.id);
+
+        if (rowError) {
+          setMessage(jobsMessage, `Unable to delete photo record: ${rowError.message}`, "error");
+          return;
+        }
+
+        setMessage(jobsMessage, "Photo deleted successfully.", "success");
+        const refreshedPhotos = await fetchJobPhotos(job.id);
+        renderPhotoGallery(job, refreshedPhotos, galleryGrid, searchValue);
+      });
+
+      actions.appendChild(deleteButton);
+      card.appendChild(actions);
+    }
+
+    fragment.appendChild(card);
+  });
+
+  galleryGrid.appendChild(fragment);
+}
+
+function createPhotoSection(job) {
+  const wrapper = document.createElement("section");
+  wrapper.className = "job-detail-grid";
+
+  const dropbox = document.createElement("section");
+  dropbox.className = "photo-dropbox";
+  const dropboxTitle = document.createElement("h6");
+  dropboxTitle.textContent = "Photo Drop Box";
+  dropbox.appendChild(dropboxTitle);
+
+  const gallery = document.createElement("section");
+  gallery.className = "photo-gallery";
+  const galleryTitle = document.createElement("h6");
+  galleryTitle.textContent = "Job Photos";
+  gallery.appendChild(galleryTitle);
+
+  const uploadMessage = document.createElement("p");
+  uploadMessage.className = "form-message";
+
+  if (canUploadPhotos(job)) {
+    const uploadGrid = document.createElement("div");
+    uploadGrid.className = "form-grid";
+
+    const fileField = document.createElement("label");
+    fileField.className = "field";
+    const fileLabel = document.createElement("span");
+    fileLabel.textContent = "Select Photos";
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.multiple = true;
+    fileField.append(fileLabel, fileInput);
+
+    const descriptionField = document.createElement("label");
+    descriptionField.className = "field";
+    const descriptionLabel = document.createElement("span");
+    descriptionLabel.textContent = "Description";
+    const descriptionInput = document.createElement("input");
+    descriptionInput.type = "text";
+    descriptionInput.placeholder = "Applies to selected photos";
+    descriptionField.append(descriptionLabel, descriptionInput);
+
+    uploadGrid.append(fileField, descriptionField);
+    dropbox.append(uploadGrid);
+
+    const uploadActions = document.createElement("div");
+    uploadActions.className = "photo-dropbox__actions";
+
+    const uploadButton = document.createElement("button");
+    uploadButton.className = "button button--primary button--small";
+    uploadButton.type = "button";
+    uploadButton.textContent = "Upload Photos";
+
+    uploadActions.append(uploadMessage, uploadButton);
+    dropbox.append(uploadActions);
+
+    uploadButton.addEventListener("click", async () => {
+      const files = Array.from(fileInput.files || []);
+      const description = descriptionInput.value.trim();
+
+      if (files.length === 0) {
+        setMessage(uploadMessage, "Select one or more photos to upload.", "error");
+        return;
+      }
+
+      uploadButton.disabled = true;
+      uploadButton.textContent = "Uploading...";
+
+      try {
+        for (let index = 0; index < files.length; index += 1) {
+          const file = files[index];
+          setMessage(uploadMessage, `Uploading ${index + 1} of ${files.length}...`);
+
+          const filePath = `${job.id}/${currentUser.id}/${Date.now()}-${sanitizeFileName(file.name)}`;
+
+          const { error: uploadError } = await supabaseClient.storage
+            .from("job_photos")
+            .upload(filePath, file);
+
+          if (uploadError) {
+            throw uploadError;
+          }
+
+          const { error: insertError } = await supabaseClient.from("photos").insert({
+            job_id: job.id,
+            image_url: "",
+            file_path: filePath,
+            description,
+            uploaded_by: currentUser.id
+          });
+
+          if (insertError) {
+            throw insertError;
+          }
+        }
+
+        fileInput.value = "";
+        descriptionInput.value = "";
+        setMessage(uploadMessage, "Photos uploaded successfully.", "success");
+        const refreshedPhotos = await fetchJobPhotos(job.id);
+        renderPhotoGallery(job, refreshedPhotos, galleryGridBody, searchInput.value);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Photo upload failed.";
+        setMessage(uploadMessage, `Unable to upload photos: ${message}`, "error");
+      } finally {
+        uploadButton.disabled = false;
+        uploadButton.textContent = "Upload Photos";
+      }
+    });
+  } else {
+    setMessage(uploadMessage, "You can view and search photos for this job.");
+    dropbox.appendChild(uploadMessage);
+  }
+
+  const toolbar = document.createElement("div");
+  toolbar.className = "photo-gallery__toolbar";
+
+  const searchField = document.createElement("label");
+  searchField.className = "field";
+  const searchLabel = document.createElement("span");
+  searchLabel.textContent = "Search photo descriptions";
+  const searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchInput.placeholder = "Search photo descriptions";
+  searchField.append(searchLabel, searchInput);
+  toolbar.appendChild(searchField);
+
+  const galleryGridBody = document.createElement("div");
+  galleryGridBody.className = "photo-gallery__grid";
+
+  const galleryMessage = document.createElement("p");
+  galleryMessage.className = "form-message";
+  gallery.append(toolbar, galleryMessage, galleryGridBody);
+
+  let cachedPhotos = [];
+
+  searchInput.addEventListener("input", () => {
+    renderPhotoGallery(job, cachedPhotos, galleryGridBody, searchInput.value);
+  });
+
+  fetchJobPhotos(job.id)
+    .then((photos) => {
+      cachedPhotos = photos;
+      setMessage(galleryMessage, `${photos.length} photo${photos.length === 1 ? "" : "s"} loaded.`, photos.length ? "success" : "");
+      renderPhotoGallery(job, photos, galleryGridBody, "");
+    })
+    .catch((error) => {
+      const message = error instanceof Error ? error.message : "Unable to load photos.";
+      setMessage(galleryMessage, `Unable to load photos: ${message}`, "error");
+    });
+
+  wrapper.append(dropbox, gallery);
+  return wrapper;
 }
 
 function createInputField(labelText, name, value = "") {
@@ -1277,7 +1583,7 @@ function createJobDetail(job) {
     actions.appendChild(deleteButton);
   }
 
-  article.append(top, meta, detailSections, actions, createCrewSection(job));
+  article.append(top, meta, detailSections, createPhotoSection(job), actions, createCrewSection(job));
 
   if (editSection) {
     article.appendChild(editSection);
@@ -1822,6 +2128,14 @@ if (closeReportPreviewButton) {
   closeReportPreviewButton.addEventListener("click", () => {
     reportPreview.hidden = true;
   });
+}
+
+if (closePhotoModalButton) {
+  closePhotoModalButton.addEventListener("click", closePhotoModal);
+}
+
+if (photoModalBackdrop) {
+  photoModalBackdrop.addEventListener("click", closePhotoModal);
 }
 
 if (signUpButton) {
