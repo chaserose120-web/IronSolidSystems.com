@@ -7,7 +7,9 @@
       name="description"
       content="IronSolidSystems is a dark industrial job tracking app for technicians and repair workflows."
     />
+    <meta name="theme-color" content="#FFCD11" />
     <title>IronSolidSystems</title>
+    <link rel="manifest" href="manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -78,6 +80,36 @@
             </button>
           </div>
         </header>
+
+        <section class="app-section install-helper" id="install-helper" hidden>
+          <div class="panel install-helper__panel">
+            <div class="panel__header panel__header--stack">
+              <div>
+                <span class="eyebrow">Install App</span>
+                <h3>Install IronSolidSystems App</h3>
+              </div>
+              <p class="panel__copy">
+                Save IronSolidSystems to your device for quicker access from the shop or field.
+              </p>
+            </div>
+
+            <div class="install-helper__actions">
+              <button
+                class="button button--primary"
+                type="button"
+                id="install-app-button"
+              >
+                Install IronSolidSystems App
+              </button>
+              <p
+                class="form-message"
+                id="install-helper-message"
+                role="status"
+                aria-live="polite"
+              ></p>
+            </div>
+          </div>
+        </section>
 
         <section class="app-section" id="auth-panel">
           <div class="section-heading section-heading--compact">

@@ -20,6 +20,9 @@ const openSettingsNavButton = document.getElementById("open-settings-nav");
 const closeSettingsButton = document.getElementById("close-settings-button");
 const themeColorSelect = document.getElementById("theme-color-select");
 const textColorSelect = document.getElementById("text-color-select");
+const installHelper = document.getElementById("install-helper");
+const installAppButton = document.getElementById("install-app-button");
+const installHelperMessage = document.getElementById("install-helper-message");
 
 const signUpForm = document.getElementById("sign-up-form");
 const signUpFullNameInput = document.getElementById("sign-up-full-name");
@@ -84,6 +87,7 @@ let currentUser = null;
 let currentView = "main";
 let visibleJobs = [];
 let selectedJobId = null;
+let deferredInstallPrompt = null;
 
 const THEME_STORAGE_KEY = "ironsolidsystems-theme-settings";
 const DEFAULT_THEME_SETTINGS = {
@@ -560,6 +564,65 @@ function applyThemeSettings(settings) {
 
 function saveThemeSettings(settings) {
   localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(settings));
+}
+
+function isRunningStandalone() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function updateInstallHelperVisibility() {
+  if (!installHelper) {
+    return;
+  }
+
+  installHelper.hidden = !deferredInstallPrompt || isRunningStandalone();
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) {
+    return;
+  }
+
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch((error) => {
+      console.error("Service worker registration failed", error);
+    });
+  });
+}
+
+function setupInstallPrompt() {
+  if (!installHelper || !installAppButton) {
+    return;
+  }
+
+  installHelper.hidden = true;
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    setMessage(installHelperMessage, "");
+    updateInstallHelperVisibility();
+  });
+
+  installAppButton.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) {
+      return;
+    }
+
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+
+    if (choice.outcome === "accepted") {
+      deferredInstallPrompt = null;
+      setMessage(installHelperMessage, "Install started.");
+      updateInstallHelperVisibility();
+    }
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    updateInstallHelperVisibility();
+  });
 }
 
 function getSavedThemeSettings() {
@@ -2234,4 +2297,6 @@ loadThemeSettings();
 updateAuthUI(null);
 setMainView("main");
 updateJobPlaceholders();
+registerServiceWorker();
+setupInstallPrompt();
 checkCurrentUser();
