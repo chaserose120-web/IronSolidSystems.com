@@ -2912,13 +2912,21 @@ async function handleJoinCrew(event) {
     return;
   }
 
-  const crewCode = joinCrewCodeInput.value.trim();
+  const enteredCode = joinCrewCodeInput.value;
+  const cleanedCrewCode = enteredCode.trim().replace(/\D/g, "");
   const requestedRole = joinCrewRoleSelect.value;
 
-  if (!/^\d{8}$/.test(crewCode)) {
+  console.log("IronSolidSystems crew join input", {
+    enteredCode,
+    cleanedCode: cleanedCrewCode
+  });
+
+  if (!/^\d{8}$/.test(cleanedCrewCode)) {
     setMessage(joinCrewMessage, "Enter a valid 8-digit crew code.", "error");
     return;
   }
+
+  joinCrewCodeInput.value = cleanedCrewCode;
 
   if (requestedRole === "Job Lead") {
     setMessage(joinCrewMessage, "Job Lead access cannot be requested through crew join.", "error");
@@ -2932,9 +2940,16 @@ async function handleJoinCrew(event) {
   const { data: job, error: jobError } = await supabaseClient
     .from("jobs")
     .select("id, user_id, crew_code, crew_enabled")
-    .eq("crew_code", crewCode)
+    .eq("crew_code", cleanedCrewCode)
     .eq("crew_enabled", true)
     .maybeSingle();
+
+  console.log("IronSolidSystems crew join query", {
+    enteredCode,
+    cleanedCode: cleanedCrewCode,
+    queryResult: job,
+    supabaseError: jobError
+  });
 
   if (jobError) {
     joinCrewButton.disabled = false;
