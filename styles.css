@@ -1,48 +1,42 @@
 :root {
-  --bg: #070808;
-  --bg-alt: #0d0f0f;
-  --panel: rgba(17, 20, 20, 0.9);
-  --panel-strong: #161919;
-  --panel-elevated: #1b1f1f;
-  --panel-soft: rgba(255, 255, 255, 0.03);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(242, 194, 48, 0.18);
-  --text: #f2f2ec;
-  --text-soft: #afb5af;
-  --muted-text: #afb5af;
-  --accent: #f2c230;
-  --accent-strong: #ffcf40;
-  --accent-secondary: #b00000;
-  --accent-shadow: rgba(242, 194, 48, 0.2);
-  --field-bg: rgba(255, 255, 255, 0.05);
-  --field-bg-focus: rgba(255, 255, 255, 0.07);
-  --field-border: rgba(255, 255, 255, 0.12);
-  --section-bg: rgba(255, 255, 255, 0.025);
-  --note-bg: rgba(255, 255, 255, 0.03);
-  --report-bg: rgba(0, 0, 0, 0.2);
-  --muted-bg: rgba(255, 255, 255, 0.04);
-  --hover-bg: rgba(255, 255, 255, 0.05);
-  --ghost-bg: rgba(255, 255, 255, 0.03);
-  --ghost-border: rgba(255, 255, 255, 0.12);
-  --placeholder: #8b938d;
+  --bg: #0B0D10;
+  --sidebar: #101318;
+  --header: #111418;
+  --panel: #15191F;
+  --panel-soft: #1B2028;
+  --panel-elevated: #202632;
+  --border: #303744;
+  --border-strong: rgba(200, 162, 74, 0.34);
+  --accent: #C8A24A;
+  --accent-2: #6B7280;
+  --accent-secondary: #6B7280;
+  --text: #F4F4F5;
+  --text-soft: #A1A1AA;
+  --muted-text: #A1A1AA;
   --button-text: #111111;
-  --chrome-bg: rgba(12, 13, 15, 0.96);
-  --chrome-bg-alt: #16181b;
-  --chrome-border: rgba(255, 255, 255, 0.08);
-  --chrome-text: #f2f2ec;
-  --chrome-text-soft: #b7bcb7;
-  --chrome-muted-bg: rgba(255, 255, 255, 0.04);
-  --success: #7ed8a4;
-  --danger: #ff8f7d;
+  --danger: #DC2626;
+  --field-bg: #1B2028;
+  --field-bg-focus: #202632;
+  --field-border: #303744;
+  --section-bg: #1B2028;
+  --note-bg: #202632;
+  --report-bg: #202632;
+  --muted-bg: #1B2028;
+  --hover-bg: rgba(200, 162, 74, 0.16);
+  --ghost-bg: #1B2028;
+  --ghost-border: #303744;
+  --placeholder: #A1A1AA;
+  --accent-shadow: rgba(200, 162, 74, 0.26);
+  --body-glow: rgba(200, 162, 74, 0.12);
+  --body-glow-alt: rgba(107, 114, 128, 0.1);
+  --body-start: #0B0D10;
+  --body-end: #0B0D10;
+  --success: #16A34A;
   --radius-lg: 24px;
   --radius-md: 18px;
   --radius-sm: 14px;
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
   --container: 1320px;
-  --body-glow: rgba(242, 194, 48, 0.12);
-  --body-glow-alt: rgba(255, 145, 77, 0.06);
-  --body-start: #060707;
-  --body-end: #0a0c0c;
 }
 
 *,
@@ -101,9 +95,7 @@ textarea,
 .panel {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
-    var(--panel);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--panel-elevated) 18%, transparent), var(--panel));
   box-shadow: var(--shadow);
   transition:
     opacity 360ms ease,
@@ -114,11 +106,7 @@ textarea,
 
 .sidebar,
 .topbar {
-  border-color: var(--chrome-border);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
-    linear-gradient(180deg, var(--chrome-bg-alt), var(--chrome-bg));
-  color: var(--chrome-text);
+  color: #f4f4f5;
 }
 
 .sidebar {
@@ -130,6 +118,7 @@ textarea,
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 1.5rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sidebar) 92%, white 3%), var(--sidebar));
 }
 
 .brand {
@@ -162,7 +151,7 @@ textarea,
 .brand__text {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--chrome-text);
+  color: #f4f4f5;
 }
 
 .sidebar-nav {
@@ -178,7 +167,7 @@ textarea,
   border: 0;
   border-radius: 14px;
   background: transparent;
-  color: var(--chrome-text-soft);
+  color: #cfd3da;
   font-size: 1rem;
   font-weight: 600;
   text-align: left;
@@ -193,7 +182,7 @@ textarea,
 .sidebar-nav a:focus-visible,
 .sidebar-nav__button:hover,
 .sidebar-nav__button:focus-visible {
-  color: var(--chrome-text);
+  color: #ffffff;
   background: var(--hover-bg);
   transform: translateX(3px);
 }
@@ -201,8 +190,8 @@ textarea,
 .sidebar-user {
   padding: 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--chrome-border);
-  background: var(--chrome-muted-bg);
+  border: 1px solid color-mix(in srgb, var(--sidebar) 55%, white 18%);
+  background: color-mix(in srgb, var(--sidebar) 84%, white 7%);
 }
 
 .sidebar-user__label,
@@ -221,14 +210,14 @@ textarea,
   display: block;
   margin-top: 0.45rem;
   font-size: 1rem;
-  color: var(--chrome-text);
+  color: #ffffff;
   overflow-wrap: anywhere;
 }
 
 .sidebar-user__email {
   display: block;
   margin-top: 0.35rem;
-  color: var(--chrome-text-soft);
+  color: #cfd3da;
   overflow-wrap: anywhere;
 }
 
@@ -249,6 +238,7 @@ textarea,
   justify-content: space-between;
   gap: 1rem;
   padding: 1.25rem 1.4rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--header) 92%, white 3%), var(--header));
 }
 
 .topbar h1,
@@ -279,21 +269,21 @@ textarea,
 
 .topbar-user strong {
   font-size: 1rem;
-  color: var(--chrome-text);
+  color: #ffffff;
 }
 
 .topbar-user span {
-  color: var(--chrome-text-soft);
+  color: #cfd3da;
   font-size: 0.95rem;
 }
 
 .menu-toggle {
   display: none;
   padding: 0.9rem 1rem;
-  border: 1px solid var(--chrome-border);
+  border: 1px solid color-mix(in srgb, var(--header) 55%, white 18%);
   border-radius: 12px;
-  background: var(--chrome-muted-bg);
-  color: var(--chrome-text);
+  background: color-mix(in srgb, var(--header) 84%, white 7%);
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -385,7 +375,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--section-bg);
+  background: var(--panel-soft);
 }
 
 .landing-highlight h3 {
@@ -430,9 +420,7 @@ textarea,
 
 .metric-card {
   padding: 1.35rem;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
-    var(--panel-elevated);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--panel-elevated) 26%, transparent), var(--panel-elevated));
 }
 
 .metric-card__value {
@@ -451,7 +439,7 @@ textarea,
 .panel--form {
   background:
     radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 10%, transparent), transparent 25%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
+    linear-gradient(180deg, color-mix(in srgb, var(--panel-elevated) 18%, transparent), transparent),
     var(--panel);
 }
 
@@ -661,7 +649,7 @@ textarea,
   padding: 1.1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
-  background: var(--panel-soft);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--panel-soft) 22%, transparent), var(--panel-soft));
   transition:
     transform 180ms ease,
     border-color 180ms ease,

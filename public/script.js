@@ -95,7 +95,7 @@ let deferredInstallPrompt = null;
 
 const THEME_STORAGE_KEY = "ironsolidsystems-theme-settings";
 const DEFAULT_THEME_SETTINGS = {
-  themeColor: "cat-yellow",
+  themeColor: "black",
   textColor: "white"
 };
 
@@ -121,163 +121,139 @@ const JOB_FIELDS_SELECT = [
 
 const THEME_PRESETS = {
   red: {
-    bg: "#0b090a",
-    bgAlt: "#141012",
-    panel: "rgba(22, 13, 15, 0.94)",
-    panelStrong: "#221114",
-    panelSoft: "rgba(177, 15, 46, 0.14)",
-    border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(255, 0, 0, 0.34)",
-    accent: "#b10f2e",
-    accentStrong: "#ff3458",
-    accentSecondary: "#6e0018",
-    accentShadow: "rgba(177, 15, 46, 0.26)",
-    bodyGlow: "rgba(177, 15, 46, 0.14)",
-    bodyGlowAlt: "rgba(90, 0, 16, 0.12)",
-    bodyStart: "#060607",
-    bodyEnd: "#120b0d",
-    buttonText: "#f6f4ef"
+    bg: "#0F0708",
+    sidebar: "#13090B",
+    header: "#13090B",
+    panel: "#1A0C0F",
+    panelSoft: "#241116",
+    panelElevated: "#30171D",
+    border: "#52242D",
+    accent: "#9B111E",
+    accent2: "#FFFFFF",
+    text: "#FFFFFF",
+    mutedText: "#D6C5C8",
+    buttonText: "#FFFFFF",
+    danger: "#EF4444"
   },
   blue: {
-    bg: "#08101f",
-    bgAlt: "#0d1830",
-    panel: "rgba(13, 24, 47, 0.94)",
-    panelStrong: "#152447",
-    panelSoft: "rgba(0, 40, 255, 0.14)",
-    border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(0, 40, 255, 0.3)",
-    accent: "#0028FF",
-    accentStrong: "#4f72ff",
-    accentSecondary: "#00157d",
-    accentShadow: "rgba(0, 40, 255, 0.22)",
-    bodyGlow: "rgba(0, 40, 255, 0.16)",
-    bodyGlowAlt: "rgba(9, 20, 56, 0.18)",
-    bodyStart: "#050913",
-    bodyEnd: "#0c1730",
-    buttonText: "#f5f7ff"
+    bg: "#050B16",
+    sidebar: "#07111F",
+    header: "#07111F",
+    panel: "#0C1A2E",
+    panelSoft: "#112544",
+    panelElevated: "#17335F",
+    border: "#284E86",
+    accent: "#0033A0",
+    accent2: "#FFFFFF",
+    text: "#FFFFFF",
+    mutedText: "#C8D4E8",
+    buttonText: "#FFFFFF",
+    danger: "#EF4444"
   },
   black: {
-    bg: "#060606",
-    bgAlt: "#101010",
-    panel: "rgba(18, 18, 18, 0.92)",
-    panelStrong: "#181818",
-    panelSoft: "rgba(156, 156, 156, 0.08)",
-    border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(160, 160, 160, 0.2)",
-    accent: "#9d9d9d",
-    accentStrong: "#cbcbcb",
-    accentSecondary: "#5c5c5c",
-    accentShadow: "rgba(160, 160, 160, 0.16)",
-    bodyGlow: "rgba(180, 180, 180, 0.08)",
-    bodyGlowAlt: "rgba(80, 80, 80, 0.08)",
-    bodyStart: "#050505",
-    bodyEnd: "#0d0d0d",
-    buttonText: "#111111"
+    bg: "#0B0D10",
+    sidebar: "#101318",
+    header: "#111418",
+    panel: "#15191F",
+    panelSoft: "#1B2028",
+    panelElevated: "#202632",
+    border: "#303744",
+    accent: "#C8A24A",
+    accent2: "#6B7280",
+    text: "#F4F4F5",
+    mutedText: "#A1A1AA",
+    buttonText: "#111111",
+    danger: "#DC2626"
   },
   white: {
-    bg: "#0b0d10",
-    bgAlt: "#14171a",
-    panel: "rgba(25, 27, 29, 0.94)",
-    panelStrong: "#202427",
-    panelSoft: "rgba(216, 219, 223, 0.12)",
-    border: "rgba(0, 0, 0, 0.08)",
-    borderStrong: "rgba(255, 255, 255, 0.24)",
-    accent: "#d8dbdf",
-    accentStrong: "#ffffff",
-    accentSecondary: "#8f959b",
-    accentShadow: "rgba(255, 255, 255, 0.16)",
-    bodyGlow: "rgba(255, 255, 255, 0.12)",
-    bodyGlowAlt: "rgba(150, 160, 172, 0.1)",
-    bodyStart: "#08090b",
-    bodyEnd: "#121418",
-    buttonText: "#0d0f12"
+    bg: "#0B0D10",
+    sidebar: "#101318",
+    header: "#111418",
+    panel: "#15191F",
+    panelSoft: "#1B2028",
+    panelElevated: "#202632",
+    border: "#303744",
+    accent: "#C8A24A",
+    accent2: "#6B7280",
+    text: "#F4F4F5",
+    mutedText: "#A1A1AA",
+    buttonText: "#111111",
+    danger: "#DC2626"
   },
   tan: {
-    bg: "#d8ccb7",
-    bgAlt: "#cbbda5",
-    panel: "rgba(235, 224, 203, 0.94)",
-    panelStrong: "#e6d9bf",
-    panelSoft: "rgba(143, 111, 69, 0.12)",
-    border: "rgba(76, 57, 34, 0.16)",
-    borderStrong: "rgba(111, 84, 48, 0.26)",
-    accent: "#6f5430",
-    accentStrong: "#8e6b3c",
-    accentSecondary: "#2f2417",
-    accentShadow: "rgba(111, 84, 48, 0.18)",
-    bodyGlow: "rgba(205, 181, 139, 0.18)",
-    bodyGlowAlt: "rgba(118, 86, 48, 0.08)",
-    bodyStart: "#ddd1bb",
-    bodyEnd: "#cdbfa6",
-    buttonText: "#f7f2e7"
+    bg: "#E8D8BD",
+    sidebar: "#2A2118",
+    header: "#2A2118",
+    panel: "#F3E7D0",
+    panelSoft: "#E6D2AD",
+    panelElevated: "#FFF3DB",
+    border: "#8A6F4D",
+    accent: "#6B4F2A",
+    accent2: "#C7A66A",
+    text: "#1F160E",
+    mutedText: "#5C4B38",
+    buttonText: "#FFFFFF",
+    danger: "#B91C1C"
   },
   "cat-yellow": {
-    bg: "#0b0b0b",
-    bgAlt: "#141414",
-    panel: "rgba(21, 21, 21, 0.95)",
-    panelStrong: "#1b1b1b",
-    panelSoft: "rgba(245, 190, 39, 0.14)",
-    border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(245, 190, 39, 0.34)",
-    accent: "#F5BE27",
-    accentStrong: "#ffd76a",
-    accentSecondary: "#820000",
-    accentShadow: "rgba(245, 190, 39, 0.22)",
-    bodyGlow: "rgba(245, 190, 39, 0.12)",
-    bodyGlowAlt: "rgba(130, 0, 0, 0.1)",
-    bodyStart: "#080808",
-    bodyEnd: "#121212",
-    buttonText: "#111111"
+    bg: "#0A0A0A",
+    sidebar: "#111111",
+    header: "#111111",
+    panel: "#181818",
+    panelSoft: "#222222",
+    panelElevated: "#2A2A2A",
+    border: "#3A3A3A",
+    accent: "#FFCD11",
+    accent2: "#D71920",
+    text: "#FFFFFF",
+    mutedText: "#C7C7C7",
+    buttonText: "#111111",
+    danger: "#D71920"
   },
   "john-deere-green": {
-    bg: "#09100a",
-    bgAlt: "#111812",
-    panel: "rgba(17, 28, 18, 0.95)",
-    panelStrong: "#1b311d",
-    panelSoft: "rgba(49, 136, 34, 0.16)",
-    border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(255, 237, 5, 0.28)",
-    accent: "#318822",
-    accentStrong: "#FFED05",
-    accentSecondary: "#1f4f16",
-    accentShadow: "rgba(49, 136, 34, 0.22)",
-    bodyGlow: "rgba(49, 136, 34, 0.16)",
-    bodyGlowAlt: "rgba(255, 237, 5, 0.08)",
-    bodyStart: "#070a08",
-    bodyEnd: "#101812",
-    buttonText: "#0f140d"
+    bg: "#071007",
+    sidebar: "#0B160B",
+    header: "#0B160B",
+    panel: "#102010",
+    panelSoft: "#172B17",
+    panelElevated: "#1D361D",
+    border: "#2F4F2F",
+    accent: "#367C2B",
+    accent2: "#FFDE00",
+    text: "#F7F7F2",
+    mutedText: "#C9D0C3",
+    buttonText: "#FFFFFF",
+    danger: "#D71920"
   },
   "usa-theme": {
-    bg: "#07111e",
-    bgAlt: "#0c1830",
-    panel: "rgba(15, 28, 48, 0.95)",
-    panelStrong: "#182f52",
-    panelSoft: "rgba(116, 144, 194, 0.13)",
-    border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(181, 78, 87, 0.28)",
-    accent: "#b54e57",
-    accentStrong: "#8ca9d3",
-    accentSecondary: "#f3f5f8",
-    accentShadow: "rgba(181, 78, 87, 0.18)",
-    bodyGlow: "rgba(118, 150, 206, 0.13)",
-    bodyGlowAlt: "rgba(181, 78, 87, 0.1)",
-    bodyStart: "#06101c",
-    bodyEnd: "#0b1830",
-    buttonText: "#f5f7fa"
+    bg: "#061A33",
+    sidebar: "#071426",
+    header: "#071426",
+    panel: "#0B2545",
+    panelSoft: "#12345C",
+    panelElevated: "#163E70",
+    border: "#355C8C",
+    accent: "#B31942",
+    accent2: "#FFFFFF",
+    text: "#FFFFFF",
+    mutedText: "#D8E2F0",
+    buttonText: "#FFFFFF",
+    danger: "#EF4444"
   }
 };
 
 const TEXT_PRESETS = {
   white: {
-    text: "#f2f2ec",
-    textSoft: "#afb5af"
+    text: null,
+    textSoft: null
   },
   black: {
     text: "#111111",
-    textSoft: "#3f3f3f"
+    textSoft: "#4B5563"
   },
   yellow: {
-    text: "#f2cf5b",
-    textSoft: "#d7bb64"
+    text: "#F4D35E",
+    textSoft: "#D8C27A"
   }
 };
 
@@ -554,88 +530,104 @@ function setMainView(view) {
   settingsPanel.hidden = !showSettings;
 }
 
+function hexToRgb(hex) {
+  const normalized = hex.replace("#", "");
+
+  if (normalized.length !== 6) {
+    return null;
+  }
+
+  const value = Number.parseInt(normalized, 16);
+
+  return {
+    r: (value >> 16) & 255,
+    g: (value >> 8) & 255,
+    b: value & 255
+  };
+}
+
+function hexToRgba(hex, alpha) {
+  const rgb = hexToRgb(hex);
+
+  if (!rgb) {
+    return `rgba(0, 0, 0, ${alpha})`;
+  }
+
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+}
+
 function applyThemeSettings(settings) {
   const root = document.documentElement;
-  const theme = THEME_PRESETS[settings.themeColor] || THEME_PRESETS["cat-yellow"];
-  const text = TEXT_PRESETS[settings.textColor] || TEXT_PRESETS.white;
+  const theme = THEME_PRESETS[settings.themeColor] || THEME_PRESETS.black;
+  const textOverride = TEXT_PRESETS[settings.textColor] || TEXT_PRESETS.white;
   const isBlackText = settings.textColor === "black";
-  const isYellowText = settings.textColor === "yellow";
+  const bodyText = textOverride.text || theme.text;
+  const mutedText = textOverride.textSoft || theme.mutedText;
 
   const surfaces = isBlackText
-      ? {
-        panel: "rgba(244, 240, 231, 0.95)",
-        panelStrong: "#efe9db",
-        panelElevated: "#f7f2e7",
-        panelSoft: "rgba(255, 249, 235, 0.78)",
-        border: "rgba(0, 0, 0, 0.12)",
-        borderStrong: theme.borderStrong,
-        fieldBg: "rgba(255, 252, 245, 0.92)",
-        fieldBgFocus: "#ffffff",
-        fieldBorder: "rgba(0, 0, 0, 0.14)",
-        sectionBg: "rgba(255, 249, 236, 0.84)",
-        noteBg: "rgba(255, 255, 255, 0.92)",
-        reportBg: "rgba(255, 255, 255, 0.95)",
-        mutedBg: "rgba(255, 250, 240, 0.72)",
-        hoverBg: "rgba(0, 0, 0, 0.06)",
-        ghostBg: "rgba(255, 255, 255, 0.84)",
-        ghostBorder: "rgba(0, 0, 0, 0.12)",
-        placeholder: "#5b5b5b",
+    ? {
+        panel: "#F3EDE0",
+        panelSoft: "#E7DCC7",
+        panelElevated: "#FFF6E7",
+        border: "#9A8566",
+        text: bodyText,
+        mutedText,
         buttonText: "#111111",
-        mutedText: "#4a4a4a"
+        fieldBg: "#FFF8ED",
+        fieldBgFocus: "#FFFFFF",
+        fieldBorder: "#B79D79",
+        ghostBg: "#F7EFE0",
+        ghostBorder: "#B79D79",
+        placeholder: "#6B5A45"
       }
     : {
         panel: theme.panel,
-        panelStrong: theme.panelStrong,
-        panelElevated: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
         panelSoft: theme.panelSoft,
+        panelElevated: theme.panelElevated,
         border: theme.border,
-        borderStrong: theme.borderStrong,
-        fieldBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
-        fieldBgFocus: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panel}`,
-        fieldBorder: isYellowText ? "rgba(242, 207, 91, 0.24)" : theme.borderStrong,
-        sectionBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panel}`,
-        noteBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
-        reportBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
-        mutedBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
-        hoverBg: theme.panelSoft,
-        ghostBg: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
-        ghostBorder: theme.borderStrong,
-        placeholder: isYellowText ? "#c8b261" : "#8b938d",
-        buttonText: theme.buttonText || text.text,
-        mutedText: text.textSoft
+        text: bodyText,
+        mutedText,
+        buttonText: theme.buttonText,
+        fieldBg: theme.panelSoft,
+        fieldBgFocus: theme.panelElevated,
+        fieldBorder: theme.border,
+        ghostBg: theme.panelSoft,
+        ghostBorder: theme.border,
+        placeholder: theme.mutedText
       };
 
   root.style.setProperty("--bg", theme.bg);
-  root.style.setProperty("--bg-alt", theme.bgAlt);
+  root.style.setProperty("--sidebar", theme.sidebar);
+  root.style.setProperty("--header", theme.header);
   root.style.setProperty("--panel", surfaces.panel);
-  root.style.setProperty("--panel-strong", surfaces.panelStrong);
-  root.style.setProperty("--panel-elevated", surfaces.panelElevated);
   root.style.setProperty("--panel-soft", surfaces.panelSoft);
+  root.style.setProperty("--panel-elevated", surfaces.panelElevated);
   root.style.setProperty("--border", surfaces.border);
-  root.style.setProperty("--border-strong", surfaces.borderStrong);
   root.style.setProperty("--accent", theme.accent);
-  root.style.setProperty("--accent-strong", theme.accentStrong);
-  root.style.setProperty("--accent-secondary", theme.accentSecondary || theme.accentStrong);
-  root.style.setProperty("--accent-shadow", theme.accentShadow);
-  root.style.setProperty("--body-glow", theme.bodyGlow);
-  root.style.setProperty("--body-glow-alt", theme.bodyGlowAlt);
-  root.style.setProperty("--body-start", theme.bodyStart);
-  root.style.setProperty("--body-end", theme.bodyEnd);
-  root.style.setProperty("--text", text.text);
-  root.style.setProperty("--text-soft", text.textSoft);
+  root.style.setProperty("--accent-2", theme.accent2);
+  root.style.setProperty("--accent-secondary", theme.accent2);
+  root.style.setProperty("--text", surfaces.text);
   root.style.setProperty("--muted-text", surfaces.mutedText);
+  root.style.setProperty("--text-soft", surfaces.mutedText);
+  root.style.setProperty("--button-text", surfaces.buttonText);
+  root.style.setProperty("--danger", theme.danger);
+  root.style.setProperty("--border-strong", hexToRgba(theme.accent, 0.34));
+  root.style.setProperty("--accent-shadow", hexToRgba(theme.accent, 0.26));
+  root.style.setProperty("--body-glow", hexToRgba(theme.accent, 0.12));
+  root.style.setProperty("--body-glow-alt", hexToRgba(theme.accent2, 0.1));
+  root.style.setProperty("--body-start", theme.bg);
+  root.style.setProperty("--body-end", theme.bg);
   root.style.setProperty("--field-bg", surfaces.fieldBg);
   root.style.setProperty("--field-bg-focus", surfaces.fieldBgFocus);
   root.style.setProperty("--field-border", surfaces.fieldBorder);
-  root.style.setProperty("--section-bg", surfaces.sectionBg);
-  root.style.setProperty("--note-bg", surfaces.noteBg);
-  root.style.setProperty("--report-bg", surfaces.reportBg);
-  root.style.setProperty("--muted-bg", surfaces.mutedBg);
-  root.style.setProperty("--hover-bg", surfaces.hoverBg);
+  root.style.setProperty("--section-bg", surfaces.panelSoft);
+  root.style.setProperty("--note-bg", surfaces.panelElevated);
+  root.style.setProperty("--report-bg", surfaces.panelElevated);
+  root.style.setProperty("--muted-bg", surfaces.panelSoft);
+  root.style.setProperty("--hover-bg", hexToRgba(theme.accent, 0.16));
   root.style.setProperty("--ghost-bg", surfaces.ghostBg);
   root.style.setProperty("--ghost-border", surfaces.ghostBorder);
   root.style.setProperty("--placeholder", surfaces.placeholder);
-  root.style.setProperty("--button-text", surfaces.buttonText);
 }
 
 function saveThemeSettings(settings) {
