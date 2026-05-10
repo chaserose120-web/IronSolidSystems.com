@@ -7,9 +7,16 @@
       name="description"
       content="IronSolidSystems is a dark industrial job tracking app for technicians and repair workflows."
     />
+    <meta name="application-name" content="IronSolidSystems" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="IronSolidSystems" />
     <meta name="theme-color" content="#FFCD11" />
     <title>IronSolidSystems</title>
     <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/png" href="/icons/iss-logo.png" />
+    <link rel="icon" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="icon" sizes="512x512" href="/icons/icon-512.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,7 +29,9 @@
     <div class="app-shell">
       <aside class="sidebar" aria-label="Primary navigation">
         <a class="brand" href="#dashboard" aria-label="IronSolidSystems home">
-          <span class="brand__mark" aria-hidden="true">IS</span>
+          <span class="brand__mark">
+            <img src="/icons/iss-logo.png" alt="IronSolidSystems logo" />
+          </span>
           <span class="brand__text">IronSolidSystems</span>
         </a>
 

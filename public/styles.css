@@ -24,6 +24,12 @@
   --ghost-border: rgba(255, 255, 255, 0.12);
   --placeholder: #8b938d;
   --button-text: #111111;
+  --chrome-bg: rgba(12, 13, 15, 0.96);
+  --chrome-bg-alt: #16181b;
+  --chrome-border: rgba(255, 255, 255, 0.08);
+  --chrome-text: #f2f2ec;
+  --chrome-text-soft: #b7bcb7;
+  --chrome-muted-bg: rgba(255, 255, 255, 0.04);
   --success: #7ed8a4;
   --danger: #ff8f7d;
   --radius-lg: 24px;
@@ -104,6 +110,15 @@ textarea,
     box-shadow 180ms ease;
 }
 
+.sidebar,
+.topbar {
+  border-color: var(--chrome-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent),
+    linear-gradient(180deg, var(--chrome-bg-alt), var(--chrome-bg));
+  color: var(--chrome-text);
+}
+
 .sidebar {
   position: sticky;
   top: 1.25rem;
@@ -127,16 +142,25 @@ textarea,
   width: 3rem;
   height: 3rem;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-  color: var(--text);
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.1rem;
-  font-weight: 800;
+  padding: 0.18rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.brand__mark img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
 }
 
 .brand__text {
   font-size: 1.15rem;
   font-weight: 700;
+  color: var(--chrome-text);
 }
 
 .sidebar-nav {
@@ -152,7 +176,7 @@ textarea,
   border: 0;
   border-radius: 14px;
   background: transparent;
-  color: var(--text-soft);
+  color: var(--chrome-text-soft);
   font-size: 1rem;
   font-weight: 600;
   text-align: left;
@@ -167,7 +191,7 @@ textarea,
 .sidebar-nav a:focus-visible,
 .sidebar-nav__button:hover,
 .sidebar-nav__button:focus-visible {
-  color: var(--text);
+  color: var(--chrome-text);
   background: var(--hover-bg);
   transform: translateX(3px);
 }
@@ -175,8 +199,8 @@ textarea,
 .sidebar-user {
   padding: 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  background: var(--muted-bg);
+  border: 1px solid var(--chrome-border);
+  background: var(--chrome-muted-bg);
 }
 
 .sidebar-user__label,
@@ -195,14 +219,14 @@ textarea,
   display: block;
   margin-top: 0.45rem;
   font-size: 1rem;
-  color: var(--text);
+  color: var(--chrome-text);
   overflow-wrap: anywhere;
 }
 
 .sidebar-user__email {
   display: block;
   margin-top: 0.35rem;
-  color: var(--text-soft);
+  color: var(--chrome-text-soft);
   overflow-wrap: anywhere;
 }
 
@@ -253,20 +277,21 @@ textarea,
 
 .topbar-user strong {
   font-size: 1rem;
+  color: var(--chrome-text);
 }
 
 .topbar-user span {
-  color: var(--text-soft);
+  color: var(--chrome-text-soft);
   font-size: 0.95rem;
 }
 
 .menu-toggle {
   display: none;
   padding: 0.9rem 1rem;
-  border: 1px solid var(--ghost-border);
+  border: 1px solid var(--chrome-border);
   border-radius: 12px;
-  background: var(--ghost-bg);
-  color: var(--text);
+  background: var(--chrome-muted-bg);
+  color: var(--chrome-text);
   cursor: pointer;
 }
 
