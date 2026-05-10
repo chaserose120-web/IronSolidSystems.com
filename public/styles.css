@@ -10,6 +10,7 @@
   --text-soft: #afb5af;
   --accent: #f2c230;
   --accent-strong: #ffcf40;
+  --accent-secondary: #b00000;
   --accent-shadow: rgba(242, 194, 48, 0.2);
   --success: #7ed8a4;
   --danger: #ff8f7d;
@@ -114,8 +115,8 @@ textarea,
   width: 3rem;
   height: 3rem;
   border-radius: 16px;
-  background: linear-gradient(135deg, var(--accent-strong), #ab7d07);
-  color: #111;
+  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+  color: var(--text);
   font-family: "Space Grotesk", sans-serif;
   font-size: 1.1rem;
   font-weight: 800;
@@ -472,8 +473,8 @@ textarea,
 }
 
 .button--primary {
-  background: linear-gradient(135deg, var(--accent-strong), #bd8b0b);
-  color: #0f1010;
+  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+  color: var(--text);
   box-shadow: 0 16px 34px var(--accent-shadow);
 }
 

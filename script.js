@@ -109,36 +109,38 @@ const JOB_FIELDS_SELECT = [
 
 const THEME_PRESETS = {
   red: {
-    bg: "#080607",
-    bgAlt: "#120b0d",
-    panel: "rgba(24, 14, 16, 0.92)",
-    panelStrong: "#221214",
+    bg: "#FF0000",
+    bgAlt: "#FF0000",
+    panel: "#FF0000",
+    panelStrong: "#FF0000",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(158, 30, 52, 0.32)",
-    accent: "#9e1e34",
-    accentStrong: "#c7354f",
-    accentShadow: "rgba(158, 30, 52, 0.24)",
-    bodyGlow: "rgba(158, 30, 52, 0.18)",
-    bodyGlowAlt: "rgba(88, 8, 24, 0.14)",
-    bodyStart: "#050405",
-    bodyEnd: "#0d0708"
+    borderStrong: "rgba(0, 0, 0, 0.28)",
+    accent: "#000000",
+    accentStrong: "#000000",
+    accentSecondary: "#000000",
+    accentShadow: "rgba(0, 0, 0, 0.18)",
+    bodyGlow: "rgba(0, 0, 0, 0.12)",
+    bodyGlowAlt: "rgba(0, 0, 0, 0.08)",
+    bodyStart: "#FF0000",
+    bodyEnd: "#FF0000"
   },
   blue: {
-    bg: "#07101d",
-    bgAlt: "#0d1830",
-    panel: "rgba(15, 24, 46, 0.92)",
-    panelStrong: "#16284d",
+    bg: "#0033A0",
+    bgAlt: "#0033A0",
+    panel: "#FFFFFF",
+    panelStrong: "#FFFFFF",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(0, 82, 155, 0.32)",
-    accent: "#0052a5",
-    accentStrong: "#3f7fda",
-    accentShadow: "rgba(0, 82, 165, 0.22)",
-    bodyGlow: "rgba(0, 82, 165, 0.16)",
-    bodyGlowAlt: "rgba(11, 32, 74, 0.18)",
-    bodyStart: "#050914",
-    bodyEnd: "#091327"
+    borderStrong: "rgba(0, 51, 160, 0.28)",
+    accent: "#0033A0",
+    accentStrong: "#0033A0",
+    accentSecondary: "#FFFFFF",
+    accentShadow: "rgba(0, 51, 160, 0.18)",
+    bodyGlow: "rgba(255, 255, 255, 0.14)",
+    bodyGlowAlt: "rgba(255, 255, 255, 0.1)",
+    bodyStart: "#0033A0",
+    bodyEnd: "#0033A0"
   },
   black: {
     bg: "#060606",
@@ -189,36 +191,38 @@ const THEME_PRESETS = {
     bodyEnd: "#18120d"
   },
   "cat-yellow": {
-    bg: "#060707",
-    bgAlt: "#111315",
-    panel: "rgba(19, 21, 23, 0.92)",
-    panelStrong: "#181b1d",
+    bg: "#FFCC00",
+    bgAlt: "#FFCC00",
+    panel: "#FFCC00",
+    panelStrong: "#FFCC00",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(201, 55, 34, 0.3)",
-    accent: "#f2c230",
-    accentStrong: "#ffd54a",
-    accentShadow: "rgba(201, 55, 34, 0.18)",
-    bodyGlow: "rgba(242, 194, 48, 0.16)",
-    bodyGlowAlt: "rgba(201, 55, 34, 0.14)",
-    bodyStart: "#060707",
-    bodyEnd: "#0f1113"
+    borderStrong: "rgba(0, 0, 0, 0.3)",
+    accent: "#000000",
+    accentStrong: "#000000",
+    accentSecondary: "#B00000",
+    accentShadow: "rgba(176, 0, 0, 0.18)",
+    bodyGlow: "rgba(176, 0, 0, 0.14)",
+    bodyGlowAlt: "rgba(0, 0, 0, 0.08)",
+    bodyStart: "#FFCC00",
+    bodyEnd: "#FFCC00"
   },
   "john-deere-green": {
-    bg: "#070909",
-    bgAlt: "#111515",
-    panel: "rgba(18, 24, 20, 0.92)",
-    panelStrong: "#18201b",
+    bg: "#46A138",
+    bgAlt: "#46A138",
+    panel: "#46A138",
+    panelStrong: "#46A138",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(54, 170, 66, 0.32)",
-    accent: "#36aa42",
-    accentStrong: "#f5c842",
-    accentShadow: "rgba(54, 170, 66, 0.24)",
-    bodyGlow: "rgba(54, 170, 66, 0.16)",
-    bodyGlowAlt: "rgba(245, 200, 66, 0.1)",
-    bodyStart: "#050606",
-    bodyEnd: "#0c100f"
+    borderStrong: "rgba(0, 0, 0, 0.28)",
+    accent: "#FFDE00",
+    accentStrong: "#FFDE00",
+    accentSecondary: "#000000",
+    accentShadow: "rgba(0, 0, 0, 0.18)",
+    bodyGlow: "rgba(255, 222, 0, 0.12)",
+    bodyGlowAlt: "rgba(0, 0, 0, 0.08)",
+    bodyStart: "#46A138",
+    bodyEnd: "#46A138"
   },
   "usa-theme": {
     bg: "#08111c",
@@ -244,8 +248,8 @@ const TEXT_PRESETS = {
     textSoft: "#afb5af"
   },
   black: {
-    text: "#141414",
-    textSoft: "#353535"
+    text: "#000000",
+    textSoft: "#000000"
   },
   yellow: {
     text: "#f2c230",
@@ -522,6 +526,7 @@ function applyThemeSettings(settings) {
   root.style.setProperty("--border-strong", theme.borderStrong);
   root.style.setProperty("--accent", theme.accent);
   root.style.setProperty("--accent-strong", theme.accentStrong);
+  root.style.setProperty("--accent-secondary", theme.accentSecondary || theme.accentStrong);
   root.style.setProperty("--accent-shadow", theme.accentShadow);
   root.style.setProperty("--body-glow", theme.bodyGlow);
   root.style.setProperty("--body-glow-alt", theme.bodyGlowAlt);
