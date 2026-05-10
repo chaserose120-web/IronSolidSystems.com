@@ -418,6 +418,30 @@ textarea,
   gap: 1rem;
 }
 
+.help-list {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.help-item {
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--panel-elevated);
+}
+
+.help-item h4 {
+  margin: 0 0 0.45rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1rem;
+}
+
+.help-item p {
+  margin: 0;
+  color: var(--muted-text);
+  line-height: 1.6;
+}
+
 .metric-card {
   padding: 1.35rem;
   background: linear-gradient(180deg, color-mix(in srgb, var(--panel-elevated) 26%, transparent), var(--panel-elevated));

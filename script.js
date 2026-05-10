@@ -16,8 +16,11 @@ const dashboardSection = document.getElementById("dashboard");
 const createJobSection = document.getElementById("create-job");
 const jobsListSection = document.getElementById("jobs-list");
 const settingsPanel = document.getElementById("settings-panel");
+const howToPanel = document.getElementById("how-to-panel");
+const openHowToNavButton = document.getElementById("open-how-to-nav");
 const openSettingsNavButton = document.getElementById("open-settings-nav");
 const closeSettingsButton = document.getElementById("close-settings-button");
+const closeHowToButton = document.getElementById("close-how-to-button");
 const themeColorSelect = document.getElementById("theme-color-select");
 const textColorSelect = document.getElementById("text-color-select");
 const installHelper = document.getElementById("install-helper");
@@ -645,10 +648,12 @@ function setMainView(view) {
   currentView = view;
 
   const showSettings = view === "settings";
-  dashboardSection.hidden = showSettings;
-  createJobSection.hidden = showSettings;
-  jobsListSection.hidden = showSettings;
+  const showHowTo = view === "how-to";
+  dashboardSection.hidden = showSettings || showHowTo;
+  createJobSection.hidden = showSettings || showHowTo;
+  jobsListSection.hidden = showSettings || showHowTo;
   settingsPanel.hidden = !showSettings;
+  howToPanel.hidden = !showHowTo;
 }
 
 function hexToRgb(hex) {
@@ -3071,6 +3076,13 @@ if (openSettingsNavButton) {
   });
 }
 
+if (openHowToNavButton) {
+  openHowToNavButton.addEventListener("click", () => {
+    setMainView("how-to");
+    howToPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 if (openSettingsButton) {
   openSettingsButton.addEventListener("click", () => {
     setMainView("settings");
@@ -3080,6 +3092,13 @@ if (openSettingsButton) {
 
 if (closeSettingsButton) {
   closeSettingsButton.addEventListener("click", () => {
+    setMainView("main");
+    dashboardSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+if (closeHowToButton) {
+  closeHowToButton.addEventListener("click", () => {
     setMainView("main");
     dashboardSection.scrollIntoView({ behavior: "smooth", block: "start" });
   });
