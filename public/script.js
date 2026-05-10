@@ -986,13 +986,22 @@ function createPhotoSection(job) {
     const uploadGrid = document.createElement("div");
     uploadGrid.className = "form-grid";
 
+    const helperText = document.createElement("div");
+    helperText.className = "photo-dropbox__helper field--full";
+    helperText.innerHTML = `
+      <p>Photos can only be added after a job has been created and saved.</p>
+      <p>Photo upload works best from mobile using JPG or PNG images.
+      Some browsers may not fully support HEIC/HEIF iPhone photo formats.
+      If upload issues occur, take a screenshot or export the image as JPG.</p>
+    `;
+
     const fileField = document.createElement("label");
     fileField.className = "field";
     const fileLabel = document.createElement("span");
     fileLabel.textContent = "Select Photos";
     const fileInput = document.createElement("input");
     fileInput.type = "file";
-    fileInput.accept = "image/*";
+    fileInput.accept = "image/jpeg,image/png,image/webp";
     fileInput.multiple = true;
     fileField.append(fileLabel, fileInput);
 
@@ -1005,7 +1014,7 @@ function createPhotoSection(job) {
     descriptionInput.placeholder = "Applies to selected photos";
     descriptionField.append(descriptionLabel, descriptionInput);
 
-    uploadGrid.append(fileField, descriptionField);
+    uploadGrid.append(helperText, fileField, descriptionField);
     dropbox.append(uploadGrid);
 
     const uploadActions = document.createElement("div");
@@ -1025,6 +1034,19 @@ function createPhotoSection(job) {
 
       if (files.length === 0) {
         setMessage(uploadMessage, "Select one or more photos to upload.", "error");
+        return;
+      }
+
+      const unsupportedFiles = files.filter((file) => {
+        return !["image/jpeg", "image/png", "image/webp"].includes(file.type);
+      });
+
+      if (unsupportedFiles.length > 0) {
+        setMessage(
+          uploadMessage,
+          "This file format is not supported here. JPG, PNG, or WEBP is recommended. If you are using iPhone HEIC/HEIF photos, export them as JPG or take a screenshot first.",
+          "error"
+        );
         return;
       }
 
