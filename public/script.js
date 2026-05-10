@@ -1589,7 +1589,7 @@ function createDeleteConfirmation(job) {
   });
 
   const deleteButton = document.createElement("button");
-  deleteButton.className = "button button--primary button--small";
+  deleteButton.className = "button button--danger button--small";
   deleteButton.type = "button";
   deleteButton.textContent = "Delete Forever";
   deleteButton.addEventListener("click", () => {
