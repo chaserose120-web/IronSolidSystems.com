@@ -245,13 +245,9 @@ const TEXT_PRESETS = {
     text: null,
     textSoft: null
   },
-  black: {
-    text: "#111111",
-    textSoft: "#4B5563"
-  },
   yellow: {
-    text: "#F4D35E",
-    textSoft: "#D8C27A"
+    text: "#E2C15A",
+    textSoft: "#C7B06A"
   }
 };
 
@@ -553,41 +549,24 @@ function applyThemeSettings(settings) {
   const root = document.documentElement;
   const theme = THEME_PRESETS[settings.themeColor] || THEME_PRESETS.black;
   const textOverride = TEXT_PRESETS[settings.textColor] || TEXT_PRESETS.white;
-  const isBlackText = settings.textColor === "black";
   const bodyText = textOverride.text || theme.text;
   const mutedText = textOverride.textSoft || theme.mutedText;
 
-  const surfaces = isBlackText
-    ? {
-        panel: "#F3EDE0",
-        panelSoft: "#E7DCC7",
-        panelElevated: "#FFF6E7",
-        border: "#9A8566",
-        text: bodyText,
-        mutedText,
-        buttonText: "#111111",
-        fieldBg: "#FFF8ED",
-        fieldBgFocus: "#FFFFFF",
-        fieldBorder: "#B79D79",
-        ghostBg: "#F7EFE0",
-        ghostBorder: "#B79D79",
-        placeholder: "#6B5A45"
-      }
-    : {
-        panel: theme.panel,
-        panelSoft: theme.panelSoft,
-        panelElevated: theme.panelElevated,
-        border: theme.border,
-        text: bodyText,
-        mutedText,
-        buttonText: theme.buttonText,
-        fieldBg: theme.panelSoft,
-        fieldBgFocus: theme.panelElevated,
-        fieldBorder: theme.border,
-        ghostBg: theme.panelSoft,
-        ghostBorder: theme.border,
-        placeholder: theme.mutedText
-      };
+  const surfaces = {
+    panel: theme.panel,
+    panelSoft: theme.panelSoft,
+    panelElevated: theme.panelElevated,
+    border: theme.border,
+    text: bodyText,
+    mutedText,
+    buttonText: theme.buttonText,
+    fieldBg: theme.panelSoft,
+    fieldBgFocus: theme.panelElevated,
+    fieldBorder: theme.border,
+    ghostBg: theme.panelSoft,
+    ghostBorder: theme.border,
+    placeholder: theme.mutedText
+  };
 
   root.style.setProperty("--bg", theme.bg);
   root.style.setProperty("--sidebar", theme.sidebar);
@@ -701,9 +680,10 @@ function scrollToAuthPanel(target, field) {
 function getSavedThemeSettings() {
   try {
     const saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) || "");
+    const normalizedTextColor = saved.textColor === "black" ? "white" : saved.textColor;
     return {
       themeColor: saved.themeColor || DEFAULT_THEME_SETTINGS.themeColor,
-      textColor: saved.textColor || DEFAULT_THEME_SETTINGS.textColor
+      textColor: normalizedTextColor || DEFAULT_THEME_SETTINGS.textColor
     };
   } catch {
     return { ...DEFAULT_THEME_SETTINGS };
