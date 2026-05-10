@@ -117,38 +117,40 @@ const JOB_FIELDS_SELECT = [
 
 const THEME_PRESETS = {
   red: {
-    bg: "#FF0000",
-    bgAlt: "#FF0000",
-    panel: "#FF0000",
-    panelStrong: "#FF0000",
+    bg: "#0b090a",
+    bgAlt: "#141012",
+    panel: "rgba(22, 13, 15, 0.94)",
+    panelStrong: "#221114",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(0, 0, 0, 0.28)",
-    accent: "#000000",
-    accentStrong: "#000000",
-    accentSecondary: "#000000",
-    accentShadow: "rgba(0, 0, 0, 0.18)",
-    bodyGlow: "rgba(0, 0, 0, 0.12)",
-    bodyGlowAlt: "rgba(0, 0, 0, 0.08)",
-    bodyStart: "#FF0000",
-    bodyEnd: "#FF0000"
+    borderStrong: "rgba(255, 0, 0, 0.34)",
+    accent: "#b10f2e",
+    accentStrong: "#ff3458",
+    accentSecondary: "#6e0018",
+    accentShadow: "rgba(177, 15, 46, 0.26)",
+    bodyGlow: "rgba(177, 15, 46, 0.14)",
+    bodyGlowAlt: "rgba(90, 0, 16, 0.12)",
+    bodyStart: "#060607",
+    bodyEnd: "#120b0d",
+    buttonText: "#f6f4ef"
   },
   blue: {
-    bg: "#0033A0",
-    bgAlt: "#0033A0",
-    panel: "#FFFFFF",
-    panelStrong: "#FFFFFF",
+    bg: "#08101f",
+    bgAlt: "#0d1830",
+    panel: "rgba(13, 24, 47, 0.94)",
+    panelStrong: "#152447",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(0, 51, 160, 0.28)",
-    accent: "#0033A0",
-    accentStrong: "#0033A0",
-    accentSecondary: "#FFFFFF",
-    accentShadow: "rgba(0, 51, 160, 0.18)",
-    bodyGlow: "rgba(255, 255, 255, 0.14)",
-    bodyGlowAlt: "rgba(255, 255, 255, 0.1)",
-    bodyStart: "#0033A0",
-    bodyEnd: "#0033A0"
+    borderStrong: "rgba(0, 40, 255, 0.3)",
+    accent: "#0028FF",
+    accentStrong: "#4f72ff",
+    accentSecondary: "#00157d",
+    accentShadow: "rgba(0, 40, 255, 0.22)",
+    bodyGlow: "rgba(0, 40, 255, 0.16)",
+    bodyGlowAlt: "rgba(9, 20, 56, 0.18)",
+    bodyStart: "#050913",
+    bodyEnd: "#0c1730",
+    buttonText: "#f5f7ff"
   },
   black: {
     bg: "#060606",
@@ -160,93 +162,103 @@ const THEME_PRESETS = {
     borderStrong: "rgba(160, 160, 160, 0.2)",
     accent: "#9d9d9d",
     accentStrong: "#cbcbcb",
+    accentSecondary: "#5c5c5c",
     accentShadow: "rgba(160, 160, 160, 0.16)",
     bodyGlow: "rgba(180, 180, 180, 0.08)",
     bodyGlowAlt: "rgba(80, 80, 80, 0.08)",
     bodyStart: "#050505",
-    bodyEnd: "#0d0d0d"
+    bodyEnd: "#0d0d0d",
+    buttonText: "#111111"
   },
   white: {
-    bg: "#e8ecef",
-    bgAlt: "#d8dde0",
-    panel: "rgba(255, 255, 255, 0.88)",
-    panelStrong: "#ffffff",
+    bg: "#0b0d10",
+    bgAlt: "#14171a",
+    panel: "rgba(25, 27, 29, 0.94)",
+    panelStrong: "#202427",
     panelSoft: "rgba(0, 0, 0, 0.035)",
     border: "rgba(0, 0, 0, 0.08)",
-    borderStrong: "rgba(90, 90, 90, 0.22)",
-    accent: "#636363",
-    accentStrong: "#2e2e2e",
-    accentShadow: "rgba(80, 80, 80, 0.14)",
-    bodyGlow: "rgba(255, 255, 255, 0.3)",
-    bodyGlowAlt: "rgba(170, 170, 170, 0.16)",
-    bodyStart: "#eef2f4",
-    bodyEnd: "#d7dde0"
+    borderStrong: "rgba(255, 255, 255, 0.24)",
+    accent: "#d8dbdf",
+    accentStrong: "#ffffff",
+    accentSecondary: "#8f959b",
+    accentShadow: "rgba(255, 255, 255, 0.16)",
+    bodyGlow: "rgba(255, 255, 255, 0.12)",
+    bodyGlowAlt: "rgba(150, 160, 172, 0.1)",
+    bodyStart: "#08090b",
+    bodyEnd: "#121418",
+    buttonText: "#0d0f12"
   },
   tan: {
-    bg: "#17120d",
-    bgAlt: "#211911",
-    panel: "rgba(35, 28, 20, 0.92)",
-    panelStrong: "#2e2419",
+    bg: "#0f0b08",
+    bgAlt: "#17110d",
+    panel: "rgba(33, 24, 18, 0.94)",
+    panelStrong: "#2b2118",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(193, 151, 93, 0.24)",
     accent: "#c1975d",
     accentStrong: "#dfba82",
+    accentSecondary: "#8e6530",
     accentShadow: "rgba(193, 151, 93, 0.2)",
     bodyGlow: "rgba(193, 151, 93, 0.14)",
     bodyGlowAlt: "rgba(110, 72, 30, 0.1)",
     bodyStart: "#0d0a08",
-    bodyEnd: "#18120d"
+    bodyEnd: "#18120d",
+    buttonText: "#17110d"
   },
   "cat-yellow": {
-    bg: "#FFCC00",
-    bgAlt: "#FFCC00",
-    panel: "#FFCC00",
-    panelStrong: "#FFCC00",
+    bg: "#0b0b0b",
+    bgAlt: "#141414",
+    panel: "rgba(21, 21, 21, 0.95)",
+    panelStrong: "#1b1b1b",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(0, 0, 0, 0.3)",
-    accent: "#000000",
-    accentStrong: "#000000",
-    accentSecondary: "#B00000",
-    accentShadow: "rgba(176, 0, 0, 0.18)",
-    bodyGlow: "rgba(176, 0, 0, 0.14)",
-    bodyGlowAlt: "rgba(0, 0, 0, 0.08)",
-    bodyStart: "#FFCC00",
-    bodyEnd: "#FFCC00"
+    borderStrong: "rgba(245, 190, 39, 0.34)",
+    accent: "#F5BE27",
+    accentStrong: "#ffd76a",
+    accentSecondary: "#820000",
+    accentShadow: "rgba(245, 190, 39, 0.22)",
+    bodyGlow: "rgba(245, 190, 39, 0.12)",
+    bodyGlowAlt: "rgba(130, 0, 0, 0.1)",
+    bodyStart: "#080808",
+    bodyEnd: "#121212",
+    buttonText: "#111111"
   },
   "john-deere-green": {
-    bg: "#46A138",
-    bgAlt: "#46A138",
-    panel: "#46A138",
-    panelStrong: "#46A138",
+    bg: "#09100a",
+    bgAlt: "#111812",
+    panel: "rgba(17, 28, 18, 0.95)",
+    panelStrong: "#1b311d",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
-    borderStrong: "rgba(0, 0, 0, 0.28)",
-    accent: "#FFDE00",
-    accentStrong: "#FFDE00",
-    accentSecondary: "#000000",
-    accentShadow: "rgba(0, 0, 0, 0.18)",
-    bodyGlow: "rgba(255, 222, 0, 0.12)",
-    bodyGlowAlt: "rgba(0, 0, 0, 0.08)",
-    bodyStart: "#46A138",
-    bodyEnd: "#46A138"
+    borderStrong: "rgba(255, 237, 5, 0.28)",
+    accent: "#318822",
+    accentStrong: "#FFED05",
+    accentSecondary: "#1f4f16",
+    accentShadow: "rgba(49, 136, 34, 0.22)",
+    bodyGlow: "rgba(49, 136, 34, 0.16)",
+    bodyGlowAlt: "rgba(255, 237, 5, 0.08)",
+    bodyStart: "#070a08",
+    bodyEnd: "#101812",
+    buttonText: "#0f140d"
   },
   "usa-theme": {
-    bg: "#08111c",
-    bgAlt: "#0f1930",
-    panel: "rgba(16, 24, 43, 0.92)",
+    bg: "#07101c",
+    bgAlt: "#0d1730",
+    panel: "rgba(15, 23, 42, 0.94)",
     panelStrong: "#172746",
     panelSoft: "rgba(255, 255, 255, 0.03)",
     border: "rgba(255, 255, 255, 0.08)",
     borderStrong: "rgba(220, 74, 74, 0.22)",
-    accent: "#d44343",
-    accentStrong: "#f2f2f2",
-    accentShadow: "rgba(212, 67, 67, 0.18)",
-    bodyGlow: "rgba(62, 111, 190, 0.14)",
-    bodyGlowAlt: "rgba(212, 67, 67, 0.12)",
+    accent: "#c8505b",
+    accentStrong: "#87a8d9",
+    accentSecondary: "#f1f3f7",
+    accentShadow: "rgba(200, 80, 91, 0.18)",
+    bodyGlow: "rgba(135, 168, 217, 0.12)",
+    bodyGlowAlt: "rgba(200, 80, 91, 0.12)",
     bodyStart: "#06101c",
-    bodyEnd: "#0a1630"
+    bodyEnd: "#0a1630",
+    buttonText: "#f4f6f8"
   }
 };
 
@@ -256,12 +268,12 @@ const TEXT_PRESETS = {
     textSoft: "#afb5af"
   },
   black: {
-    text: "#000000",
-    textSoft: "#000000"
+    text: "#111111",
+    textSoft: "#3f3f3f"
   },
   yellow: {
-    text: "#f2c230",
-    textSoft: "#d0b25d"
+    text: "#f2cf5b",
+    textSoft: "#d7bb64"
   }
 };
 
@@ -542,14 +554,56 @@ function applyThemeSettings(settings) {
   const root = document.documentElement;
   const theme = THEME_PRESETS[settings.themeColor] || THEME_PRESETS["cat-yellow"];
   const text = TEXT_PRESETS[settings.textColor] || TEXT_PRESETS.white;
+  const isBlackText = settings.textColor === "black";
+  const isYellowText = settings.textColor === "yellow";
+
+  const surfaces = isBlackText
+    ? {
+        panel: "rgba(244, 240, 231, 0.95)",
+        panelStrong: "#efe9db",
+        panelSoft: "rgba(255, 249, 235, 0.78)",
+        border: "rgba(0, 0, 0, 0.12)",
+        borderStrong: theme.borderStrong,
+        fieldBg: "rgba(255, 252, 245, 0.92)",
+        fieldBgFocus: "#ffffff",
+        fieldBorder: "rgba(0, 0, 0, 0.14)",
+        sectionBg: "rgba(255, 249, 236, 0.84)",
+        noteBg: "rgba(255, 255, 255, 0.92)",
+        reportBg: "rgba(255, 255, 255, 0.95)",
+        mutedBg: "rgba(255, 250, 240, 0.72)",
+        hoverBg: "rgba(0, 0, 0, 0.06)",
+        ghostBg: "rgba(255, 255, 255, 0.84)",
+        ghostBorder: "rgba(0, 0, 0, 0.12)",
+        placeholder: "#5b5b5b",
+        buttonText: "#111111"
+      }
+    : {
+        panel: theme.panel,
+        panelStrong: theme.panelStrong,
+        panelSoft: theme.panelSoft,
+        border: theme.border,
+        borderStrong: theme.borderStrong,
+        fieldBg: isYellowText ? "rgba(8, 10, 12, 0.88)" : "rgba(255, 255, 255, 0.05)",
+        fieldBgFocus: isYellowText ? "rgba(12, 15, 18, 0.96)" : "rgba(255, 255, 255, 0.07)",
+        fieldBorder: isYellowText ? "rgba(242, 207, 91, 0.24)" : "rgba(255, 255, 255, 0.12)",
+        sectionBg: isYellowText ? "rgba(255, 255, 255, 0.035)" : "rgba(255, 255, 255, 0.025)",
+        noteBg: isYellowText ? "rgba(255, 255, 255, 0.05)" : "rgba(255, 255, 255, 0.03)",
+        reportBg: isYellowText ? "rgba(4, 6, 8, 0.82)" : "rgba(0, 0, 0, 0.2)",
+        mutedBg: isYellowText ? "rgba(255, 255, 255, 0.06)" : "rgba(255, 255, 255, 0.04)",
+        hoverBg: isYellowText ? "rgba(255, 255, 255, 0.08)" : "rgba(255, 255, 255, 0.05)",
+        ghostBg: isYellowText ? "rgba(255, 255, 255, 0.045)" : "rgba(255, 255, 255, 0.03)",
+        ghostBorder: isYellowText ? "rgba(242, 207, 91, 0.16)" : "rgba(255, 255, 255, 0.12)",
+        placeholder: isYellowText ? "#c8b261" : "#8b938d",
+        buttonText: theme.buttonText || text.text
+      };
 
   root.style.setProperty("--bg", theme.bg);
   root.style.setProperty("--bg-alt", theme.bgAlt);
-  root.style.setProperty("--panel", theme.panel);
-  root.style.setProperty("--panel-strong", theme.panelStrong);
-  root.style.setProperty("--panel-soft", theme.panelSoft);
-  root.style.setProperty("--border", theme.border);
-  root.style.setProperty("--border-strong", theme.borderStrong);
+  root.style.setProperty("--panel", surfaces.panel);
+  root.style.setProperty("--panel-strong", surfaces.panelStrong);
+  root.style.setProperty("--panel-soft", surfaces.panelSoft);
+  root.style.setProperty("--border", surfaces.border);
+  root.style.setProperty("--border-strong", surfaces.borderStrong);
   root.style.setProperty("--accent", theme.accent);
   root.style.setProperty("--accent-strong", theme.accentStrong);
   root.style.setProperty("--accent-secondary", theme.accentSecondary || theme.accentStrong);
@@ -560,6 +614,18 @@ function applyThemeSettings(settings) {
   root.style.setProperty("--body-end", theme.bodyEnd);
   root.style.setProperty("--text", text.text);
   root.style.setProperty("--text-soft", text.textSoft);
+  root.style.setProperty("--field-bg", surfaces.fieldBg);
+  root.style.setProperty("--field-bg-focus", surfaces.fieldBgFocus);
+  root.style.setProperty("--field-border", surfaces.fieldBorder);
+  root.style.setProperty("--section-bg", surfaces.sectionBg);
+  root.style.setProperty("--note-bg", surfaces.noteBg);
+  root.style.setProperty("--report-bg", surfaces.reportBg);
+  root.style.setProperty("--muted-bg", surfaces.mutedBg);
+  root.style.setProperty("--hover-bg", surfaces.hoverBg);
+  root.style.setProperty("--ghost-bg", surfaces.ghostBg);
+  root.style.setProperty("--ghost-border", surfaces.ghostBorder);
+  root.style.setProperty("--placeholder", surfaces.placeholder);
+  root.style.setProperty("--button-text", surfaces.buttonText);
 }
 
 function saveThemeSettings(settings) {
