@@ -72,10 +72,13 @@ const closePhotoModalButton = document.getElementById("close-photo-modal");
 
 const jobIndustrySelect = jobForm?.elements.namedItem("industry");
 const jobTitleField = jobForm?.elements.namedItem("title");
+const jobServiceDateField = jobForm?.elements.namedItem("service_date");
 const jobWorkOrderField = jobForm?.elements.namedItem("work_order");
 const jobCustomerField = jobForm?.elements.namedItem("customer");
 const jobMachineField = jobForm?.elements.namedItem("machine");
 const jobSerialField = jobForm?.elements.namedItem("serial");
+const jobMeterHoursField = jobForm?.elements.namedItem("meter_hours");
+const jobVehicleMilesField = jobForm?.elements.namedItem("vehicle_miles");
 const jobQuickNotesField = jobForm?.elements.namedItem("quick_notes");
 const jobComplaintField = jobForm?.elements.namedItem("complaint");
 const jobCauseField = jobForm?.elements.namedItem("cause");
@@ -85,6 +88,10 @@ const jobWorkOrderLabel = document.getElementById("label-work-order");
 const jobCustomerLabel = document.getElementById("label-customer");
 const jobMachineLabel = document.getElementById("label-machine");
 const jobSerialLabel = document.getElementById("label-serial");
+const jobMeterHoursLabel = document.getElementById("label-meter-hours");
+const jobVehicleMilesLabel = document.getElementById("label-vehicle-miles");
+const jobMeterHoursWrapper = document.getElementById("field-meter-hours");
+const jobVehicleMilesWrapper = document.getElementById("field-vehicle-miles");
 
 let currentUser = null;
 let currentView = "main";
@@ -108,6 +115,9 @@ const JOB_FIELDS_SELECT = [
   "machine",
   "serial",
   "industry",
+  "service_date",
+  "meter_hours",
+  "vehicle_miles",
   "complaint",
   "cause",
   "correction",
@@ -251,99 +261,211 @@ const TEXT_PRESETS = {
   }
 };
 
-const JOB_PLACEHOLDERS = {
-  default: {
-    title: "",
-    work_order: "",
-    customer: "",
-    machine: "",
-    serial: "",
-    quick_notes: "",
-    complaint: "",
-    cause: "",
-    correction: ""
-  },
-  "Heavy Equipment": {
-    title: "Loader cooling issue",
-    work_order: "HE-10428",
-    customer: "River Rock Excavation",
-    machine: "Komatsu WA380 Loader",
-    serial: "KMTWA103CPF81247",
-    quick_notes: "",
-    complaint: "Machine overheating under load",
-    cause: "Radiator packed with debris, low airflow",
-    correction: "Cleaned cooling package, verified temps"
-  },
-  Automotive: {
-    title: "Truck rough idle diagnosis",
-    work_order: "AUTO-8821",
-    customer: "Fleet Service LLC",
-    machine: "Ford F-250 6.2L",
-    serial: "1FT7W2B67NEA18455",
-    quick_notes: "",
-    complaint: "Customer states truck has rough idle",
-    cause: "Vacuum leak found at intake hose",
-    correction: "Replaced hose and cleared codes"
-  },
-  "Industrial Maintenance": {
-    title: "Conveyor line stop issue",
-    work_order: "IM-5579",
-    customer: "Midwest Packaging",
-    machine: "South conveyor drive",
-    serial: "CVR-PLT-2047",
-    quick_notes: "",
-    complaint: "Conveyor intermittently stops",
-    cause: "Failed proximity sensor",
-    correction: "Replaced sensor and tested operation"
-  },
-  "Welding & Fabrication": {
-    title: "Attachment bracket repair",
-    work_order: "WF-3316",
-    customer: "Summit Earthworks",
-    machine: "Grapple attachment",
-    serial: "ATT-GRP-7784",
-    quick_notes: "",
-    complaint: "Cracked bracket on attachment",
-    cause: "Fatigue crack at weld toe",
-    correction: "Ground crack, welded repair, painted area"
-  }
-};
+const INDUSTRY_OPTIONS = [
+  "Heavy Equipment",
+  "Automotive",
+  "Industrial Maintenance",
+  "Welding & Fabrication",
+  "Rental Equipment",
+  "Agriculture / Ag Equipment"
+];
 
-const JOB_LABELS = {
+const INDUSTRY_CONFIG = {
   default: {
-    title: "Job Name / Log Name",
-    workOrder: "Work Order",
-    customer: "Customer",
-    machine: "Machine",
-    serial: "Serial Number"
+    labels: {
+      title: "Job Name / Log Name",
+      workOrder: "Work Order",
+      customer: "Customer",
+      machine: "Machine",
+      serial: "Serial Number",
+      meterHours: "Meter Hours",
+      vehicleMiles: "Vehicle Miles"
+    },
+    placeholders: {
+      title: "",
+      work_order: "",
+      customer: "",
+      machine: "",
+      serial: "",
+      meter_hours: "",
+      vehicle_miles: "",
+      quick_notes: "",
+      complaint: "",
+      cause: "",
+      correction: ""
+    },
+    visibility: {
+      meterHours: false,
+      vehicleMiles: false
+    }
   },
   "Heavy Equipment": {
-    title: "Job Name / Log Name",
-    workOrder: "Work Order",
-    customer: "Customer",
-    machine: "Machine",
-    serial: "Serial Number"
+    labels: {
+      title: "Job Name / Log Name",
+      workOrder: "Work Order",
+      customer: "Customer",
+      machine: "Machine",
+      serial: "Serial Number",
+      meterHours: "Meter Hours",
+      vehicleMiles: "Vehicle Miles"
+    },
+    placeholders: {
+      title: "Loader cooling issue",
+      work_order: "HE-10428",
+      customer: "River Rock Excavation",
+      machine: "Komatsu WA380 Loader",
+      serial: "KMTWA103CPF81247",
+      meter_hours: "1245.6 hrs",
+      vehicle_miles: "",
+      quick_notes: "Coolant level checked, fan belt inspected, temps verified after repair",
+      complaint: "Machine overheating under load",
+      cause: "Radiator packed with debris, low airflow",
+      correction: "Cleaned cooling package, verified temps"
+    },
+    visibility: {
+      meterHours: true,
+      vehicleMiles: false
+    }
   },
   Automotive: {
-    title: "Job Name / Log Name",
-    workOrder: "Work Order",
-    customer: "Customer",
-    machine: "Vehicle",
-    serial: "VIN"
+    labels: {
+      title: "Job Name / Log Name",
+      workOrder: "Work Order",
+      customer: "Customer",
+      machine: "Vehicle",
+      serial: "VIN",
+      meterHours: "Meter Hours",
+      vehicleMiles: "Vehicle Miles"
+    },
+    placeholders: {
+      title: "Truck rough idle diagnosis",
+      work_order: "AUTO-8821",
+      customer: "Fleet Service LLC",
+      machine: "Ford F-250 6.2L",
+      serial: "1FT7W2B67NEA18455",
+      meter_hours: "",
+      vehicle_miles: "152,340 miles",
+      quick_notes: "Mileage verified, freeze-frame data saved, parts ordered for follow-up",
+      complaint: "Customer states truck has rough idle",
+      cause: "Vacuum leak found at intake hose",
+      correction: "Replaced hose and cleared codes"
+    },
+    visibility: {
+      meterHours: false,
+      vehicleMiles: true
+    }
   },
   "Industrial Maintenance": {
-    title: "Job Name / Log Name",
-    workOrder: "Work Order",
-    customer: "Customer / Facility",
-    machine: "Equipment / Line",
-    serial: "Asset ID / Identification Number"
+    labels: {
+      title: "Job Name / Log Name",
+      workOrder: "Work Order",
+      customer: "Customer / Facility",
+      machine: "Equipment / Line",
+      serial: "Asset ID / Identification Number",
+      meterHours: "Runtime / Hours",
+      vehicleMiles: "Vehicle Miles"
+    },
+    placeholders: {
+      title: "Conveyor line stop issue",
+      work_order: "IM-5579",
+      customer: "Midwest Packaging",
+      machine: "South conveyor drive",
+      serial: "CVR-PLT-2047",
+      meter_hours: "Runtime hours or plant meter",
+      vehicle_miles: "",
+      quick_notes: "Lockout verified, sensor gap reset, amp draw checked after test run",
+      complaint: "Conveyor intermittently stops",
+      cause: "Failed proximity sensor",
+      correction: "Replaced sensor and tested operation"
+    },
+    visibility: {
+      meterHours: true,
+      vehicleMiles: false
+    }
   },
   "Welding & Fabrication": {
-    title: "Job Name / Log Name",
-    workOrder: "Work Order",
-    customer: "Customer",
-    machine: "Part / Vehicle / Attachment",
-    serial: "Serial / ID Number"
+    labels: {
+      title: "Job Name / Log Name",
+      workOrder: "Work Order",
+      customer: "Customer",
+      machine: "Part / Vehicle / Attachment",
+      serial: "Serial / ID Number",
+      meterHours: "Meter Hours",
+      vehicleMiles: "Vehicle Miles"
+    },
+    placeholders: {
+      title: "Attachment bracket repair",
+      work_order: "WF-3316",
+      customer: "Summit Earthworks",
+      machine: "Grapple attachment",
+      serial: "ATT-GRP-7784",
+      meter_hours: "",
+      vehicle_miles: "",
+      quick_notes: "Material thickness, rod used, prep work, paint match, and fit-up notes",
+      complaint: "Cracked bracket on attachment",
+      cause: "Fatigue crack at weld toe",
+      correction: "Ground crack, welded repair, painted area"
+    },
+    visibility: {
+      meterHours: false,
+      vehicleMiles: false
+    }
+  },
+  "Rental Equipment": {
+    labels: {
+      title: "Job Name / Log Name",
+      workOrder: "Work Order",
+      customer: "Customer",
+      machine: "Rental Unit / Machine",
+      serial: "Serial / Unit Number",
+      meterHours: "Meter Hours",
+      vehicleMiles: "Vehicle Miles"
+    },
+    placeholders: {
+      title: "Rental return inspection",
+      work_order: "RENT-2043",
+      customer: "County Paving Crew",
+      machine: "Bobcat T66 skid steer",
+      serial: "UNIT-RENT-4418",
+      meter_hours: "876.2 hrs",
+      vehicle_miles: "",
+      quick_notes: "Check-in damage notes, PM due at 1000 hrs, customer use review, fluid levels",
+      complaint: "Unit returned with hydraulic leak after customer use",
+      cause: "Aux hose rubbed through near coupler guard",
+      correction: "Replaced hose, cleaned unit, completed return inspection"
+    },
+    visibility: {
+      meterHours: true,
+      vehicleMiles: false
+    }
+  },
+  "Agriculture / Ag Equipment": {
+    labels: {
+      title: "Job Name / Log Name",
+      workOrder: "Work Order",
+      customer: "Customer",
+      machine: "Tractor / Combine / Implement",
+      serial: "Serial / PIN",
+      meterHours: "Meter Hours",
+      vehicleMiles: "Vehicle Miles"
+    },
+    placeholders: {
+      title: "Tractor hydraulic service call",
+      work_order: "AG-6127",
+      customer: "North Field Farms",
+      machine: "John Deere 8R 280 Tractor",
+      serial: "PIN-8R280-55219",
+      meter_hours: "3184.7 hrs",
+      vehicle_miles: "Road miles if applicable",
+      quick_notes: "Field service notes, pressure checks, seasonal parts needed, harvest readiness",
+      complaint: "Hydraulics weak when operating planter in field",
+      cause: "Charge pressure low from worn hydraulic pump",
+      correction: "Confirmed low pressure, replaced pump, verified field operation"
+    },
+    visibility: {
+      meterHours: true,
+      vehicleMiles: true
+    }
   }
 };
 
@@ -777,52 +899,120 @@ function formatCreatedAt(value) {
   }).format(date);
 }
 
+function formatServiceDate(value) {
+  if (!value) {
+    return "Not provided";
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split("-").map(Number);
+    return new Intl.DateTimeFormat("en-US", {
+      dateStyle: "medium"
+    }).format(new Date(year, month - 1, day));
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium"
+  }).format(date);
+}
+
+function getTodayDateInputValue() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getIndustryConfig(industry) {
+  return INDUSTRY_CONFIG[industry] || INDUSTRY_CONFIG.default;
+}
+
 function getJobFieldLabels(industry) {
-  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
+  const labels = getIndustryConfig(industry).labels;
 
   return {
     jobName: labels.title,
+    workOrder: labels.workOrder,
+    customer: labels.customer,
     machine: labels.machine,
-    serial: labels.serial
+    serial: labels.serial,
+    meterHours: labels.meterHours,
+    vehicleMiles: labels.vehicleMiles
   };
 }
 
-function updateJobPlaceholders() {
-  const industry =
-    jobIndustrySelect instanceof HTMLSelectElement ? jobIndustrySelect.value : "";
-  const placeholders = JOB_PLACEHOLDERS[industry] || JOB_PLACEHOLDERS.default;
-  const labels = JOB_LABELS[industry] || JOB_LABELS.default;
+function updateIndustryFormPresentation({
+  industry,
+  titleLabel,
+  workOrderLabel,
+  customerLabel,
+  machineLabel,
+  serialLabel,
+  meterHoursLabel,
+  vehicleMilesLabel,
+  titleField,
+  workOrderField,
+  customerField,
+  machineField,
+  serialField,
+  meterHoursField,
+  vehicleMilesField,
+  quickNotesField,
+  complaintField,
+  causeField,
+  correctionField,
+  meterHoursWrapper,
+  vehicleMilesWrapper
+}) {
+  const { labels, placeholders, visibility } = getIndustryConfig(industry);
 
-  if (jobTitleLabel) {
-    jobTitleLabel.textContent = labels.title;
+  if (titleLabel) {
+    titleLabel.textContent = labels.title;
   }
 
-  if (jobWorkOrderLabel) {
-    jobWorkOrderLabel.textContent = labels.workOrder;
+  if (workOrderLabel) {
+    workOrderLabel.textContent = labels.workOrder;
   }
 
-  if (jobCustomerLabel) {
-    jobCustomerLabel.textContent = labels.customer;
+  if (customerLabel) {
+    customerLabel.textContent = labels.customer;
   }
 
-  if (jobMachineLabel) {
-    jobMachineLabel.textContent = labels.machine;
+  if (machineLabel) {
+    machineLabel.textContent = labels.machine;
   }
 
-  if (jobSerialLabel) {
-    jobSerialLabel.textContent = labels.serial;
+  if (serialLabel) {
+    serialLabel.textContent = labels.serial;
+  }
+
+  if (meterHoursLabel) {
+    meterHoursLabel.textContent = labels.meterHours;
+  }
+
+  if (vehicleMilesLabel) {
+    vehicleMilesLabel.textContent = labels.vehicleMiles;
   }
 
   const fieldMap = [
-    [jobTitleField, placeholders.title],
-    [jobWorkOrderField, placeholders.work_order],
-    [jobCustomerField, placeholders.customer],
-    [jobMachineField, placeholders.machine],
-    [jobSerialField, placeholders.serial],
-    [jobQuickNotesField, placeholders.quick_notes],
-    [jobComplaintField, placeholders.complaint],
-    [jobCauseField, placeholders.cause],
-    [jobCorrectionField, placeholders.correction]
+    [titleField, placeholders.title],
+    [workOrderField, placeholders.work_order],
+    [customerField, placeholders.customer],
+    [machineField, placeholders.machine],
+    [serialField, placeholders.serial],
+    [meterHoursField, placeholders.meter_hours],
+    [vehicleMilesField, placeholders.vehicle_miles],
+    [quickNotesField, placeholders.quick_notes],
+    [complaintField, placeholders.complaint],
+    [causeField, placeholders.cause],
+    [correctionField, placeholders.correction]
   ];
 
   fieldMap.forEach(([field, placeholder]) => {
@@ -833,6 +1023,90 @@ function updateJobPlaceholders() {
       field.placeholder = placeholder;
     }
   });
+
+  if (meterHoursWrapper) {
+    const meterValue =
+      meterHoursField instanceof HTMLInputElement ? meterHoursField.value.trim() : "";
+    meterHoursWrapper.hidden = !(visibility.meterHours || meterValue);
+  }
+
+  if (vehicleMilesWrapper) {
+    const milesValue =
+      vehicleMilesField instanceof HTMLInputElement ? vehicleMilesField.value.trim() : "";
+    vehicleMilesWrapper.hidden = !(visibility.vehicleMiles || milesValue);
+  }
+}
+
+function updateJobPlaceholders() {
+  const industry =
+    jobIndustrySelect instanceof HTMLSelectElement ? jobIndustrySelect.value : "";
+
+  updateIndustryFormPresentation({
+    industry,
+    titleLabel: jobTitleLabel,
+    workOrderLabel: jobWorkOrderLabel,
+    customerLabel: jobCustomerLabel,
+    machineLabel: jobMachineLabel,
+    serialLabel: jobSerialLabel,
+    meterHoursLabel: jobMeterHoursLabel,
+    vehicleMilesLabel: jobVehicleMilesLabel,
+    titleField: jobTitleField,
+    workOrderField: jobWorkOrderField,
+    customerField: jobCustomerField,
+    machineField: jobMachineField,
+    serialField: jobSerialField,
+    meterHoursField: jobMeterHoursField,
+    vehicleMilesField: jobVehicleMilesField,
+    quickNotesField: jobQuickNotesField,
+    complaintField: jobComplaintField,
+    causeField: jobCauseField,
+    correctionField: jobCorrectionField,
+    meterHoursWrapper: jobMeterHoursWrapper,
+    vehicleMilesWrapper: jobVehicleMilesWrapper
+  });
+}
+
+function getJobEffectiveDateValue(job) {
+  return job.service_date || job.created_at || "";
+}
+
+function getJobEffectiveDateLabel(job) {
+  return job.service_date ? formatServiceDate(job.service_date) : formatCreatedAt(job.created_at);
+}
+
+function getJobEffectiveDateHeading(job) {
+  return job.service_date ? "Service Date" : "Created Date";
+}
+
+function getJobUsageItems(job) {
+  const labels = getJobFieldLabels(job.industry);
+  const config = getIndustryConfig(job.industry);
+  const items = [];
+
+  if (config.visibility.meterHours || job.meter_hours) {
+    items.push([labels.meterHours, job.meter_hours || "Not provided"]);
+  }
+
+  if (config.visibility.vehicleMiles || job.vehicle_miles) {
+    items.push([labels.vehicleMiles, job.vehicle_miles || "Not provided"]);
+  }
+
+  return items;
+}
+
+function ensureDefaultServiceDate() {
+  if (jobServiceDateField instanceof HTMLInputElement && !jobServiceDateField.value) {
+    jobServiceDateField.value = getTodayDateInputValue();
+  }
+}
+
+function normalizeServiceDate(value, useTodayWhenBlank = false) {
+  const normalized = value?.toString().trim() || "";
+  if (normalized) {
+    return normalized;
+  }
+
+  return useTodayWhenBlank ? getTodayDateInputValue() : null;
 }
 
 function createMetaItem(labelText, valueText) {
@@ -861,17 +1135,20 @@ function getJobSummaryMachineLabel(job) {
 
 function buildJobReport(job) {
   const labels = getJobFieldLabels(job.industry);
+  const usageItems = getJobUsageItems(job);
 
   return [
     "IronSolidSystems",
     "",
     `${labels.jobName}: ${formatReportValue(job.title)}`,
+    `Service Date: ${formatServiceDate(job.service_date)}`,
     `Status: ${formatReportValue(job.status)}`,
     `Work Order: ${formatReportValue(job.work_order)}`,
     `Customer: ${formatReportValue(job.customer)}`,
     `Industry: ${formatReportValue(job.industry)}`,
     `${labels.machine}: ${formatReportValue(job.machine)}`,
     `${labels.serial}: ${formatReportValue(job.serial)}`,
+    ...usageItems.map(([label, value]) => `${label}: ${formatReportValue(value)}`),
     `Complaint: ${formatReportValue(job.complaint)}`,
     `Cause: ${formatReportValue(job.cause)}`,
     `Correction: ${formatReportValue(job.correction)}`,
@@ -1619,7 +1896,7 @@ function createDiagnosticSection(job) {
   return wrapper;
 }
 
-function createInputField(labelText, name, value = "") {
+function createInputField(labelText, name, value = "", type = "text", placeholder = "") {
   const label = document.createElement("label");
   label.className = "field";
 
@@ -1627,9 +1904,10 @@ function createInputField(labelText, name, value = "") {
   span.textContent = labelText;
 
   const input = document.createElement("input");
-  input.type = "text";
+  input.type = type;
   input.name = name;
   input.value = value;
+  input.placeholder = placeholder;
 
   label.append(span, input);
   return label;
@@ -1659,7 +1937,7 @@ function createSelectField(labelText, name, value, options) {
   return label;
 }
 
-function createTextareaField(labelText, name, value = "", rows = 5) {
+function createTextareaField(labelText, name, value = "", rows = 5, placeholder = "") {
   const label = document.createElement("label");
   label.className = "field field--full";
 
@@ -1670,6 +1948,7 @@ function createTextareaField(labelText, name, value = "", rows = 5) {
   textarea.name = name;
   textarea.rows = rows;
   textarea.value = value;
+  textarea.placeholder = placeholder;
 
   label.append(span, textarea);
   return label;
@@ -1680,11 +1959,14 @@ async function saveJobEdits(job, form, saveButton, statusMessage) {
   const payload = {
     title: formData.get("title")?.toString().trim() || "",
     status: formData.get("status")?.toString().trim() || "",
+    service_date: normalizeServiceDate(formData.get("service_date")),
     work_order: formData.get("work_order")?.toString().trim() || "",
     customer: formData.get("customer")?.toString().trim() || "",
     machine: formData.get("machine")?.toString().trim() || "",
     serial: formData.get("serial")?.toString().trim() || "",
     industry: formData.get("industry")?.toString().trim() || "",
+    meter_hours: formData.get("meter_hours")?.toString().trim() || "",
+    vehicle_miles: formData.get("vehicle_miles")?.toString().trim() || "",
     complaint: formData.get("complaint")?.toString().trim() || "",
     cause: formData.get("cause")?.toString().trim() || "",
     correction: formData.get("correction")?.toString().trim() || "",
@@ -1839,6 +2121,7 @@ function createEditSection(job) {
   }
 
   const labels = getJobFieldLabels(job.industry);
+  const config = getIndustryConfig(job.industry);
   const wrapper = document.createElement("section");
   wrapper.className = "job-editor";
   wrapper.hidden = true;
@@ -1849,40 +2132,144 @@ function createEditSection(job) {
   const grid = document.createElement("div");
   grid.className = "form-grid";
 
+  const titleField = createInputField(labels.jobName, "title", job.title || "", "text", config.placeholders.title);
+  const statusField = createSelectField("Status", "status", job.status || "Open", [
+    "Open",
+    "In Progress",
+    "Waiting on Parts",
+    "Completed"
+  ]);
+  const serviceDateField = createInputField(
+    "Service Date",
+    "service_date",
+    job.service_date || "",
+    "date"
+  );
+  const workOrderField = createInputField(
+    labels.workOrder,
+    "work_order",
+    job.work_order || "",
+    "text",
+    config.placeholders.work_order
+  );
+  const customerField = createInputField(
+    labels.customer,
+    "customer",
+    job.customer || "",
+    "text",
+    config.placeholders.customer
+  );
+  const machineField = createInputField(
+    labels.machine,
+    "machine",
+    job.machine || "",
+    "text",
+    config.placeholders.machine
+  );
+  const serialField = createInputField(
+    labels.serial,
+    "serial",
+    job.serial || "",
+    "text",
+    config.placeholders.serial
+  );
+  const industryFieldWrapper = createSelectField("Industry", "industry", job.industry || "", [
+    "",
+    ...INDUSTRY_OPTIONS
+  ]);
+  const meterHoursField = createInputField(
+    labels.meterHours,
+    "meter_hours",
+    job.meter_hours || "",
+    "text",
+    config.placeholders.meter_hours
+  );
+  const vehicleMilesField = createInputField(
+    labels.vehicleMiles,
+    "vehicle_miles",
+    job.vehicle_miles || "",
+    "text",
+    config.placeholders.vehicle_miles
+  );
+  const complaintField = createTextareaField(
+    "Complaint",
+    "complaint",
+    job.complaint || "",
+    6,
+    config.placeholders.complaint
+  );
+  const causeField = createTextareaField(
+    "Cause",
+    "cause",
+    job.cause || "",
+    6,
+    config.placeholders.cause
+  );
+  const correctionField = createTextareaField(
+    "Correction",
+    "correction",
+    job.correction || "",
+    6,
+    config.placeholders.correction
+  );
+  const quickNotesField = createTextareaField(
+    "Quick Notes (Torque Values, Parts, etc.)",
+    "quick_notes",
+    job.quick_notes || "",
+    6,
+    config.placeholders.quick_notes
+  );
+
   grid.append(
-    createInputField(labels.jobName, "title", job.title || ""),
-    createSelectField("Status", "status", job.status || "Open", [
-      "Open",
-      "In Progress",
-      "Waiting on Parts",
-      "Completed"
-    ]),
-    createInputField("Work Order", "work_order", job.work_order || ""),
-    createInputField("Customer", "customer", job.customer || ""),
-    createInputField(labels.machine, "machine", job.machine || ""),
-    createInputField(labels.serial, "serial", job.serial || ""),
-    createSelectField("Industry", "industry", job.industry || "", [
-      "",
-      "Heavy Equipment",
-      "Automotive",
-      "Industrial Maintenance",
-      "Welding & Fabrication"
-    ]),
-    createTextareaField("Complaint", "complaint", job.complaint || ""),
-    createTextareaField("Cause", "cause", job.cause || ""),
-    createTextareaField("Correction", "correction", job.correction || ""),
-    createTextareaField(
-      "Quick Notes (Torque Values, Parts, etc.)",
-      "quick_notes",
-      job.quick_notes || "",
-      6
-    )
+    titleField,
+    statusField,
+    serviceDateField,
+    workOrderField,
+    customerField,
+    machineField,
+    serialField,
+    industryFieldWrapper,
+    meterHoursField,
+    vehicleMilesField,
+    complaintField,
+    causeField,
+    correctionField,
+    quickNotesField
   );
 
   const industryField = grid.querySelector('select[name="industry"]');
   if (industryField instanceof HTMLSelectElement) {
     industryField.options[0].textContent = "Select Industry";
   }
+
+  const applyEditorIndustry = () => {
+    updateIndustryFormPresentation({
+      industry: industryField instanceof HTMLSelectElement ? industryField.value : "",
+      titleLabel: titleField.querySelector("span"),
+      workOrderLabel: workOrderField.querySelector("span"),
+      customerLabel: customerField.querySelector("span"),
+      machineLabel: machineField.querySelector("span"),
+      serialLabel: serialField.querySelector("span"),
+      meterHoursLabel: meterHoursField.querySelector("span"),
+      vehicleMilesLabel: vehicleMilesField.querySelector("span"),
+      titleField: titleField.querySelector("input"),
+      workOrderField: workOrderField.querySelector("input"),
+      customerField: customerField.querySelector("input"),
+      machineField: machineField.querySelector("input"),
+      serialField: serialField.querySelector("input"),
+      meterHoursField: meterHoursField.querySelector("input"),
+      vehicleMilesField: vehicleMilesField.querySelector("input"),
+      quickNotesField: quickNotesField.querySelector("textarea"),
+      complaintField: complaintField.querySelector("textarea"),
+      causeField: causeField.querySelector("textarea"),
+      correctionField: correctionField.querySelector("textarea"),
+      meterHoursWrapper: meterHoursField,
+      vehicleMilesWrapper: vehicleMilesField
+    });
+  };
+
+  applyEditorIndustry();
+  industryField?.addEventListener("change", applyEditorIndustry);
 
   const footer = document.createElement("div");
   footer.className = "job-editor__footer";
@@ -1974,13 +2361,16 @@ function createJobDetail(job) {
 
   const meta = document.createElement("div");
   meta.className = "job-detail-grid";
+  const usageItems = getJobUsageItems(job).map(([label, value]) => createMetaItem(label, value));
   meta.append(
     createMetaItem(getJobSummaryMachineLabel(job), job.machine || "Not provided"),
     createMetaItem("Industry", job.industry || "Not provided"),
+    createMetaItem("Service Date", formatServiceDate(job.service_date)),
     createMetaItem("Work Order", job.work_order || "Not assigned"),
     createMetaItem("Created", formatCreatedAt(job.created_at)),
     createMetaItem("Your Role", job.accessRole || "Supervisor"),
-    createMetaItem(getJobFieldLabels(job.industry).serial, job.serial || "Not provided")
+    createMetaItem(getJobFieldLabels(job.industry).serial, job.serial || "Not provided"),
+    ...usageItems
   );
 
   const detailSections = document.createElement("div");
@@ -2106,7 +2496,8 @@ function createJobSummaryRow(job) {
 
   const date = document.createElement("div");
   date.className = "job-summary-row__date";
-  date.textContent = formatCreatedAt(job.created_at);
+  date.textContent = getJobEffectiveDateLabel(job);
+  date.title = getJobEffectiveDateHeading(job);
 
   const title = document.createElement("div");
   title.className = "job-summary-row__title";
@@ -2254,7 +2645,7 @@ async function loadJobs() {
   });
 
   jobs.sort((left, right) => {
-    return new Date(right.created_at).getTime() - new Date(left.created_at).getTime();
+    return new Date(getJobEffectiveDateValue(right)).getTime() - new Date(getJobEffectiveDateValue(left)).getTime();
   });
 
   visibleJobs = jobs;
@@ -2435,11 +2826,14 @@ async function handleJobSubmit(event) {
     user_id: currentUser.id,
     title: formData.get("title")?.toString().trim() || "",
     status: formData.get("status")?.toString().trim() || "",
+    service_date: normalizeServiceDate(formData.get("service_date"), true),
     work_order: formData.get("work_order")?.toString().trim() || "",
     customer: formData.get("customer")?.toString().trim() || "",
     machine: formData.get("machine")?.toString().trim() || "",
     serial: formData.get("serial")?.toString().trim() || "",
     industry: formData.get("industry")?.toString().trim() || "",
+    meter_hours: formData.get("meter_hours")?.toString().trim() || "",
+    vehicle_miles: formData.get("vehicle_miles")?.toString().trim() || "",
     quick_notes: formData.get("quick_notes")?.toString().trim() || "",
     complaint: formData.get("complaint")?.toString().trim() || "",
     cause: formData.get("cause")?.toString().trim() || "",
@@ -2468,6 +2862,7 @@ async function handleJobSubmit(event) {
     industryField.value = "";
   }
 
+  ensureDefaultServiceDate();
   updateJobPlaceholders();
   setMessage(formMessage, "Job saved successfully.", "success");
   await loadJobs();
@@ -2711,6 +3106,7 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
 loadThemeSettings();
 updateAuthUI(null);
 setMainView("main");
+ensureDefaultServiceDate();
 updateJobPlaceholders();
 registerServiceWorker();
 setupInstallPrompt();

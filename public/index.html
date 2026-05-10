@@ -389,11 +389,16 @@
                   </label>
 
                   <label class="field">
+                    <span>Service Date</span>
+                    <input type="date" name="service_date" />
+                  </label>
+
+                  <label class="field">
                     <span id="label-work-order">Work Order</span>
                     <input type="text" name="work_order" placeholder="" />
                   </label>
 
-                  <label class="field">
+                  <label class="field" id="field-customer">
                     <span id="label-customer">Customer</span>
                     <input type="text" name="customer" placeholder="" />
                   </label>
@@ -416,7 +421,19 @@
                       <option value="Automotive">Automotive</option>
                       <option value="Industrial Maintenance">Industrial Maintenance</option>
                       <option value="Welding &amp; Fabrication">Welding &amp; Fabrication</option>
+                      <option value="Rental Equipment">Rental Equipment</option>
+                      <option value="Agriculture / Ag Equipment">Agriculture / Ag Equipment</option>
                     </select>
+                  </label>
+
+                  <label class="field" id="field-meter-hours" hidden>
+                    <span id="label-meter-hours">Meter Hours</span>
+                    <input type="text" name="meter_hours" placeholder="" />
+                  </label>
+
+                  <label class="field" id="field-vehicle-miles" hidden>
+                    <span id="label-vehicle-miles">Vehicle Miles</span>
+                    <input type="text" name="vehicle_miles" placeholder="" />
                   </label>
 
                   <label class="field field--full">
