@@ -2554,6 +2554,8 @@ async function loadJobs() {
   jobDetailView.hidden = true;
   reportPreview.hidden = true;
   visibleJobs = [];
+  let ownedJobsCount = 0;
+  let crewJobsCount = 0;
 
   const { data: ownedJobs, error: ownedError } = await supabaseClient
     .from("jobs")
@@ -2591,6 +2593,7 @@ async function loadJobs() {
       return;
     }
 
+    ownedJobsCount += 1;
     accessibleJobIds.add(job.id);
     jobsById.set(job.id, {
       ...job,
@@ -2621,6 +2624,7 @@ async function loadJobs() {
         return;
       }
 
+      crewJobsCount += 1;
       accessibleJobIds.add(job.id);
       jobsById.set(job.id, {
         ...job,
@@ -2632,6 +2636,13 @@ async function loadJobs() {
 
   const jobs = Array.from(jobsById.values()).filter((job) => {
     return job.user_id === currentUser.id || accessibleJobIds.has(job.id);
+  });
+
+  console.log("IronSolidSystems job load", {
+    currentUserId: currentUser.id,
+    ownedJobs: ownedJobsCount,
+    crewJobs: crewJobsCount,
+    renderedJobs: jobs.length
   });
 
   if (jobs.length === 0) {
