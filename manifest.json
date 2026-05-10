@@ -1,7 +1,7 @@
 {
   "name": "IronSolidSystems",
   "short_name": "IronSolid",
-  "description": "Technician job logs, crew access, photos, reports, and service documentation.",
+  "description": "IronSolidSystems is a technician operations platform for heavy equipment, automotive, industrial maintenance, agriculture, rental equipment, and fabrication workflows. Manage job logs, crews, diagnostics, photos, reports, and service documentation in one system.",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#FFCD11",
