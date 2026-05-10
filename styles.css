@@ -1005,7 +1005,8 @@ textarea,
 }
 
 .photo-dropbox,
-.photo-gallery {
+.photo-gallery,
+.diagnostic-section {
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -1013,7 +1014,8 @@ textarea,
 }
 
 .photo-dropbox h6,
-.photo-gallery h6 {
+.photo-gallery h6,
+.diagnostic-section h6 {
   margin: 0 0 0.85rem;
   font-family: "Space Grotesk", sans-serif;
   font-size: 1rem;
@@ -1034,6 +1036,15 @@ textarea,
   background: var(--note-bg);
 }
 
+.diagnostic-section__helper {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--note-bg);
+  color: var(--muted-text);
+  line-height: 1.55;
+}
+
 .photo-dropbox__helper p {
   margin: 0;
   color: var(--muted-text);
@@ -1051,6 +1062,58 @@ textarea,
   gap: 0.9rem;
   flex-wrap: wrap;
   margin-bottom: 1rem;
+}
+
+.diagnostic-section__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.diagnostic-file-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.diagnostic-file-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--note-bg);
+}
+
+.diagnostic-file-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.diagnostic-file-card__name {
+  color: var(--text);
+}
+
+.diagnostic-file-card__type,
+.diagnostic-file-card__date {
+  color: var(--muted-text);
+  font-size: 0.92rem;
+}
+
+.diagnostic-file-card__description {
+  margin: 0;
+  color: var(--muted-text);
+  line-height: 1.45;
+}
+
+.diagnostic-file-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 .photo-gallery__grid {

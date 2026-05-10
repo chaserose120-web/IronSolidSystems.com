@@ -466,6 +466,16 @@ function canDeletePhoto(job, photo) {
   return Boolean(isJobLead(job) || (job?.accessRole === "Job Worker" && photo?.uploaded_by === currentUser?.id));
 }
 
+function canUploadDiagnosticFiles(job) {
+  return Boolean(isJobLead(job) || job?.accessRole === "Job Worker");
+}
+
+function canDeleteDiagnosticFile(job, file) {
+  return Boolean(
+    isJobLead(job) || (job?.accessRole === "Job Worker" && file?.uploaded_by === currentUser?.id)
+  );
+}
+
 function truncateText(value, maxLength = 96) {
   const text = value?.toString().trim() || "";
 
@@ -952,6 +962,42 @@ function sanitizeFileName(fileName) {
   return fileName.replace(/[^a-zA-Z0-9._-]/g, "-");
 }
 
+function getFileExtension(fileName) {
+  return fileName.split(".").pop()?.toLowerCase() || "";
+}
+
+const DIAGNOSTIC_ALLOWED_EXTENSIONS = new Set([
+  "pdf",
+  "txt",
+  "csv",
+  "jpg",
+  "jpeg",
+  "png",
+  "webp",
+  "doc",
+  "docx"
+]);
+
+const DIAGNOSTIC_ALLOWED_MIME_TYPES = new Set([
+  "application/pdf",
+  "text/plain",
+  "text/csv",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+]);
+
+function isSupportedDiagnosticFile(file) {
+  const extension = getFileExtension(file.name);
+  if (!DIAGNOSTIC_ALLOWED_EXTENSIONS.has(extension)) {
+    return false;
+  }
+
+  return !file.type || DIAGNOSTIC_ALLOWED_MIME_TYPES.has(file.type);
+}
+
 async function createSignedPhotoUrls(photos) {
   if (!photos.length) {
     return [];
@@ -986,6 +1032,42 @@ async function fetchJobPhotos(jobId) {
   }
 
   return createSignedPhotoUrls(data || []);
+}
+
+async function createSignedDiagnosticUrls(files) {
+  if (!files.length) {
+    return [];
+  }
+
+  const { data, error } = await supabaseClient.storage
+    .from("diagnostic_files")
+    .createSignedUrls(
+      files.map((file) => file.file_path),
+      3600
+    );
+
+  if (error) {
+    throw error;
+  }
+
+  return files.map((file, index) => ({
+    ...file,
+    signed_url: data[index]?.signedUrl || ""
+  }));
+}
+
+async function fetchDiagnosticFiles(jobId) {
+  const { data, error } = await supabaseClient
+    .from("diagnostic_files")
+    .select("id, job_id, file_path, file_name, file_type, description, uploaded_by, created_at")
+    .eq("job_id", jobId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return createSignedDiagnosticUrls(data || []);
 }
 
 function renderPhotoGallery(job, photos, galleryGrid, searchValue = "") {
@@ -1172,7 +1254,7 @@ function createPhotoSection(job) {
           const file = files[index];
           setMessage(uploadMessage, `Uploading ${index + 1} of ${files.length}...`);
 
-          const filePath = `${job.id}/${currentUser.id}/${Date.now()}-${sanitizeFileName(file.name)}`;
+          const filePath = `${job.id}/${currentUser.id}/${Date.now()}-${index}-${sanitizeFileName(file.name)}`;
 
           const { error: uploadError } = await supabaseClient.storage
             .from("job_photos")
@@ -1266,6 +1348,274 @@ function createPhotoSection(job) {
     });
 
   wrapper.append(dropbox, gallery);
+  return wrapper;
+}
+
+function renderDiagnosticFileList(job, files, listBody) {
+  listBody.innerHTML = "";
+
+  if (files.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "list-message";
+    empty.textContent = "No diagnostic files uploaded for this job yet.";
+    listBody.appendChild(empty);
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  files.forEach((file) => {
+    const card = document.createElement("article");
+    card.className = "diagnostic-file-card";
+
+    const top = document.createElement("div");
+    top.className = "diagnostic-file-card__top";
+
+    const name = document.createElement("strong");
+    name.className = "diagnostic-file-card__name";
+    name.textContent = file.file_name || "Unnamed file";
+
+    const type = document.createElement("span");
+    type.className = "diagnostic-file-card__type";
+    type.textContent = file.file_type || "Unknown type";
+
+    top.append(name, type);
+
+    const description = document.createElement("p");
+    description.className = "diagnostic-file-card__description";
+    description.textContent = file.description || "No description provided.";
+
+    const date = document.createElement("span");
+    date.className = "diagnostic-file-card__date";
+    date.textContent = `Uploaded ${formatCreatedAt(file.created_at)}`;
+
+    const actions = document.createElement("div");
+    actions.className = "diagnostic-file-card__actions";
+
+    const openButton = document.createElement("button");
+    openButton.className = "button button--secondary button--small";
+    openButton.type = "button";
+    openButton.textContent = "Open / View";
+    openButton.addEventListener("click", () => {
+      if (!file.signed_url) {
+        setMessage(jobsMessage, "Unable to open this file right now. Try refreshing the job.", "error");
+        return;
+      }
+
+      window.open(file.signed_url, "_blank", "noopener");
+    });
+    actions.appendChild(openButton);
+
+    if (canDeleteDiagnosticFile(job, file)) {
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "button button--ghost button--small";
+      deleteButton.type = "button";
+      deleteButton.textContent = "Delete File";
+      deleteButton.addEventListener("click", async () => {
+        const confirmed = window.confirm("Are you sure? This will permanently delete the file.");
+        if (!confirmed) {
+          return;
+        }
+
+        const { error: storageError } = await supabaseClient.storage
+          .from("diagnostic_files")
+          .remove([file.file_path]);
+
+        if (storageError) {
+          setMessage(jobsMessage, `Unable to delete file storage: ${storageError.message}`, "error");
+          return;
+        }
+
+        const { error: rowError } = await supabaseClient
+          .from("diagnostic_files")
+          .delete()
+          .eq("id", file.id);
+
+        if (rowError) {
+          setMessage(jobsMessage, `Unable to delete file record: ${rowError.message}`, "error");
+          return;
+        }
+
+        setMessage(jobsMessage, "Diagnostic file deleted successfully.", "success");
+        const refreshedFiles = await fetchDiagnosticFiles(job.id);
+        renderDiagnosticFileList(job, refreshedFiles, listBody);
+      });
+      actions.appendChild(deleteButton);
+    }
+
+    card.append(top, description, date, actions);
+    fragment.appendChild(card);
+  });
+
+  listBody.appendChild(fragment);
+}
+
+function createDiagnosticSection(job) {
+  const wrapper = document.createElement("section");
+  wrapper.className = "job-detail-grid";
+
+  const uploadSection = document.createElement("section");
+  uploadSection.className = "diagnostic-section";
+
+  const uploadTitle = document.createElement("h6");
+  uploadTitle.textContent = "Diagnostic Uploads";
+  uploadSection.appendChild(uploadTitle);
+
+  const uploadMessage = document.createElement("p");
+  uploadMessage.className = "form-message";
+
+  if (canUploadDiagnosticFiles(job)) {
+    const uploadGrid = document.createElement("div");
+    uploadGrid.className = "form-grid";
+
+    const helperText = document.createElement("div");
+    helperText.className = "diagnostic-section__helper field--full";
+    helperText.textContent =
+      "Upload PSRs, ET reports, INSITE files, inspection sheets, screenshots, torque sheets, or other diagnostic documents.";
+
+    const fileField = document.createElement("label");
+    fileField.className = "field";
+    const fileLabel = document.createElement("span");
+    fileLabel.textContent = "Select Files";
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.multiple = true;
+    fileInput.accept =
+      ".pdf,.txt,.csv,.jpg,.jpeg,.png,.webp,.doc,.docx,application/pdf,text/plain,text/csv,image/jpeg,image/png,image/webp,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    fileField.append(fileLabel, fileInput);
+
+    const descriptionField = document.createElement("label");
+    descriptionField.className = "field";
+    const descriptionLabel = document.createElement("span");
+    descriptionLabel.textContent = "Description";
+    const descriptionInput = document.createElement("input");
+    descriptionInput.type = "text";
+    descriptionInput.placeholder = "Applies to selected files";
+    descriptionField.append(descriptionLabel, descriptionInput);
+
+    uploadGrid.append(helperText, fileField, descriptionField);
+    uploadSection.appendChild(uploadGrid);
+
+    const uploadActions = document.createElement("div");
+    uploadActions.className = "diagnostic-section__actions";
+
+    const uploadButton = document.createElement("button");
+    uploadButton.className = "button button--primary button--small";
+    uploadButton.type = "button";
+    uploadButton.textContent = "Upload Diagnostic File";
+
+    uploadActions.append(uploadMessage, uploadButton);
+    uploadSection.appendChild(uploadActions);
+
+    uploadButton.addEventListener("click", async () => {
+      const files = Array.from(fileInput.files || []);
+      const description = descriptionInput.value.trim();
+
+      if (files.length === 0) {
+        setMessage(uploadMessage, "Select one or more files to upload.", "error");
+        return;
+      }
+
+      const unsupportedFiles = files.filter((file) => !isSupportedDiagnosticFile(file));
+      if (unsupportedFiles.length > 0) {
+        setMessage(
+          uploadMessage,
+          "This file format is not supported here. Use PDF, TXT, CSV, JPG, PNG, WEBP, DOC, or DOCX files.",
+          "error"
+        );
+        return;
+      }
+
+      uploadButton.disabled = true;
+      uploadButton.textContent = "Uploading...";
+
+      try {
+        for (let index = 0; index < files.length; index += 1) {
+          const file = files[index];
+          setMessage(uploadMessage, `Uploading ${index + 1} of ${files.length}...`);
+
+          const filePath = `${job.id}/${currentUser.id}/${Date.now()}-${index}-${sanitizeFileName(file.name)}`;
+
+          const { error: uploadError } = await supabaseClient.storage
+            .from("diagnostic_files")
+            .upload(filePath, file);
+
+          if (uploadError) {
+            setMessage(uploadMessage, `Diagnostic upload failed: ${uploadError.message}`, "error");
+            throw uploadError;
+          }
+
+          const { error: insertError } = await supabaseClient.from("diagnostic_files").insert({
+            job_id: job.id,
+            file_path: filePath,
+            file_name: file.name,
+            file_type: file.type || getFileExtension(file.name).toUpperCase(),
+            description,
+            uploaded_by: currentUser.id
+          });
+
+          if (insertError) {
+            setMessage(uploadMessage, `Diagnostic record failed: ${insertError.message}`, "error");
+            throw insertError;
+          }
+        }
+
+        fileInput.value = "";
+        descriptionInput.value = "";
+        setMessage(uploadMessage, "Diagnostic files uploaded successfully.", "success");
+        const refreshedFiles = await fetchDiagnosticFiles(job.id);
+        setMessage(
+          filesMessage,
+          `${refreshedFiles.length} diagnostic file${refreshedFiles.length === 1 ? "" : "s"} loaded.`,
+          refreshedFiles.length ? "success" : ""
+        );
+        renderDiagnosticFileList(job, refreshedFiles, fileListBody);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Diagnostic upload failed.";
+        if (!uploadMessage.classList.contains("is-error")) {
+          setMessage(uploadMessage, `Unable to upload files: ${message}`, "error");
+        }
+      } finally {
+        uploadButton.disabled = false;
+        uploadButton.textContent = "Upload Diagnostic File";
+      }
+    });
+  } else {
+    setMessage(uploadMessage, "You can view diagnostic files for this job.");
+    uploadSection.appendChild(uploadMessage);
+  }
+
+  const filesSection = document.createElement("section");
+  filesSection.className = "diagnostic-section";
+
+  const filesTitle = document.createElement("h6");
+  filesTitle.textContent = "Diagnostic Files";
+  filesSection.appendChild(filesTitle);
+
+  const fileListBody = document.createElement("div");
+  fileListBody.className = "diagnostic-file-list";
+
+  const filesMessage = document.createElement("p");
+  filesMessage.className = "list-message";
+  filesMessage.textContent = "Loading diagnostic files...";
+
+  filesSection.append(filesMessage, fileListBody);
+
+  fetchDiagnosticFiles(job.id)
+    .then((files) => {
+      setMessage(
+        filesMessage,
+        `${files.length} diagnostic file${files.length === 1 ? "" : "s"} loaded.`,
+        files.length ? "success" : ""
+      );
+      renderDiagnosticFileList(job, files, fileListBody);
+    })
+    .catch((error) => {
+      const message = error instanceof Error ? error.message : "Unable to load diagnostic files.";
+      setMessage(filesMessage, `Unable to load diagnostic files: ${message}`, "error");
+      renderDiagnosticFileList(job, [], fileListBody);
+    });
+
+  wrapper.append(uploadSection, filesSection);
   return wrapper;
 }
 
@@ -1729,7 +2079,15 @@ function createJobDetail(job) {
     actions.appendChild(deleteButton);
   }
 
-  article.append(top, meta, detailSections, createPhotoSection(job), actions, createCrewSection(job));
+  article.append(
+    top,
+    meta,
+    detailSections,
+    createPhotoSection(job),
+    createDiagnosticSection(job),
+    actions,
+    createCrewSection(job)
+  );
 
   if (editSection) {
     article.appendChild(editSection);
