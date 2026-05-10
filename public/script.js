@@ -40,9 +40,16 @@ const logOutButton = document.getElementById("log-out-button");
 const jobForm = document.getElementById("job-form");
 const formMessage = document.getElementById("form-message");
 const submitButton = document.getElementById("job-submit");
-const jobsContainer = document.getElementById("jobs-container");
 const jobsMessage = document.getElementById("jobs-message");
 const refreshJobsButton = document.getElementById("refresh-jobs");
+const showAllJobsButton = document.getElementById("show-all-jobs");
+const jobsBrowser = document.getElementById("jobs-browser");
+const closeJobsBrowserButton = document.getElementById("close-jobs-browser");
+const jobsSummaryList = document.getElementById("jobs-summary-list");
+const jobDetailView = document.getElementById("job-detail-view");
+const jobDetailTitle = document.getElementById("job-detail-title");
+const jobDetailContent = document.getElementById("job-detail-content");
+const closeJobDetailButton = document.getElementById("close-job-detail");
 const reportPreview = document.getElementById("report-preview");
 const reportPreviewTitle = document.getElementById("report-preview-title");
 const reportPreviewContent = document.getElementById("report-preview-content");
@@ -73,6 +80,7 @@ const jobSerialLabel = document.getElementById("label-serial");
 let currentUser = null;
 let currentView = "main";
 let visibleJobs = [];
+let selectedJobId = null;
 
 const THEME_STORAGE_KEY = "ironsolidsystems-theme-settings";
 const DEFAULT_THEME_SETTINGS = {
@@ -458,6 +466,39 @@ function canManageCrew(job) {
   return Boolean(isJobLead(job));
 }
 
+function truncateText(value, maxLength = 96) {
+  const text = value?.toString().trim() || "";
+
+  if (!text) {
+    return "No summary available.";
+  }
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.slice(0, maxLength).trimEnd()}...`;
+}
+
+function getJobSummary(job) {
+  return truncateText(job.summary || job.complaint || "");
+}
+
+function openJobsBrowser() {
+  jobsBrowser.hidden = false;
+  jobDetailView.hidden = true;
+  reportPreview.hidden = true;
+  selectedJobId = null;
+  jobsBrowser.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function closeJobsBrowser() {
+  jobsBrowser.hidden = true;
+  jobDetailView.hidden = true;
+  reportPreview.hidden = true;
+  selectedJobId = null;
+}
+
 function setMainView(view) {
   currentView = view;
 
@@ -553,9 +594,13 @@ function updateAuthUI(user) {
 
   if (!isLoggedIn) {
     setMainView("main");
-    jobsContainer.innerHTML = "";
+    jobsSummaryList.innerHTML = "";
+    jobDetailContent.innerHTML = "";
+    jobsBrowser.hidden = true;
+    jobDetailView.hidden = true;
     reportPreview.hidden = true;
     visibleJobs = [];
+    selectedJobId = null;
     jobCount.textContent = "0";
     setMessage(jobsMessage, "Sign in to load jobs.");
     setMessage(formMessage, "");
@@ -1093,16 +1138,15 @@ function createDeleteConfirmation(job) {
   return box;
 }
 
-function createJobCard(job) {
-  const article = document.createElement("article");
-  article.className = "job-item";
+function createJobDetail(job) {
+  const article = document.createElement("section");
+  article.className = "job-detail-content";
 
   const top = document.createElement("div");
-  top.className = "job-item__top";
+  top.className = "job-detail-header";
 
   const titleGroup = document.createElement("div");
-  const titleElement = document.createElement("strong");
-  titleElement.className = "job-item__title";
+  const titleElement = document.createElement("h5");
   titleElement.textContent = job.title || "Untitled job";
 
   const customerElement = document.createElement("p");
@@ -1116,14 +1160,74 @@ function createJobCard(job) {
   top.append(titleGroup, statusElement);
 
   const meta = document.createElement("div");
-  meta.className = "job-item__meta";
+  meta.className = "job-detail-grid";
   meta.append(
     createMetaItem(getJobSummaryMachineLabel(job), job.machine || "Not provided"),
     createMetaItem("Industry", job.industry || "Not provided"),
     createMetaItem("Work Order", job.work_order || "Not assigned"),
     createMetaItem("Created", formatCreatedAt(job.created_at)),
-    createMetaItem("Your Role", job.accessRole || "Supervisor")
+    createMetaItem("Your Role", job.accessRole || "Supervisor"),
+    createMetaItem(getJobFieldLabels(job.industry).serial, job.serial || "Not provided")
   );
+
+  const detailSections = document.createElement("div");
+  detailSections.className = "job-detail-grid";
+
+  const detailsSection = document.createElement("section");
+  detailsSection.className = "job-detail-section";
+  const detailsTitle = document.createElement("h6");
+  detailsTitle.textContent = "Job Details";
+  detailsSection.append(
+    detailsTitle,
+    createMetaItem("Customer", job.customer || "Not provided"),
+    createMetaItem("Part Numbers", job.part_numbers || "Not provided"),
+    createMetaItem("Torque Values", job.torque_values || "Not provided")
+  );
+
+  const threeCSection = document.createElement("section");
+  threeCSection.className = "job-detail-section";
+  const threeCTitle = document.createElement("h6");
+  threeCTitle.textContent = "Complaint, Cause, and Correction";
+  const threeCContent = document.createElement("div");
+  threeCContent.className = "job-detail-three-c";
+  [
+    ["Complaint", job.complaint],
+    ["Cause", job.cause],
+    ["Correction", job.correction]
+  ].forEach(([label, value]) => {
+    const note = document.createElement("div");
+    note.className = "job-detail-note";
+    const strong = document.createElement("strong");
+    strong.textContent = label;
+    const text = document.createElement("p");
+    text.textContent = formatReportValue(value);
+    note.append(strong, text);
+    threeCContent.appendChild(note);
+  });
+  threeCSection.append(threeCTitle, threeCContent);
+
+  const partsSection = document.createElement("section");
+  partsSection.className = "job-detail-section";
+  const partsTitle = document.createElement("h6");
+  partsTitle.textContent = "Parts & Torque Information";
+  const partsContent = document.createElement("div");
+  partsContent.className = "job-detail-three-c";
+  [
+    ["Part Numbers", job.part_numbers],
+    ["Torque Values", job.torque_values]
+  ].forEach(([label, value]) => {
+    const note = document.createElement("div");
+    note.className = "job-detail-note";
+    const strong = document.createElement("strong");
+    strong.textContent = label;
+    const text = document.createElement("p");
+    text.textContent = formatReportValue(value);
+    note.append(strong, text);
+    partsContent.appendChild(note);
+  });
+  partsSection.append(partsTitle, partsContent);
+
+  detailSections.append(detailsSection, threeCSection, partsSection);
 
   const actions = document.createElement("div");
   actions.className = "job-item__actions";
@@ -1170,7 +1274,7 @@ function createJobCard(job) {
     actions.appendChild(deleteButton);
   }
 
-  article.append(top, meta, actions, createCrewSection(job));
+  article.append(top, meta, detailSections, actions, createCrewSection(job));
 
   if (editSection) {
     article.appendChild(editSection);
@@ -1183,9 +1287,51 @@ function createJobCard(job) {
   return article;
 }
 
+function createJobSummaryRow(job) {
+  const row = document.createElement("article");
+  row.className = "job-summary-row";
+
+  const date = document.createElement("div");
+  date.className = "job-summary-row__date";
+  date.textContent = formatCreatedAt(job.created_at);
+
+  const title = document.createElement("div");
+  title.className = "job-summary-row__title";
+  const strong = document.createElement("strong");
+  strong.textContent = job.title || "Untitled job";
+  const subtitle = document.createElement("span");
+  subtitle.textContent = job.customer || "No customer listed";
+  title.append(strong, subtitle);
+
+  const summary = document.createElement("div");
+  summary.className = "job-summary-row__summary";
+  summary.textContent = getJobSummary(job);
+
+  const actionWrap = document.createElement("div");
+  const viewButton = document.createElement("button");
+  viewButton.className = "button button--secondary button--small";
+  viewButton.type = "button";
+  viewButton.textContent = "View Job";
+  viewButton.addEventListener("click", () => {
+    selectedJobId = job.id;
+    jobDetailTitle.textContent = job.title || "Job Details";
+    jobDetailContent.innerHTML = "";
+    jobDetailContent.appendChild(createJobDetail(job));
+    jobDetailView.hidden = false;
+    reportPreview.hidden = true;
+    jobDetailView.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  actionWrap.appendChild(viewButton);
+
+  row.append(date, title, summary, actionWrap);
+  return row;
+}
+
 async function loadJobs() {
   if (!currentUser) {
-    jobsContainer.innerHTML = "";
+    jobsSummaryList.innerHTML = "";
+    jobDetailContent.innerHTML = "";
+    jobDetailView.hidden = true;
     reportPreview.hidden = true;
     visibleJobs = [];
     jobCount.textContent = "0";
@@ -1194,7 +1340,9 @@ async function loadJobs() {
   }
 
   setMessage(jobsMessage, "Loading jobs...");
-  jobsContainer.innerHTML = "";
+  jobsSummaryList.innerHTML = "";
+  jobDetailContent.innerHTML = "";
+  jobDetailView.hidden = true;
   reportPreview.hidden = true;
   visibleJobs = [];
 
@@ -1306,9 +1454,9 @@ async function loadJobs() {
 
   const fragment = document.createDocumentFragment();
   jobs.forEach((job) => {
-    fragment.appendChild(createJobCard(job));
+    fragment.appendChild(createJobSummaryRow(job));
   });
-  jobsContainer.appendChild(fragment);
+  jobsSummaryList.appendChild(fragment);
 }
 
 async function signUpUser() {
@@ -1644,6 +1792,27 @@ if (jobIndustrySelect instanceof HTMLSelectElement) {
 
 if (refreshJobsButton) {
   refreshJobsButton.addEventListener("click", loadJobs);
+}
+
+if (showAllJobsButton) {
+  showAllJobsButton.addEventListener("click", () => {
+    openJobsBrowser();
+  });
+}
+
+if (closeJobsBrowserButton) {
+  closeJobsBrowserButton.addEventListener("click", () => {
+    closeJobsBrowser();
+  });
+}
+
+if (closeJobDetailButton) {
+  closeJobDetailButton.addEventListener("click", () => {
+    jobDetailView.hidden = true;
+    reportPreview.hidden = true;
+    selectedJobId = null;
+    jobsSummaryList.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 }
 
 if (closeReportPreviewButton) {

@@ -426,35 +426,72 @@
 
             <div class="panel">
               <div class="panel__header">
-                <h3>Job Feed</h3>
-                <button
-                  class="button button--secondary button--small"
-                  type="button"
-                  id="refresh-jobs"
-                >
-                  Refresh
-                </button>
+                <h3>Jobs</h3>
+                <div class="job-browser__top-actions">
+                  <button
+                    class="button button--secondary button--small"
+                    type="button"
+                    id="refresh-jobs"
+                  >
+                    Refresh
+                  </button>
+                  <button
+                    class="button button--primary button--small"
+                    type="button"
+                    id="show-all-jobs"
+                  >
+                    Show All Jobs
+                  </button>
+                </div>
               </div>
 
               <p class="list-message" id="jobs-message" role="status" aria-live="polite">
                 Sign in to load jobs.
               </p>
 
-              <div class="jobs-list" id="jobs-container" aria-live="polite"></div>
-
-              <section class="report-preview" id="report-preview" hidden>
+              <section class="jobs-browser" id="jobs-browser" hidden>
                 <div class="panel__header">
-                  <h4 id="report-preview-title">Copy Ready Report</h4>
+                  <h4>All Jobs</h4>
                   <button
                     class="button button--ghost button--small"
                     type="button"
-                    id="close-report-preview"
+                    id="close-jobs-browser"
                   >
-                    Close Preview
+                    Back to Dashboard
                   </button>
                 </div>
 
-                <pre class="report-preview__content" id="report-preview-content"></pre>
+                <div class="jobs-summary-list" id="jobs-summary-list" aria-live="polite"></div>
+
+                <section class="job-detail-view" id="job-detail-view" hidden>
+                  <div class="panel__header">
+                    <h4 id="job-detail-title">Job Details</h4>
+                    <button
+                      class="button button--ghost button--small"
+                      type="button"
+                      id="close-job-detail"
+                    >
+                      Back to Jobs
+                    </button>
+                  </div>
+
+                  <div id="job-detail-content"></div>
+
+                  <section class="report-preview" id="report-preview" hidden>
+                    <div class="panel__header">
+                      <h4 id="report-preview-title">Copy Ready Report</h4>
+                      <button
+                        class="button button--ghost button--small"
+                        type="button"
+                        id="close-report-preview"
+                      >
+                        Close Preview
+                      </button>
+                    </div>
+
+                    <pre class="report-preview__content" id="report-preview-content"></pre>
+                  </section>
+                </section>
               </section>
             </div>
           </section>

@@ -565,6 +565,53 @@ textarea,
   margin-top: 1rem;
 }
 
+.job-browser__top-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.jobs-browser,
+.job-detail-view {
+  display: grid;
+  gap: 1rem;
+}
+
+.jobs-summary-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.job-summary-row {
+  display: grid;
+  grid-template-columns: 160px minmax(180px, 1.1fr) minmax(240px, 1.6fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.job-summary-row__date,
+.job-summary-row__summary {
+  color: var(--text-soft);
+}
+
+.job-summary-row__title strong {
+  display: block;
+  font-size: 1.02rem;
+}
+
+.job-summary-row__title span {
+  color: var(--text-soft);
+  font-size: 0.94rem;
+}
+
+.job-summary-row__summary {
+  line-height: 1.45;
+}
+
 .crew-section,
 .job-editor,
 .delete-confirmation {
@@ -705,6 +752,70 @@ textarea,
   overflow-wrap: anywhere;
 }
 
+.job-detail-content {
+  display: grid;
+  gap: 1rem;
+}
+
+.job-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.job-detail-header h5 {
+  margin: 0 0 0.35rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.2rem;
+}
+
+.job-detail-header p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.job-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.job-detail-section {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.job-detail-section h6 {
+  margin: 0 0 0.85rem;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1rem;
+}
+
+.job-detail-three-c {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.job-detail-note {
+  padding: 0.85rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.job-detail-note strong {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.job-detail-note p {
+  margin: 0;
+  color: var(--text-soft);
+  white-space: pre-wrap;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -726,7 +837,8 @@ textarea,
 
   .dashboard-grid,
   .auth-grid,
-  .job-item__meta {
+  .job-item__meta,
+  .job-detail-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -747,7 +859,9 @@ textarea,
   .form-grid,
   .auth-grid,
   .dashboard-grid,
-  .job-item__meta {
+  .job-item__meta,
+  .job-detail-grid,
+  .job-summary-row {
     grid-template-columns: 1fr;
   }
 
@@ -764,6 +878,12 @@ textarea,
 
   .button {
     width: 100%;
+  }
+
+  .job-browser__top-actions,
+  .job-summary-row,
+  .job-detail-header {
+    align-items: stretch;
   }
 
   .topbar__actions,
