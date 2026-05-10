@@ -17,10 +17,16 @@ const createJobSection = document.getElementById("create-job");
 const jobsListSection = document.getElementById("jobs-list");
 const settingsPanel = document.getElementById("settings-panel");
 const howToPanel = document.getElementById("how-to-panel");
+const supportPanel = document.getElementById("support-panel");
 const openHowToNavButton = document.getElementById("open-how-to-nav");
+const openSupportNavButton = document.getElementById("open-support-nav");
 const openSettingsNavButton = document.getElementById("open-settings-nav");
 const closeSettingsButton = document.getElementById("close-settings-button");
 const closeHowToButton = document.getElementById("close-how-to-button");
+const closeSupportButton = document.getElementById("close-support-button");
+const copySupportEmailButton = document.getElementById("copy-support-email-button");
+const supportEmail = document.getElementById("support-email");
+const supportMessage = document.getElementById("support-message");
 const themeColorSelect = document.getElementById("theme-color-select");
 const textColorSelect = document.getElementById("text-color-select");
 const installHelper = document.getElementById("install-helper");
@@ -649,11 +655,13 @@ function setMainView(view) {
 
   const showSettings = view === "settings";
   const showHowTo = view === "how-to";
-  dashboardSection.hidden = showSettings || showHowTo;
-  createJobSection.hidden = showSettings || showHowTo;
-  jobsListSection.hidden = showSettings || showHowTo;
+  const showSupport = view === "support";
+  dashboardSection.hidden = showSettings || showHowTo || showSupport;
+  createJobSection.hidden = showSettings || showHowTo || showSupport;
+  jobsListSection.hidden = showSettings || showHowTo || showSupport;
   settingsPanel.hidden = !showSettings;
   howToPanel.hidden = !showHowTo;
+  supportPanel.hidden = !showSupport;
 }
 
 function hexToRgb(hex) {
@@ -2824,6 +2832,17 @@ async function copyAccountInfo() {
   }
 }
 
+async function copySupportEmail() {
+  const email = supportEmail?.textContent?.trim() || "chaserose@ironproofservice.com";
+
+  try {
+    await navigator.clipboard.writeText(email);
+    setMessage(supportMessage, "Support email copied to clipboard.", "success");
+  } catch {
+    setMessage(supportMessage, "Unable to copy support email.", "error");
+  }
+}
+
 async function checkCurrentUser() {
   const { data, error } = await supabaseClient.auth.getSession();
 
@@ -3130,6 +3149,13 @@ if (openHowToNavButton) {
   });
 }
 
+if (openSupportNavButton) {
+  openSupportNavButton.addEventListener("click", () => {
+    setMainView("support");
+    supportPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 if (openSettingsButton) {
   openSettingsButton.addEventListener("click", () => {
     setMainView("settings");
@@ -3149,6 +3175,17 @@ if (closeHowToButton) {
     setMainView("main");
     dashboardSection.scrollIntoView({ behavior: "smooth", block: "start" });
   });
+}
+
+if (closeSupportButton) {
+  closeSupportButton.addEventListener("click", () => {
+    setMainView("main");
+    dashboardSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
+if (copySupportEmailButton) {
+  copySupportEmailButton.addEventListener("click", copySupportEmail);
 }
 
 if (themeColorSelect) {

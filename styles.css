@@ -442,6 +442,42 @@ textarea,
   line-height: 1.6;
 }
 
+.support-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.support-panel__intro {
+  margin: 0;
+  color: var(--muted-text);
+  line-height: 1.6;
+}
+
+.support-panel__contact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--panel-elevated);
+  flex-wrap: wrap;
+}
+
+.support-panel__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--muted-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.support-panel__email {
+  color: var(--text);
+  font-size: 1rem;
+}
+
 .metric-card {
   padding: 1.35rem;
   background: linear-gradient(180deg, color-mix(in srgb, var(--panel-elevated) 26%, transparent), var(--panel-elevated));

@@ -58,6 +58,9 @@
           <button class="sidebar-nav__button" type="button" id="open-how-to-nav">
             How To
           </button>
+          <button class="sidebar-nav__button" type="button" id="open-support-nav">
+            Support
+          </button>
           <button class="sidebar-nav__button" type="button" id="open-settings-nav">
             Settings
           </button>
@@ -749,6 +752,101 @@
                   <h4>13. Log Out</h4>
                   <p>Use Log Out in the sidebar when you are finished so the next user does not access your workspace.</p>
                 </article>
+              </div>
+            </section>
+          </section>
+
+          <section class="app-section" id="support-panel" hidden>
+            <div class="section-heading section-heading--compact">
+              <span class="eyebrow">Support</span>
+              <h2>Get help</h2>
+              <p>
+                Contact IronSolidSystems support for account, upload, crew, or app issues.
+              </p>
+            </div>
+
+            <section class="panel" aria-labelledby="support-heading">
+              <div class="panel__header">
+                <h3 id="support-heading">IronSolidSystems Support</h3>
+                <button
+                  class="button button--ghost button--small"
+                  type="button"
+                  id="close-support-button"
+                >
+                  Back to Dashboard
+                </button>
+              </div>
+
+              <div class="support-panel">
+                <p class="support-panel__intro">
+                  For support, bug reports, feature requests, account issues, or upload problems,
+                  contact IronSolidSystems support.
+                </p>
+
+                <div class="support-panel__contact">
+                  <div>
+                    <span class="support-panel__label">Support Email</span>
+                    <strong class="support-panel__email" id="support-email">
+                      chaserose@ironproofservice.com
+                    </strong>
+                  </div>
+                  <button
+                    class="button button--secondary button--small"
+                    type="button"
+                    id="copy-support-email-button"
+                  >
+                    Copy Support Email
+                  </button>
+                </div>
+
+                <p
+                  class="form-message"
+                  id="support-message"
+                  role="status"
+                  aria-live="polite"
+                ></p>
+
+                <div class="help-list">
+                  <article class="help-item">
+                    <h4>Recommended email format</h4>
+                    <p>Your name, account email, device or browser being used, description of the issue, screenshots if available, and the job name or crew code if the issue is tied to a specific record.</p>
+                  </article>
+
+                  <article class="help-item">
+                    <h4>Login / Auth Issues</h4>
+                    <p>Include your account email, what step is failing, and whether the problem happens at sign in, sign up, or session restore.</p>
+                  </article>
+
+                  <article class="help-item">
+                    <h4>Job Visibility Problems</h4>
+                    <p>Include the job name, service date, and whether you are the Job Lead or joining through a crew code.</p>
+                  </article>
+
+                  <article class="help-item">
+                    <h4>Crew Access Problems</h4>
+                    <p>Include the crew code, requested role, and what message you see when trying to join or manage the crew.</p>
+                  </article>
+
+                  <article class="help-item">
+                    <h4>Photo Upload Issues</h4>
+                    <p>Include the job name, device or browser, file type, and whether the problem happens during upload, viewing, or deleting.</p>
+                  </article>
+
+                  <article class="help-item">
+                    <h4>Diagnostic Upload Issues</h4>
+                    <p>Include the job name, file type, and whether the problem happens during upload, open/view, or delete.</p>
+                  </article>
+
+                  <article class="help-item">
+                    <h4>Theme / UI Problems</h4>
+                    <p>Include your selected theme, text color, device or browser, and a screenshot if the layout or colors look wrong.</p>
+                  </article>
+
+                  <article class="help-item">
+                    <h4>Feature Requests</h4>
+                    <p>Describe the workflow you want to improve and how the change would help technicians in the shop or field.</p>
+                  </article>
+                </div>
               </div>
             </section>
           </section>
