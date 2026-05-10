@@ -3,6 +3,7 @@
   --bg-alt: #0d0f0f;
   --panel: rgba(17, 20, 20, 0.9);
   --panel-strong: #161919;
+  --panel-elevated: #1b1f1f;
   --panel-soft: rgba(255, 255, 255, 0.03);
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(242, 194, 48, 0.18);
@@ -429,6 +430,9 @@ textarea,
 
 .metric-card {
   padding: 1.35rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
+    var(--panel-elevated);
 }
 
 .metric-card__value {
@@ -536,7 +540,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--section-bg);
+  background: var(--panel-elevated);
 }
 
 .form-subsection__header {
@@ -727,7 +731,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--section-bg);
+  background: var(--panel-elevated);
 }
 
 .job-summary-row__date,
@@ -756,7 +760,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--section-bg);
+  background: var(--panel-elevated);
 }
 
 .crew-section__header {
@@ -815,7 +819,7 @@ textarea,
   padding: 0.85rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: var(--section-bg);
+  background: var(--panel-elevated);
 }
 
 .crew-member .job-meta {
@@ -872,7 +876,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--section-bg);
+  background: var(--panel-elevated);
 }
 
 .report-preview__content {
@@ -922,7 +926,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--section-bg);
+  background: var(--panel-elevated);
 }
 
 .job-detail-section h6 {
@@ -958,7 +962,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--section-bg);
+  background: var(--panel-elevated);
 }
 
 .photo-dropbox h6,
@@ -1065,7 +1069,7 @@ textarea,
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  background: var(--panel);
+  background: var(--panel-elevated);
   box-shadow: var(--shadow);
 }
 

@@ -565,6 +565,7 @@ function applyThemeSettings(settings) {
       ? {
         panel: "rgba(244, 240, 231, 0.95)",
         panelStrong: "#efe9db",
+        panelElevated: "#f7f2e7",
         panelSoft: "rgba(255, 249, 235, 0.78)",
         border: "rgba(0, 0, 0, 0.12)",
         borderStrong: theme.borderStrong,
@@ -585,6 +586,7 @@ function applyThemeSettings(settings) {
     : {
         panel: theme.panel,
         panelStrong: theme.panelStrong,
+        panelElevated: `linear-gradient(180deg, ${theme.panelSoft}, transparent), ${theme.panelStrong}`,
         panelSoft: theme.panelSoft,
         border: theme.border,
         borderStrong: theme.borderStrong,
@@ -607,6 +609,7 @@ function applyThemeSettings(settings) {
   root.style.setProperty("--bg-alt", theme.bgAlt);
   root.style.setProperty("--panel", surfaces.panel);
   root.style.setProperty("--panel-strong", surfaces.panelStrong);
+  root.style.setProperty("--panel-elevated", surfaces.panelElevated);
   root.style.setProperty("--panel-soft", surfaces.panelSoft);
   root.style.setProperty("--border", surfaces.border);
   root.style.setProperty("--border-strong", surfaces.borderStrong);
