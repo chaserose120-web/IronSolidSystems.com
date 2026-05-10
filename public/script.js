@@ -2579,12 +2579,19 @@ async function loadJobs() {
 
   const jobsById = new Map();
   const membershipByJobId = new Map();
+  const accessibleJobIds = new Set();
 
   (membershipRows || []).forEach((membership) => {
     membershipByJobId.set(membership.job_id, membership);
+    accessibleJobIds.add(membership.job_id);
   });
 
   (ownedJobs || []).forEach((job) => {
+    if (job.user_id !== currentUser.id) {
+      return;
+    }
+
+    accessibleJobIds.add(job.id);
     jobsById.set(job.id, {
       ...job,
       accessRole: "Job Lead",
@@ -2610,6 +2617,11 @@ async function loadJobs() {
 
     (crewJobs || []).forEach((job) => {
       const membership = membershipByJobId.get(job.id);
+      if (!membership) {
+        return;
+      }
+
+      accessibleJobIds.add(job.id);
       jobsById.set(job.id, {
         ...job,
         accessRole: membership?.role || "Job Worker",
@@ -2618,7 +2630,9 @@ async function loadJobs() {
     });
   }
 
-  const jobs = Array.from(jobsById.values());
+  const jobs = Array.from(jobsById.values()).filter((job) => {
+    return job.user_id === currentUser.id || accessibleJobIds.has(job.id);
+  });
 
   if (jobs.length === 0) {
     jobCount.textContent = "0";
@@ -2666,6 +2680,13 @@ async function loadJobs() {
     fragment.appendChild(createJobSummaryRow(job));
   });
   jobsSummaryList.appendChild(fragment);
+
+  if (selectedJobId && !jobs.some((job) => job.id === selectedJobId)) {
+    selectedJobId = null;
+    jobDetailContent.innerHTML = "";
+    jobDetailView.hidden = true;
+    reportPreview.hidden = true;
+  }
 }
 
 async function signUpUser() {
