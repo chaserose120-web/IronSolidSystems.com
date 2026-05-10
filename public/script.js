@@ -23,6 +23,10 @@ const textColorSelect = document.getElementById("text-color-select");
 const installHelper = document.getElementById("install-helper");
 const installAppButton = document.getElementById("install-app-button");
 const installHelperMessage = document.getElementById("install-helper-message");
+const landingSignInButton = document.getElementById("landing-sign-in");
+const landingCreateAccountButton = document.getElementById("landing-create-account");
+const signInPanel = document.getElementById("sign-in-panel");
+const createAccountPanel = document.getElementById("create-account-panel");
 
 const signUpForm = document.getElementById("sign-up-form");
 const signUpFullNameInput = document.getElementById("sign-up-full-name");
@@ -689,6 +693,18 @@ function setupInstallPrompt() {
     deferredInstallPrompt = null;
     updateInstallHelperVisibility();
   });
+}
+
+function scrollToAuthPanel(target, field) {
+  if (!target) {
+    return;
+  }
+
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  window.setTimeout(() => {
+    field?.focus();
+  }, 180);
 }
 
 function getSavedThemeSettings() {
@@ -2310,6 +2326,18 @@ if (signUpButton) {
 
 if (copyAccountButton) {
   copyAccountButton.addEventListener("click", copyAccountInfo);
+}
+
+if (landingSignInButton) {
+  landingSignInButton.addEventListener("click", () => {
+    scrollToAuthPanel(signInPanel, signInEmailInput);
+  });
+}
+
+if (landingCreateAccountButton) {
+  landingCreateAccountButton.addEventListener("click", () => {
+    scrollToAuthPanel(createAccountPanel, signUpFullNameInput);
+  });
 }
 
 if (signInButton) {

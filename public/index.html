@@ -5,8 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="IronSolidSystems is a dark industrial job tracking app for technicians and repair workflows."
+      content="Heavy-duty technician job logs, crew access, photos, reports, and service documentation."
     />
+    <meta property="og:title" content="IronSolidSystems" />
+    <meta
+      property="og:description"
+      content="Heavy-duty technician job logs, crew access, photos, reports, and service documentation."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="IronSolidSystems" />
+    <meta property="og:image" content="/icons/icon-512.png" />
+    <meta property="og:image:alt" content="IronSolidSystems ISS logo" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="IronSolidSystems" />
+    <meta
+      name="twitter:description"
+      content="Heavy-duty technician job logs, crew access, photos, reports, and service documentation."
+    />
+    <meta name="twitter:image" content="/icons/icon-512.png" />
     <meta name="application-name" content="IronSolidSystems" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="IronSolidSystems" />
@@ -121,6 +137,59 @@
         </section>
 
         <section class="app-section" id="auth-panel">
+          <section class="panel landing-hero" aria-labelledby="landing-heading">
+            <div class="landing-hero__copy">
+              <span class="eyebrow">Heavy-Duty Service Workflow</span>
+              <div class="landing-hero__brand">
+                <span class="landing-hero__logo">
+                  <img src="/icons/iss-logo.png" alt="IronSolidSystems ISS logo" />
+                </span>
+                <div>
+                  <h2 id="landing-heading">IronSolidSystems</h2>
+                  <p class="landing-hero__description">
+                    Heavy-duty technician job logs, crew access, photos, reports, and
+                    service documentation.
+                  </p>
+                </div>
+              </div>
+
+              <div class="landing-hero__actions">
+                <button class="button button--primary" type="button" id="landing-sign-in">
+                  Sign In
+                </button>
+                <button
+                  class="button button--secondary"
+                  type="button"
+                  id="landing-create-account"
+                >
+                  Create Account
+                </button>
+              </div>
+            </div>
+
+            <div class="landing-highlights" aria-label="IronSolidSystems feature highlights">
+              <article class="landing-highlight">
+                <h3>Crew Access</h3>
+                <p>Share active jobs with field crews, leads, and supervisors.</p>
+              </article>
+
+              <article class="landing-highlight">
+                <h3>Job Reports</h3>
+                <p>Build clean service documentation ready to copy and send.</p>
+              </article>
+
+              <article class="landing-highlight">
+                <h3>Photo Documentation</h3>
+                <p>Attach job photos, descriptions, and private signed access.</p>
+              </article>
+
+              <article class="landing-highlight">
+                <h3>Technician Workflow</h3>
+                <p>Track complaints, cause, correction, parts, torque, and crew work.</p>
+              </article>
+            </div>
+          </section>
+
           <div class="section-heading section-heading--compact">
             <span class="eyebrow">Access</span>
             <h2>Secure account access</h2>
@@ -131,7 +200,11 @@
           </div>
 
           <div class="auth-grid">
-            <section class="panel panel--auth" aria-labelledby="sign-up-heading">
+            <section
+              class="panel panel--auth"
+              aria-labelledby="sign-up-heading"
+              id="create-account-panel"
+            >
               <div class="panel__header panel__header--stack">
                 <div>
                   <span class="eyebrow">Create Account</span>
@@ -206,7 +279,7 @@
               </form>
             </section>
 
-            <section class="panel" aria-labelledby="sign-in-heading">
+            <section class="panel" aria-labelledby="sign-in-heading" id="sign-in-panel">
               <div class="panel__header panel__header--stack">
                 <div>
                   <span class="eyebrow">Login</span>
