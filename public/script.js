@@ -11,7 +11,6 @@ const topbarUserName = document.getElementById("topbar-user-name");
 const topbarUserEmail = document.getElementById("topbar-user-email");
 const openSettingsButton = document.getElementById("open-settings-button");
 const dashboardGreeting = document.getElementById("dashboard-greeting");
-const dashboardUserEmail = document.getElementById("dashboard-user-email");
 const jobCount = document.getElementById("job-count");
 const dashboardSection = document.getElementById("dashboard");
 const createJobSection = document.getElementById("create-job");
@@ -588,7 +587,6 @@ function updateAuthUI(user) {
   topbarUserName.textContent = displayName;
   topbarUserEmail.textContent = email;
   dashboardGreeting.textContent = `Hello, ${displayName}`;
-  dashboardUserEmail.textContent = email;
   appSections.hidden = !isLoggedIn;
   logOutButton.disabled = !isLoggedIn;
 
