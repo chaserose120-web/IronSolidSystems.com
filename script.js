@@ -1834,8 +1834,19 @@ function createDiagnosticSection(job) {
             throw uploadError;
           }
 
+          const {
+            data: { user },
+            error: userError
+          } = await supabaseClient.auth.getUser();
+
+          if (userError || !user) {
+            setMessage(uploadMessage, "Unable to verify the signed-in user for diagnostic upload.", "error");
+            throw userError || new Error("No authenticated user found.");
+          }
+
           const { error: insertError } = await supabaseClient.from("diagnostic_files").insert({
             job_id: job.id,
+            user_id: user.id,
             file_path: filePath,
             file_name: file.name,
             file_type: file.type || getFileExtension(file.name).toUpperCase(),
