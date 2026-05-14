@@ -2017,6 +2017,10 @@ async function saveJobEdits(job, form, saveButton, statusMessage) {
 }
 
 async function deleteJobForever(job, confirmationBox) {
+  console.log("IronSolidSystems delete job", {
+    jobId: job.id
+  });
+
   const { error } = await supabaseClient
     .from("jobs")
     .delete()
@@ -2518,6 +2522,7 @@ function createJobDetail(job) {
 function createJobSummaryRow(job) {
   const row = document.createElement("article");
   row.className = "job-summary-row";
+  row.dataset.jobId = job.id || "";
 
   const date = document.createElement("div");
   date.className = "job-summary-row__date";
@@ -2668,19 +2673,26 @@ async function loadJobs() {
   const jobs = Array.from(jobsById.values()).filter((job) => {
     return job.user_id === currentUser.id || accessibleJobIds.has(job.id);
   });
+  const uniqueJobs = Array.from(
+    new Map(
+      jobs
+        .filter((job) => job?.id)
+        .map((job) => [job.id, job])
+    ).values()
+  );
 
   console.log("IronSolidSystems job load", {
     currentUserId: currentUser.id,
     ownedJobs: ownedJobsCount,
     crewJobs: crewJobsCount,
-    renderedJobs: jobs.length
+    renderedJobs: uniqueJobs.length
   });
 
   if (requestId !== jobsLoadRequestId) {
     return;
   }
 
-  if (jobs.length === 0) {
+  if (uniqueJobs.length === 0) {
     jobCount.textContent = "0";
     jobsSummaryList.innerHTML = "";
     visibleJobs = [];
@@ -2688,7 +2700,7 @@ async function loadJobs() {
     return;
   }
 
-  const jobIds = jobs.map((job) => job.id);
+  const jobIds = uniqueJobs.map((job) => job.id);
   const { data: crewRows, error: crewRowsError } = await supabaseClient
     .from("job_crew")
     .select("job_id, user_id, role")
@@ -2710,11 +2722,11 @@ async function loadJobs() {
     crewMembersByJobId.set(row.job_id, rows);
   });
 
-  jobs.forEach((job) => {
+  uniqueJobs.forEach((job) => {
     job.crewMembers = crewMembersByJobId.get(job.id) || [];
   });
 
-  jobs.sort((left, right) => {
+  uniqueJobs.sort((left, right) => {
     return new Date(getJobEffectiveDateValue(right)).getTime() - new Date(getJobEffectiveDateValue(left)).getTime();
   });
 
@@ -2723,21 +2735,21 @@ async function loadJobs() {
   }
 
   jobsSummaryList.innerHTML = "";
-  visibleJobs = jobs;
-  jobCount.textContent = String(jobs.length);
+  visibleJobs = uniqueJobs;
+  jobCount.textContent = String(uniqueJobs.length);
   setMessage(
     jobsMessage,
-    `Showing ${jobs.length} job${jobs.length === 1 ? "" : "s"}.`,
+    `Showing ${uniqueJobs.length} job${uniqueJobs.length === 1 ? "" : "s"}.`,
     "success"
   );
 
   const fragment = document.createDocumentFragment();
-  jobs.forEach((job) => {
+  uniqueJobs.forEach((job) => {
     fragment.appendChild(createJobSummaryRow(job));
   });
-  jobsSummaryList.appendChild(fragment);
+  jobsSummaryList.replaceChildren(fragment);
 
-  if (selectedJobId && !jobs.some((job) => job.id === selectedJobId)) {
+  if (selectedJobId && !uniqueJobs.some((job) => job.id === selectedJobId)) {
     selectedJobId = null;
     jobDetailContent.innerHTML = "";
     jobDetailView.hidden = true;
