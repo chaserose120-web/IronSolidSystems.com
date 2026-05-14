@@ -107,6 +107,7 @@ let currentView = "main";
 let visibleJobs = [];
 let selectedJobId = null;
 let deferredInstallPrompt = null;
+let jobsLoadRequestId = 0;
 
 const THEME_STORAGE_KEY = "ironsolidsystems-theme-settings";
 const DEFAULT_THEME_SETTINGS = {
@@ -2556,6 +2557,8 @@ function createJobSummaryRow(job) {
 }
 
 async function loadJobs() {
+  const requestId = ++jobsLoadRequestId;
+
   if (!currentUser) {
     jobsSummaryList.innerHTML = "";
     jobDetailContent.innerHTML = "";
@@ -2582,6 +2585,9 @@ async function loadJobs() {
     .eq("user_id", currentUser.id);
 
   if (ownedError) {
+    if (requestId !== jobsLoadRequestId) {
+      return;
+    }
     jobCount.textContent = "0";
     setMessage(jobsMessage, `Unable to load jobs: ${ownedError.message}`, "error");
     return;
@@ -2593,6 +2599,9 @@ async function loadJobs() {
     .eq("user_id", currentUser.id);
 
   if (membershipError) {
+    if (requestId !== jobsLoadRequestId) {
+      return;
+    }
     jobCount.textContent = "0";
     setMessage(jobsMessage, `Unable to load crew jobs: ${membershipError.message}`, "error");
     return;
@@ -2632,6 +2641,9 @@ async function loadJobs() {
       .in("id", crewJobIds);
 
     if (crewJobsError) {
+      if (requestId !== jobsLoadRequestId) {
+        return;
+      }
       jobCount.textContent = "0";
       setMessage(jobsMessage, `Unable to load crew jobs: ${crewJobsError.message}`, "error");
       return;
@@ -2664,8 +2676,14 @@ async function loadJobs() {
     renderedJobs: jobs.length
   });
 
+  if (requestId !== jobsLoadRequestId) {
+    return;
+  }
+
   if (jobs.length === 0) {
     jobCount.textContent = "0";
+    jobsSummaryList.innerHTML = "";
+    visibleJobs = [];
     setMessage(jobsMessage, "No jobs found yet. Create your first job or join a crew.");
     return;
   }
@@ -2677,6 +2695,9 @@ async function loadJobs() {
     .in("job_id", jobIds);
 
   if (crewRowsError) {
+    if (requestId !== jobsLoadRequestId) {
+      return;
+    }
     jobCount.textContent = "0";
     setMessage(jobsMessage, `Unable to load crew details: ${crewRowsError.message}`, "error");
     return;
@@ -2697,6 +2718,11 @@ async function loadJobs() {
     return new Date(getJobEffectiveDateValue(right)).getTime() - new Date(getJobEffectiveDateValue(left)).getTime();
   });
 
+  if (requestId !== jobsLoadRequestId) {
+    return;
+  }
+
+  jobsSummaryList.innerHTML = "";
   visibleJobs = jobs;
   jobCount.textContent = String(jobs.length);
   setMessage(
